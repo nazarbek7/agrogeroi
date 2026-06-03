@@ -31,7 +31,7 @@ const Header = () => {
 
   const handleLogout = () => {
     setTimeout(() => signOut(), 1000);
-    toast.success("Logout successful!");
+    toast.success("Вы вышли из системы");
   };
 
   // getting all wishlist items by user id
@@ -133,13 +133,13 @@ const Header = () => {
                 className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li>
-                  <Link href="/admin">Dashboard</Link>
+                  <Link href="/admin">Панель управления</Link>
                 </li>
                 <li>
-                  <a>Profile</a>
+                  <a>Профиль</a>
                 </li>
                 <li onClick={handleLogout}>
-                  <a href="#">Logout</a>
+                  <a href="#">Выйти</a>
                 </li>
               </ul>
             </div>

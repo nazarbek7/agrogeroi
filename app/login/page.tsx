@@ -17,8 +17,8 @@ const LoginPage = () => {
     // Check if session expired
     const expired = searchParams.get('expired');
     if (expired === 'true') {
-      setError("Your session has expired. Please log in again.");
-      toast.error("Your session has expired. Please log in again.");
+      setError("Ваша сессия истекла. Пожалуйста, войдите снова.");
+      toast.error("Ваша сессия истекла. Пожалуйста, войдите снова.");
     }
     
     // if user has already logged in redirect to home page
@@ -33,14 +33,14 @@ const LoginPage = () => {
     const password = e.target[1].value;
 
     if (!isValidEmailAddressFormat(email)) {
-      setError("Email is invalid");
-      toast.error("Email is invalid");
+      setError("Неверный формат email");
+      toast.error("Неверный формат email");
       return;
     }
 
     if (!password || password.length < 8) {
-      setError("Password is invalid");
-      toast.error("Password is invalid");
+      setError("Пароль слишком короткий");
+      toast.error("Пароль слишком короткий");
       return;
     }
 
@@ -51,25 +51,25 @@ const LoginPage = () => {
     });
 
     if (res?.error) {
-      setError("Invalid email or password");
-      toast.error("Invalid email or password");
+      setError("Неверный email или пароль");
+      toast.error("Неверный email или пароль");
       if (res?.url) router.replace("/");
     } else {
       setError("");
-      toast.success("Successful login");
+      toast.success("Вы успешно вошли");
     }
   };
 
   if (sessionStatus === "loading") {
-    return <h1>Loading...</h1>;
+    return <h1>Загрузка...</h1>;
   }
   return (
     <div className="bg-white">
-      <SectionTitle title="Login" path="Home | Login" />
+      <SectionTitle title="Вход" path="Главная | Вход" />
       <div className="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8 bg-white">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-2xl font-normal leading-9 tracking-tight text-gray-900">
-            Sign in to your account
+            Войдите в аккаунт
           </h2>
         </div>
 
@@ -81,7 +81,7 @@ const LoginPage = () => {
                   htmlFor="email"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  Email address
+                  Email
                 </label>
                 <div className="mt-2">
                   <input
@@ -100,7 +100,7 @@ const LoginPage = () => {
                   htmlFor="password"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
-                  Password
+                  Пароль
                 </label>
                 <div className="mt-2">
                   <input
@@ -126,7 +126,7 @@ const LoginPage = () => {
                     htmlFor="remember-me"
                     className="ml-3 block text-sm leading-6 text-gray-900"
                   >
-                    Remember me
+                    Запомнить меня
                   </label>
                 </div>
 
@@ -135,7 +135,7 @@ const LoginPage = () => {
                     href="#"
                     className="font-semibold text-black hover:text-black"
                   >
-                    Forgot password?
+                    Забыли пароль?
                   </a>
                 </div>
               </div>
@@ -143,7 +143,7 @@ const LoginPage = () => {
               <div>
                 <CustomButton
                   buttonType="submit"
-                  text="Sign in"
+                  text="Войти"
                   paddingX={3}
                   paddingY={1.5}
                   customWidth="full"
@@ -162,7 +162,7 @@ const LoginPage = () => {
                 </div>
                 <div className="relative flex justify-center text-sm font-medium leading-6">
                   <span className="bg-white px-6 text-gray-900">
-                    Or continue with
+                    Или войдите через
                   </span>
                 </div>
               </div>

@@ -84,26 +84,26 @@ export const incentives = [
 
 export const navigation = {
   sale: [
-    { name: "Discounts", href: "#" },
-    { name: "News", href: "#" },
-    { name: "Register Discounts", href: "#" },
+    { name: "Скидки", href: "#" },
+    { name: "Новинки", href: "#" },
+    { name: "Акции", href: "#" },
   ],
   about: [
-    { name: "About Singitronic", href: "#" },
-    { name: "Work With Us", href: "#" },
-    { name: "Company Profile", href: "#" },
+    { name: "О нас", href: "#" },
+    { name: "Вакансии", href: "#" },
+    { name: "Профиль компании", href: "#" },
   ],
   buy: [
-    { name: "Singitronic Loyalty Card", href: "#" },
-    { name: "Terms Of Use", href: "#" },
-    { name: "Privacy Policy", href: "#" },
-    { name: "Complaints", href: "#" },
-    { name: "Partners", href: "#" },
+    { name: "Условия использования", href: "#" },
+    { name: "Политика конфиденциальности", href: "#" },
+    { name: "Доставка и оплата", href: "#" },
+    { name: "Возврат товара", href: "#" },
+    { name: "Партнёры", href: "#" },
   ],
   help: [
-    { name: "Contact", href: "#" },
-    { name: "How to Buy at Singitronic", href: "#" },
-    { name: "FAQ", href: "#" },
+    { name: "Контакты", href: "#" },
+    { name: "Как сделать заказ", href: "#" },
+    { name: "Частые вопросы (FAQ)", href: "#" },
   ],
 };
 
