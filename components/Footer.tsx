@@ -13,9 +13,9 @@ const Footer = () => {
             <Image
               src="/agrogeroi_logo.svg"
               alt="Agrogeroi logo"
-              width={200}
-              height={200}
-              className="h-auto w-auto"
+              width={140}
+              height={140}
+              className="h-auto w-auto max-w-[140px]"
             />
             <div className="flex flex-col gap-y-3 text-sm text-gray-600">
               <a href="tel:+996708000008" className="flex items-center gap-x-2 hover:text-brand">
