@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const Hero = () => {
   return (
@@ -12,21 +11,27 @@ const Hero = () => {
           </h1>
           <p className="text-white max-sm:text-sm">
             Широкий выбор саженцев, деревьев и кустарников для вашего сада.
-            Розы, хвойные, плодовые деревья, лианы и многолетние цветы —
-            всё для создания красивого и здорового сада.
+            Розы, хвойные, плодовые деревья, лианы и многолетние цветы — всё для
+            создания красивого и здорового сада.
           </p>
           <div className="flex gap-x-3 max-lg:flex-col max-lg:gap-y-2">
-            <Link href="/shop" className="bg-white text-brand font-bold px-12 py-3 text-center max-lg:text-xl max-sm:text-lg hover:bg-gray-100">
+            <Link
+              href="/shop"
+              className="bg-white text-brand font-bold px-12 py-3 text-center max-lg:text-xl max-sm:text-lg hover:bg-gray-100"
+            >
               В КАТАЛОГ
             </Link>
-            <Link href="/contacts" className="bg-transparent border-2 border-white text-white font-bold px-12 py-3 text-center max-lg:text-xl max-sm:text-lg hover:bg-white hover:text-brand">
+            <Link
+              href="/contacts"
+              className="bg-transparent border-2 border-white text-white font-bold px-12 py-3 text-center max-lg:text-xl max-sm:text-lg hover:bg-white hover:text-brand"
+            >
               КОНТАКТЫ
             </Link>
           </div>
         </div>
         <div className="relative w-[400px] h-[400px] max-md:w-[300px] max-md:h-[300px] max-sm:w-[250px] max-sm:h-[250px] rounded-2xl overflow-hidden shadow-2xl">
           <Image
-            src="/hero-plant.jpg"
+            src="/hero-plant.png"
             fill
             alt="Гортензия Агрогерои"
             className="object-cover"
