@@ -64,9 +64,13 @@ app.use(errorLogger);
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
+  'https://agrogeroi.com',
+  'https://www.agrogeroi.com',
+  'https://agrogeroi.kg',
+  'https://www.agrogeroi.kg',
   process.env.NEXTAUTH_URL,
   process.env.FRONTEND_URL,
-].filter(Boolean); // Remove undefined values
+].filter(Boolean);
 
 // CORS configuration with origin validation
 const corsOptions = {

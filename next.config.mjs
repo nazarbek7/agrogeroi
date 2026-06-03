@@ -12,6 +12,28 @@ const nextConfig = {
     env: {
         NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
     },
+    async redirects() {
+      return [
+        {
+          source: '/:path*',
+          has: [{ type: 'host', value: 'agrogeroi.kg' }],
+          destination: 'https://agrogeroi.com/:path*',
+          permanent: true,
+        },
+        {
+          source: '/:path*',
+          has: [{ type: 'host', value: 'www.agrogeroi.kg' }],
+          destination: 'https://agrogeroi.com/:path*',
+          permanent: true,
+        },
+        {
+          source: '/:path*',
+          has: [{ type: 'host', value: 'www.agrogeroi.com' }],
+          destination: 'https://agrogeroi.com/:path*',
+          permanent: true,
+        },
+      ];
+    },
     async headers() {
       return [
         {
