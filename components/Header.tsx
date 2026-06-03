@@ -6,16 +6,16 @@ import { useEffect } from "react";
 import HeaderTop from "./HeaderTop";
 import SearchInput from "./SearchInput";
 import { useWishlistStore } from "@/app/_zustand/wishlistStore";
-import apiClient from "@/lib/api";
 import { signOut, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import CartElement from "./CartElement";
 import HeartElement from "./HeartElement";
 import NotificationBell from "./NotificationBell";
 import { MdDashboard } from "react-icons/md";
+import { FaRegUser, FaPen } from "react-icons/fa6";
 
 const Header = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const pathname = usePathname();
   const { wishlist, setWishlist, wishQuantity } = useWishlistStore();
   const isAdmin = (session?.user as any)?.role === "admin";
@@ -25,29 +25,77 @@ const Header = () => {
     toast.success("Вы вышли из системы");
   };
 
-  const getWishlistByUserId = async (id: string) => {
-    return; // temporary disabled
-  };
-
-  const getUserByEmail = async () => {
-    if (session?.user?.email) {
-      apiClient
-        .get(`/api/users/email/${session?.user?.email}`, { cache: "no-store" })
-        .then((response) => response.json())
-        .then((data) => { getWishlistByUserId(data?.id); });
-    }
-  };
-
   useEffect(() => {
-    getUserByEmail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // wishlist fetch disabled temporarily
   }, [session?.user?.email, wishlist.length]);
+
+  // Дропдаун профиля — показывается в обоих хедерах
+  const ProfileDropdown = () => (
+    <div className="dropdown dropdown-end">
+      <div tabIndex={0} role="button" className="flex items-center gap-x-2 cursor-pointer">
+        <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-brand">
+          <Image
+            src="/randomuser.jpg"
+            alt="profile"
+            width={36}
+            height={36}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      </div>
+      <div tabIndex={0} className="dropdown-content z-50 shadow-xl bg-white rounded-xl w-64 mt-2 border border-gray-100">
+        {/* Шапка профиля */}
+        <div className="px-4 py-3 border-b border-gray-100">
+          <div className="flex items-center gap-x-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden">
+              <Image src="/randomuser.jpg" alt="profile" width={40} height={40} className="w-full h-full object-cover" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold text-gray-800 truncate max-w-[150px]">
+                {session?.user?.email}
+              </span>
+              <span className={`text-xs px-2 py-0.5 rounded-full w-fit mt-0.5 ${isAdmin ? "bg-brand text-white" : "bg-gray-100 text-gray-600"}`}>
+                {isAdmin ? "Администратор" : "Пользователь"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Меню */}
+        <ul className="py-1">
+          {isAdmin && (
+            <li>
+              <Link href="/admin" className="flex items-center gap-x-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700">
+                <MdDashboard className="text-brand text-lg" />
+                Панель управления
+              </Link>
+            </li>
+          )}
+          <li>
+            <Link href="/profile" className="flex items-center gap-x-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700">
+              <FaPen className="text-brand text-sm" />
+              Редактировать профиль
+            </Link>
+          </li>
+          <li className="border-t border-gray-100 mt-1">
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-x-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-red-500 w-full text-left"
+            >
+              <FaRegUser className="text-sm" />
+              Выйти
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
 
   return (
     <header className="bg-white">
       <HeaderTop />
 
-      {/* Обычный хедер (не /admin) */}
+      {/* Обычный хедер */}
       {!pathname.startsWith("/admin") && (
         <div className="h-32 bg-white flex items-center justify-between px-16 max-[1320px]:px-16 max-md:px-6 max-lg:flex-col max-lg:gap-y-7 max-lg:justify-center max-lg:h-60 max-w-screen-2xl mx-auto">
           <Link href="/">
@@ -61,24 +109,15 @@ const Header = () => {
           </Link>
           <SearchInput />
           <div className="flex gap-x-6 items-center">
-            {/* Кнопка админки — только для admin */}
-            {session && isAdmin && (
-              <Link
-                href="/admin"
-                className="flex items-center gap-x-1 bg-brand text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-brand-dark"
-              >
-                <MdDashboard className="text-lg" />
-                Кабинет
-              </Link>
-            )}
             <NotificationBell />
             <HeartElement wishQuantity={wishQuantity} />
             <CartElement />
+            {session && <ProfileDropdown />}
           </div>
         </div>
       )}
 
-      {/* Хедер для /admin страниц */}
+      {/* Хедер для /admin */}
       {pathname.startsWith("/admin") && (
         <div className="flex justify-between h-20 bg-white items-center px-16 max-[1320px]:px-10 max-w-screen-2xl mx-auto max-[400px]:px-5 border-b">
           <Link href="/">
@@ -91,24 +130,8 @@ const Header = () => {
             />
           </Link>
           <div className="flex gap-x-4 items-center">
-            <span className="text-sm text-gray-500">{session?.user?.email}</span>
             <NotificationBell />
-            <div className="dropdown dropdown-end">
-              <div tabIndex={0} role="button" className="w-9 h-9 rounded-full overflow-hidden cursor-pointer">
-                <Image
-                  src="/randomuser.jpg"
-                  alt="profile"
-                  width={36}
-                  height={36}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li><Link href="/admin">Панель управления</Link></li>
-                <li><Link href="/">На сайт</Link></li>
-                <li onClick={handleLogout}><a href="#">Выйти</a></li>
-              </ul>
-            </div>
+            <ProfileDropdown />
           </div>
         </div>
       )}
