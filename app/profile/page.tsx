@@ -97,7 +97,7 @@ export default function ProfilePage() {
           {isAdmin && (
             <Link href="/admin" className="ml-auto flex items-center gap-x-2 bg-brand text-white px-4 py-2 rounded-lg text-sm hover:bg-brand-dark">
               <MdDashboard />
-              Кабинет
+              Панель управления
             </Link>
           )}
         </div>
