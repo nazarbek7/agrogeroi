@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 import toast from "react-hot-toast";
 import { FaHeadphones, FaRegEnvelope, FaRegUser } from "react-icons/fa6";
-import { FaWhatsapp, FaTelegram } from "react-icons/fa";
+import { FaWhatsapp, FaTelegram, FaInstagram } from "react-icons/fa";
 
 const HeaderTop = () => {
   const { data: session }: any = useSession();
@@ -32,6 +32,12 @@ const HeaderTop = () => {
             <a href="https://t.me/agrogeroi" target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-1 hover:opacity-80">
               <FaTelegram className="text-white text-lg" />
               <span>Telegram</span>
+            </a>
+          </li>
+          <li className="flex items-center gap-x-2 font-semibold">
+            <a href="https://www.instagram.com/agrogeroi/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-1 hover:opacity-80">
+              <FaInstagram className="text-white text-lg" />
+              <span>Instagram</span>
             </a>
           </li>
         </ul>

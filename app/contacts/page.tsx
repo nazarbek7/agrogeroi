@@ -1,4 +1,4 @@
-import { FaWhatsapp, FaTelegram } from "react-icons/fa";
+import { FaWhatsapp, FaTelegram, FaInstagram } from "react-icons/fa";
 import { FaPhone, FaRegEnvelope } from "react-icons/fa6";
 
 export const metadata = {
@@ -61,6 +61,15 @@ const ContactsPage = () => {
               >
                 <FaTelegram className="text-2xl" />
                 Telegram @agrogeroi
+              </a>
+              <a
+                href="https://www.instagram.com/agrogeroi/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-x-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl hover:opacity-90 font-semibold text-lg w-fit"
+              >
+                <FaInstagram className="text-2xl" />
+                Instagram @agrogeroi
               </a>
             </div>
           </div>

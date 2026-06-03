@@ -1,6 +1,6 @@
 import { navigation } from "@/lib/utils";
 import Image from "next/image";
-import { FaWhatsapp, FaTelegram } from "react-icons/fa";
+import { FaWhatsapp, FaTelegram, FaInstagram } from "react-icons/fa";
 import { FaRegEnvelope, FaPhone } from "react-icons/fa6";
 
 const Footer = () => {
@@ -45,6 +45,15 @@ const Footer = () => {
               >
                 <FaTelegram className="text-xl" />
                 Telegram
+              </a>
+              <a
+                href="https://www.instagram.com/agrogeroi/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-x-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:opacity-90 text-sm font-semibold"
+              >
+                <FaInstagram className="text-xl" />
+                Instagram
               </a>
             </div>
           </div>
