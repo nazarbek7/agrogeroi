@@ -1,83 +1,34 @@
 export const categoryMenuList = [
-  {
-    id: 1,
-    title: "Smart Phones",
-    src: "/smart phone icon.png",
-    href: "/shop/smart-phones"
-  },
-  {
-    id: 2,
-    title: "Tablets",
-    src: "/tablet icon.png",
-    href: "/shop/tablets"
-  },
-  {
-    id: 3,
-    title: "Mouses",
-    src: "/mouse icon.png",
-    href: "/shop/mouses"
-  },
-  {
-    id: 4,
-    title: "Cameras",
-    src: "/camera icon.png",
-    href: "/shop/cameras"
-  },
-  {
-    id: 5,
-    title: "Smart Watches",
-    src: "/smart watch.png",
-    href: "/shop/watches"
-  },
-  {
-    id: 6,
-    title: "Laptops",
-    src: "/laptop icon.png",
-    href: "/shop/laptops"
-  },
-  {
-    id: 7,
-    title: "PCs",
-    src: "/pc icon.png",
-    href: "/shop/computers"
-  },
-  {
-    id: 8,
-    title: "Printers",
-    src: "/printers icon.png",
-    href: "/shop/printers"
-  },
-  {
-    id: 9,
-    title: "Earbuds",
-    src: "/ear buds icon.png",
-    href: "/shop/earbuds"
-  },
-  {
-    id: 10,
-    title: "Head Phones",
-    src: "/headphone icon.png",
-    href: "/shop/headphones"
-  },
+  { id: 1,  title: "Розы",                       emoji: "🌹", href: "/shop/Розы" },
+  { id: 2,  title: "Гортензии",                  emoji: "💐", href: "/shop/Гортензии" },
+  { id: 3,  title: "Хвойные деревья",            emoji: "🌲", href: "/shop/Хвойные деревья и кустарники" },
+  { id: 4,  title: "Лиственные деревья",         emoji: "🌳", href: "/shop/Лиственные деревья" },
+  { id: 5,  title: "Лиственные кустарники",      emoji: "🌿", href: "/shop/Лиственные кустарники" },
+  { id: 6,  title: "Плодовые деревья",           emoji: "🍎", href: "/shop/Плодовые деревья и кустарники" },
+  { id: 7,  title: "Лианы",                      emoji: "🪴", href: "/shop/Лианы" },
+  { id: 8,  title: "Цветы многолетние",          emoji: "🌸", href: "/shop/Цветы многолетние" },
+  { id: 9,  title: "Семена",                     emoji: "🌱", href: "/shop/Семена" },
+  { id: 10, title: "Газоны",                     emoji: "🌾", href: "/shop/Газоны и травосмеси" },
+  { id: 11, title: "Горшки и контейнеры",        emoji: "🪣", href: "/shop/Контейнеры и горшки" },
+  { id: 12, title: "Торфяная продукция",         emoji: "🏔️", href: "/shop/Торфяная продукция" },
+  { id: 13, title: "Сетки и агротекстиль",       emoji: "🕸️", href: "/shop/Сетки и агротекстиль" },
+  { id: 14, title: "Инструменты",                emoji: "🛠️", href: "/shop/Инструменты" },
 ];
 
 export const incentives = [
   {
-    name: "Free Shipping",
-    description:
-      "Our shipping is completely free and that is completely good for our customers.",
+    name: "Бесплатная доставка",
+    description: "Доставляем растения бережно и в кратчайшие сроки по всему Кыргызстану.",
     imageSrc: "/shipping icon.png",
   },
   {
-    name: "24/7 Customer Support",
-    description:
-      "Our support is working all day and night to answer any question you have.",
+    name: "Поддержка 24/7",
+    description: "Наши консультанты помогут подобрать растения и ответят на любые вопросы.",
     imageSrc: "/support icon.png",
   },
   {
-    name: "Fast Shopping Cart",
-    description:
-      "We have super fast shopping experience and you will enjoy it.",
+    name: "Удобный заказ",
+    description: "Быстрое оформление заказа и удобные способы оплаты.",
     imageSrc: "/fast shopping icon.png",
   },
 ];

@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"package.json$\")",
+      "Bash(npx prisma *)",
+      "Bash(node -e ' *)",
+      "Bash(npx tsc *)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/next-auth/package.json'\\).version\\)\")",
+      "Bash(node -e \"const na = require\\('next-auth'\\); console.log\\(typeof na.default, Object.keys\\(na\\).slice\\(0,10\\)\\)\")",
+      "Bash(node -e \"const ts = require\\('typescript'\\); console.log\\(ts.version\\)\")",
+      "Bash(node -e \"const na = require\\('/Users/nazarbekerkinov/Projects/Personal/agrogeroi/node_modules/next-auth/package.json'\\); console.log\\(JSON.stringify\\(na.exports ? na.exports['.'] : 'no exports', null, 2\\)\\)\")",
+      "Bash(node -e \"const p = require\\('/Users/nazarbekerkinov/Projects/Personal/agrogeroi/node_modules/next-auth/package.json'\\); console.log\\('types:', p.types, 'typings:', p.typings, 'main:', p.main\\)\")",
+      "Bash(git commit -m 'Skip rate limiting for /health endpoint \\(Railway healthcheck\\) *)",
+      "Bash(git commit -m 'Start Next.js on port 3001 *)"
+    ]
+  }
+}

@@ -247,7 +247,7 @@ const handleInputChange = (
             <div className="md:col-span-2">
               <button 
                 type="submit"
-                className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition"
+                className="bg-green-700 text-white px-6 py-2 rounded-md hover:bg-green-800 transition"
               >
                 Save Changes
               </button>
@@ -276,7 +276,7 @@ const handleInputChange = (
                     <td className="py-4">
                       <Link
                         href={`/admin/products/${product.id}`}
-                        className="text-blue-500 hover:underline"
+                        className="text-green-700 hover:underline"
                       >
                         View
                       </Link>
