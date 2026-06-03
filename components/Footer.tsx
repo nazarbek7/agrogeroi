@@ -107,7 +107,7 @@ const Footer = () => {
         </div>
 
         <div className="mt-10 border-t border-gray-200 pt-8 text-center text-sm text-gray-500">
-          © 2024 Агрогерои. Все права защищены.
+          © 2026 Agrogeroi. Все права защищены.
         </div>
       </div>
     </footer>

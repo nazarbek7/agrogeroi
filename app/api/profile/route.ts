@@ -4,23 +4,19 @@ import prisma from "@/utils/db";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
-// GET — текущий профиль
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Не авторизован" }, { status: 401 });
   }
-
   const user = await prisma.user.findFirst({
     where: { email: session.user.email },
-    select: { id: true, email: true, role: true },
+    select: { id: true, email: true, role: true, name: true, image: true },
   });
-
-  if (!user) return NextResponse.json({ error: "Пользователь не найден" }, { status: 404 });
+  if (!user) return NextResponse.json({ error: "Не найден" }, { status: 404 });
   return NextResponse.json(user);
 }
 
-// PUT — обновить профиль
 export async function PUT(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
@@ -28,12 +24,15 @@ export async function PUT(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { email, currentPassword, newPassword } = body;
+  const { email, name, image, currentPassword, newPassword } = body;
 
   const user = await prisma.user.findFirst({ where: { email: session.user.email } });
-  if (!user) return NextResponse.json({ error: "Пользователь не найден" }, { status: 404 });
+  if (!user) return NextResponse.json({ error: "Не найден" }, { status: 404 });
 
   const updateData: any = {};
+
+  if (name !== undefined) updateData.name = name || null;
+  if (image !== undefined) updateData.image = image || null;
 
   if (email && email !== user.email) {
     const existing = await prisma.user.findFirst({ where: { email } });
@@ -42,14 +41,10 @@ export async function PUT(req: NextRequest) {
   }
 
   if (newPassword) {
-    if (!currentPassword) {
-      return NextResponse.json({ error: "Введите текущий пароль" }, { status: 400 });
-    }
+    if (!currentPassword) return NextResponse.json({ error: "Введите текущий пароль" }, { status: 400 });
     const isMatch = await bcrypt.compare(currentPassword, user.password!);
     if (!isMatch) return NextResponse.json({ error: "Неверный текущий пароль" }, { status: 400 });
-    if (newPassword.length < 8) {
-      return NextResponse.json({ error: "Новый пароль минимум 8 символов" }, { status: 400 });
-    }
+    if (newPassword.length < 8) return NextResponse.json({ error: "Пароль минимум 8 символов" }, { status: 400 });
     updateData.password = await bcrypt.hash(newPassword, 12);
   }
 
@@ -60,22 +55,19 @@ export async function PUT(req: NextRequest) {
   const updated = await prisma.user.update({
     where: { id: user.id },
     data: updateData,
-    select: { id: true, email: true, role: true },
+    select: { id: true, email: true, role: true, name: true, image: true },
   });
 
   return NextResponse.json(updated);
 }
 
-// DELETE — удалить аккаунт
 export async function DELETE() {
   const session = await getServerSession(authOptions);
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Не авторизован" }, { status: 401 });
   }
-
   const user = await prisma.user.findFirst({ where: { email: session.user.email } });
-  if (!user) return NextResponse.json({ error: "Пользователь не найден" }, { status: 404 });
-
+  if (!user) return NextResponse.json({ error: "Не найден" }, { status: 404 });
   await prisma.user.delete({ where: { id: user.id } });
   return NextResponse.json({ message: "Аккаунт удалён" });
 }

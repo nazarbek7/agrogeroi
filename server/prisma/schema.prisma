@@ -41,6 +41,8 @@ model User {
   email         String         @unique
   password      String?
   role          String?        @default("user")
+  name          String?
+  image         String?
   Wishlist      Wishlist[]
   notifications Notification[]
   bulkUploadBatches bulk_upload_batch[] @relation("UserBatches")

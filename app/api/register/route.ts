@@ -27,6 +27,7 @@ export const POST = async (request: Request) => {
     }
 
     const { email, password } = validationResult.data;
+    const name = (body as any).name || null;
 
     const existingUser = await prisma.user.findFirst({ 
       where: { email } 
@@ -45,6 +46,7 @@ export const POST = async (request: Request) => {
         email,
         password: hashedPassword,
         role: "user",
+        name,
       },
     });
 
