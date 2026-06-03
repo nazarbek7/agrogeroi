@@ -146,7 +146,7 @@ export default function NewMerchantPage() {
               <button 
                 type="submit" 
                 disabled={isSubmitting}
-                className={`bg-green-700 text-white px-6 py-2 rounded-md hover:bg-green-800 transition ${
+                className={`bg-brand text-white px-6 py-2 rounded-md hover:bg-brand-dark transition ${
                   isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >

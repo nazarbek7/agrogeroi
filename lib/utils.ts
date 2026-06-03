@@ -52,7 +52,7 @@ export const navigation = {
     { name: "Партнёры", href: "#" },
   ],
   help: [
-    { name: "Контакты", href: "#" },
+    { name: "Контакты", href: "/contacts" },
     { name: "Как сделать заказ", href: "#" },
     { name: "Частые вопросы (FAQ)", href: "#" },
   ],

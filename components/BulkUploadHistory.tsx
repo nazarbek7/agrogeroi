@@ -141,7 +141,7 @@ const BulkUploadHistory = () => {
       case "PARTIAL":
         return <FaExclamationTriangle className="text-yellow-500 text-xl" />;
       case "PENDING":
-        return <FaClock className="text-green-700 text-xl" />;
+        return <FaClock className="text-brand text-xl" />;
       default:
         return <FaFileAlt className="text-gray-500 text-xl" />;
     }
@@ -262,7 +262,7 @@ const BulkUploadHistory = () => {
               <span
                 className={`px-3 py-1 rounded-full text-sm font-semibold ${
                   batch.status === "COMPLETED"
-                    ? "bg-green-100 text-green-700"
+                    ? "bg-green-100 text-brand"
                     : batch.status === "FAILED"
                     ? "bg-red-100 text-red-700"
                     : batch.status === "PARTIAL"
@@ -307,7 +307,7 @@ const BulkUploadHistory = () => {
               <p className="text-xs text-gray-500">Failed</p>
             </div>
             <div className="bg-blue-50 rounded p-3 text-center">
-              <p className="text-2xl font-bold text-green-700">
+              <p className="text-2xl font-bold text-brand">
                 {batch.totalRecords > 0
                   ? Math.round(
                       (batch.successfulRecords / batch.totalRecords) * 100

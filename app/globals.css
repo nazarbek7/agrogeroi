@@ -4,22 +4,22 @@
 
 
 .range{
-    --range-shdw: #15803d;
+    --range-shdw: #345509;
 }
 
 .checkbox:checked, .checkbox[checked="true"], .checkbox[aria-checked="true"] {
     background-repeat: no-repeat;
     animation: checkmark var(--animation-input, 0.2s) ease-out;
-    background-color: #15803d;
-    background-image: linear-gradient(-45deg, transparent 65%, #15803d 65.99%),
-      linear-gradient(45deg, transparent 75%, #15803d 75.99%),
-      linear-gradient(-45deg, #15803d 40%, transparent 40.99%),
+    background-color: #345509;
+    background-image: linear-gradient(-45deg, transparent 65%, #345509 65.99%),
+      linear-gradient(45deg, transparent 75%, #345509 75.99%),
+      linear-gradient(-45deg, #345509 40%, transparent 40.99%),
       linear-gradient(
         45deg,
-        #15803d 30%,
+        #345509 30%,
         white 30.99%,
         white 40%,
         transparent 40.99%
       ),
-      linear-gradient(-45deg, white 50%, #15803d 50.99%);
+      linear-gradient(-45deg, white 50%, #345509 50.99%);
 }

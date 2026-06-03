@@ -9,7 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'custom-yellow':'#FED700',
+        'custom-yellow': '#FED700',
+        'brand':         '#345509',
+        'brand-dark':    '#2a4407',
       }
     },
   },  

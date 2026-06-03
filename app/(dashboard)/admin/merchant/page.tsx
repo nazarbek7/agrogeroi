@@ -49,7 +49,7 @@ export default function MerchantPage() {
           <h1 className="text-3xl font-bold">Merchants</h1>
           <Link
             href="/admin/merchant/new"
-            className="bg-green-700 text-white px-6 py-2 rounded-md hover:bg-green-800 transition"
+            className="bg-brand text-white px-6 py-2 rounded-md hover:bg-brand-dark transition"
           >
             Add Merchant
           </Link>
@@ -89,13 +89,13 @@ export default function MerchantPage() {
                     <td className="py-4">
                       <Link
                         href={`/admin/merchant/${merchant.id}`}
-                        className="text-green-700 hover:underline mr-3"
+                        className="text-brand hover:underline mr-3"
                       >
                         View
                       </Link>
                       <Link
                         href={`/admin/merchant/${merchant.id}`}
-                        className="text-green-700 hover:underline"
+                        className="text-brand hover:underline"
                       >
                         Edit
                       </Link>
