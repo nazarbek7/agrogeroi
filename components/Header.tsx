@@ -9,21 +9,20 @@
 // *********************
 
 "use client";
-import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import HeaderTop from "./HeaderTop";
 import Image from "next/image";
-import SearchInput from "./SearchInput";
 import Link from "next/link";
-import { FaBell } from "react-icons/fa6";
+import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import HeaderTop from "./HeaderTop";
+import SearchInput from "./SearchInput";
 
-import CartElement from "./CartElement";
-import NotificationBell from "./NotificationBell";
-import HeartElement from "./HeartElement";
-import { signOut, useSession } from "next-auth/react";
-import toast from "react-hot-toast";
 import { useWishlistStore } from "@/app/_zustand/wishlistStore";
 import apiClient from "@/lib/api";
+import { signOut, useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+import CartElement from "./CartElement";
+import HeartElement from "./HeartElement";
+import NotificationBell from "./NotificationBell";
 
 const Header = () => {
   const { data: session, status } = useSession();
@@ -46,24 +45,33 @@ const Header = () => {
       title: string;
       price: number;
       image: string;
-      slug:string
+      slug: string;
       stockAvailabillity: number;
     }[] = [];
 
     return; // temporary disable wishlist fetching while the issue is being resolved
-    
-    wishlist.map((item: any) => productArray.push({id: item?.product?.id, title: item?.product?.title, price: item?.product?.price, image: item?.product?.mainImage, slug: item?.product?.slug, stockAvailabillity: item?.product?.inStock}));
-    
+
+    wishlist.map((item: any) =>
+      productArray.push({
+        id: item?.product?.id,
+        title: item?.product?.title,
+        price: item?.product?.price,
+        image: item?.product?.mainImage,
+        slug: item?.product?.slug,
+        stockAvailabillity: item?.product?.inStock,
+      }),
+    );
+
     setWishlist(productArray);
   };
 
   // getting user by email so I can get his user id
   const getUserByEmail = async () => {
     if (session?.user?.email) {
-      
-      apiClient.get(`/api/users/email/${session?.user?.email}`, {
-        cache: "no-store",
-      })
+      apiClient
+        .get(`/api/users/email/${session?.user?.email}`, {
+          cache: "no-store",
+        })
         .then((response) => response.json())
         .then((data) => {
           getWishlistByUserId(data?.id);
@@ -81,7 +89,13 @@ const Header = () => {
       {pathname.startsWith("/admin") === false && (
         <div className="h-32 bg-white flex items-center justify-between px-16 max-[1320px]:px-16 max-md:px-6 max-lg:flex-col max-lg:gap-y-7 max-lg:justify-center max-lg:h-60 max-w-screen-2xl mx-auto">
           <Link href="/">
-            <img src="/logo v1 svg.svg" width={300} height={300} alt="singitronic logo" className="relative right-5 max-[1023px]:w-56" />
+            <Image
+              src="/agrogeroi_logo.svg"
+              width={300}
+              height={300}
+              alt="Agrogeroi logo"
+              className="relative right-5 max-[1023px]:w-56"
+            />
           </Link>
           <SearchInput />
           <div className="flex gap-x-10 items-center">
@@ -95,10 +109,10 @@ const Header = () => {
         <div className="flex justify-between h-32 bg-white items-center px-16 max-[1320px]:px-10  max-w-screen-2xl mx-auto max-[400px]:px-5">
           <Link href="/">
             <Image
-              src="/logo v1.png"
+              src="/agrogeroi_logo.svg"
               width={130}
               height={130}
-              alt="singitronic logo"
+              alt="Agrogeroi logo"
               className="w-56 h-auto"
             />
           </Link>

@@ -10,7 +10,6 @@
 
 import { navigation } from "@/lib/utils";
 import Image from "next/image";
-import React from "react";
 
 const Footer = () => {
   return (
@@ -22,8 +21,8 @@ const Footer = () => {
         <div className="mx-auto max-w-screen-2xl px-6 lg:px-8 pt-24 pb-14">
           <div className="xl:grid xl:grid-cols-3 xl:gap-8">
             <Image
-              src="/logo v1.png"
-              alt="Singitronic logo"
+              src="/agrogeroi_logo.svg"
+              alt="Agrogeroi logo"
               width={250}
               height={250}
               className="h-auto w-auto"
