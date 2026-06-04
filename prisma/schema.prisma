@@ -14,16 +14,17 @@ datasource db {
 }
 
 model Product {
-  id             String                   @id @default(uuid()) @map("_id")
-  slug           String                   @unique
-  title          String
-  mainImage      String
-  price          Int                      @default(0)
-  rating         Int                      @default(0)
-  description    String
-  manufacturer   String
-  inStock        Int                      @default(1)
-  categoryId     String
+  id              String                   @id @default(uuid()) @map("_id")
+  slug            String                   @unique
+  title           String
+  mainImage       String
+  price           Int                      @default(0)
+  rating          Int                      @default(0)
+  description     String
+  manufacturer    String
+  inStock         Int                      @default(1)
+  characteristics Json?
+  categoryId      String
   category       Category                 @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   customerOrders customer_order_product[]
   Wishlist       Wishlist[]

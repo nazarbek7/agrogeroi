@@ -270,6 +270,7 @@ const createProduct = asyncHandler(async (request, response) => {
     manufacturer,
     categoryId,
     inStock,
+    characteristics,
   } = request.body;
 
   if (!title) {
@@ -305,6 +306,7 @@ const createProduct = asyncHandler(async (request, response) => {
       manufacturer,
       categoryId,
       inStock,
+      characteristics: characteristics || null,
     },
   });
   return response.status(201).json(product);
@@ -324,6 +326,7 @@ const updateProduct = asyncHandler(async (request, response) => {
     manufacturer,
     categoryId,
     inStock,
+    characteristics,
   } = request.body;
 
   // Basic validation
@@ -348,16 +351,17 @@ const updateProduct = asyncHandler(async (request, response) => {
       id,
     },
     data: {
-      merchantId: merchantId,
-      title: title,
-      mainImage: mainImage,
-      slug: slug,
-      price: price,
-      rating: rating,
-      description: description,
-      manufacturer: manufacturer,
-      categoryId: categoryId,
-      inStock: inStock,
+      merchantId,
+      title,
+      mainImage,
+      slug,
+      price,
+      rating,
+      description,
+      manufacturer,
+      categoryId,
+      inStock,
+      characteristics: characteristics !== undefined ? characteristics : existingProduct.characteristics,
     },
   });
 

@@ -1,24 +1,16 @@
 "use client";
 import { DashboardSidebar } from "@/components";
 import apiClient from "@/lib/api";
-import { convertCategoryNameToURLFriendly as convertSlugToURLFriendly } from "@/utils/categoryFormating";
+import { convertCategoryNameToURLFriendly as convertSlug } from "@/utils/categoryFormating";
 import { sanitizeFormData } from "@/lib/form-sanitize";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { FaPlus, FaTrash } from "react-icons/fa6";
+
+interface Characteristic { key: string; value: string; }
 
 const AddNewProduct = () => {
-  const [product, setProduct] = useState<{
-    merchantId?: string;
-    title: string;
-    price: number;
-    manufacturer: string;
-    inStock: number;
-    mainImage: string;
-    description: string;
-    slug: string;
-    categoryId: string;
-  }>({
+  const [product, setProduct] = useState({
     merchantId: "",
     title: "",
     price: 0,
@@ -29,293 +21,190 @@ const AddNewProduct = () => {
     slug: "",
     categoryId: "",
   });
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [characteristics, setCharacteristics] = useState<Characteristic[]>([
+    { key: "", value: "" },
+  ]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [merchants, setMerchants] = useState<any[]>([]);
+
+  const addChar = () => setCharacteristics([...characteristics, { key: "", value: "" }]);
+  const removeChar = (i: number) => setCharacteristics(characteristics.filter((_, idx) => idx !== i));
+  const updateChar = (i: number, field: "key" | "value", val: string) => {
+    const updated = [...characteristics];
+    updated[i][field] = val;
+    setCharacteristics(updated);
+  };
+
   const addProduct = async () => {
-    if (
-      !product.merchantId ||
-      product.title === "" ||
-      product.manufacturer === "" ||
-      product.description == "" ||
-      product.slug === ""
-    ) {
-      toast.error("Please enter values in input fields");
+    if (!product.merchantId || !product.title || !product.slug || !product.price || !product.categoryId) {
+      toast.error("Заполните все обязательные поля");
       return;
     }
+    const charObj = characteristics
+      .filter((c) => c.key.trim())
+      .reduce((acc, c) => ({ ...acc, [c.key.trim()]: c.value.trim() }), {});
 
     try {
-      // Sanitize form data before sending to API
-      const sanitizedProduct = sanitizeFormData(product);
-
-      console.log("Sending product data:", sanitizedProduct);
-
-      // Correct usage of apiClient.post
-      const response = await apiClient.post(`/api/products`, sanitizedProduct);
-
+      const sanitized = sanitizeFormData(product);
+      const response = await apiClient.post("/api/products", {
+        ...sanitized,
+        characteristics: Object.keys(charObj).length > 0 ? charObj : null,
+      });
       if (response.status === 201) {
-        const data = await response.json();
-        console.log("Product created successfully:", data);
-        toast.success("Product added successfully");
-        setProduct({
-          merchantId: "",
-          title: "",
-          price: 0,
-          manufacturer: "",
-          inStock: 1,
-          mainImage: "",
-          description: "",
-          slug: "",
-          categoryId: categories[0]?.id || "",
-        });
+        toast.success("Товар добавлен!");
+        setProduct({ merchantId: product.merchantId, title: "", price: 0, manufacturer: "", inStock: 1, mainImage: "", description: "", slug: "", categoryId: categories[0]?.id || "" });
+        setCharacteristics([{ key: "", value: "" }]);
       } else {
-        const errorData = await response.json();
-        console.error("Failed to create product:", errorData);
-        toast.error(`"Error:" ${errorData.message || "Failed to add product"}`);
+        const err = await response.json();
+        toast.error(err.message || "Ошибка добавления");
       }
-    } catch (error) {
-      console.error("Error adding product:", error);
-      toast.error("Network error. Please try again.");
+    } catch {
+      toast.error("Ошибка сети");
     }
   };
 
-  const fetchMerchants = async () => {
-    try {
-      const res = await apiClient.get("/api/merchants");
-      const data: Merchant[] = await res.json();
-      setMerchants(data || []);
-      setProduct((prev) => ({
-      ...prev,
-        merchantId: prev.merchantId || data?.[0]?.id || "",
-      }));
-    } catch (e) {
-      toast.error("Failed to load merchants");
-    }
-  };
-
-  const uploadFile = async (file: any) => {
+  const uploadFile = async (file: File) => {
     const formData = new FormData();
     formData.append("uploadedFile", file);
-
     try {
-      const response = await apiClient.post("/api/main-image", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-      } else {
-        console.error("File upload unsuccessfull");
-      }
-    } catch (error) {
-      console.error("Error happend while sending request:", error);
-    }
-  };
-
-  const fetchCategories = async () => {
-    apiClient
-      .get(`/api/categories`)
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setCategories(data);
-        setProduct({
-          merchantId: product.merchantId || "",
-          title: "",
-          price: 0,
-          manufacturer: "",
-          inStock: 1,
-          mainImage: "",
-          description: "",
-          slug: "",
-          categoryId: data[0]?.id,
-        });
-      });
+      await apiClient.post("/api/main-image", { method: "POST", body: formData });
+    } catch { console.error("Upload error"); }
   };
 
   useEffect(() => {
-    fetchCategories();
-    fetchMerchants();
+    apiClient.get("/api/categories").then((r) => r.json()).then((data) => {
+      setCategories(data);
+      setProduct((p) => ({ ...p, categoryId: data[0]?.id || "" }));
+    });
+    apiClient.get("/api/merchants").then((r) => r.json()).then((data) => {
+      setMerchants(data || []);
+      setProduct((p) => ({ ...p, merchantId: data?.[0]?.id || "" }));
+    }).catch(() => toast.error("Не удалось загрузить продавцов"));
   }, []);
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
+    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:ml-5 max-xl:px-5 w-full">
-        <h1 className="text-3xl font-semibold">Add new product</h1>
+      <div className="flex flex-col gap-y-6 xl:ml-5 max-xl:px-5 w-full py-6 max-w-2xl">
+        <h1 className="text-2xl font-bold text-gray-800">Добавить новый товар</h1>
+
+        {/* Продавец */}
         <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Merchant Info:</span>
-            </div>
-            <select
-              className="select select-bordered"
-              value={product?.merchantId}
-              onChange={(e) =>
-                setProduct({ ...product, merchantId: e.target.value })
-              }
-            >
-              {merchants.map((merchant) => (
-                <option key={merchant.id} value={merchant.id}>
-                  {merchant.name}
-                </option>
-              ))}
-            </select>
-            {merchants.length === 0 && (
-              <span className="text-xs text-red-500 mt-1">
-                Please create a merchant first.
-              </span>
-            )}
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Продавец *</label>
+          <select className="select select-bordered w-full" value={product.merchantId}
+            onChange={(e) => setProduct({ ...product, merchantId: e.target.value })}>
+            {merchants.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
+          </select>
+          {merchants.length === 0 && <p className="text-xs text-red-500 mt-1">Сначала создайте продавца в разделе "Продавцы"</p>}
         </div>
 
+        {/* Название */}
         <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Product name:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.title}
-              onChange={(e) =>
-                setProduct({ ...product, title: e.target.value })
-              }
-            />
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Название товара *</label>
+          <input type="text" className="input input-bordered w-full" value={product.title}
+            placeholder='Напр.: Гортензия метельчатая "Самарская Лидия"'
+            onChange={(e) => {
+              setProduct({ ...product, title: e.target.value, slug: convertSlug(e.target.value) });
+            }} />
         </div>
 
+        {/* Slug */}
         <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Product slug:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={convertSlugToURLFriendly(product?.slug)}
-              onChange={(e) =>
-                setProduct({
-                  ...product,
-                  slug: convertSlugToURLFriendly(e.target.value),
-                })
-              }
-            />
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">URL-slug *</label>
+          <input type="text" className="input input-bordered w-full" value={convertSlug(product.slug)}
+            onChange={(e) => setProduct({ ...product, slug: convertSlug(e.target.value) })} />
+          <p className="text-xs text-gray-400 mt-1">Заполняется автоматически из названия</p>
         </div>
 
+        {/* Категория */}
         <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Category:</span>
-            </div>
-            <select
-              className="select select-bordered"
-              value={product?.categoryId}
-              onChange={(e) =>
-                setProduct({ ...product, categoryId: e.target.value })
-              }
-            >
-              {categories &&
-                categories.map((category: any) => (
-                  <option key={category?.id} value={category?.id}>
-                    {category?.name}
-                  </option>
-                ))}
-            </select>
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Категория *</label>
+          <select className="select select-bordered w-full" value={product.categoryId}
+            onChange={(e) => setProduct({ ...product, categoryId: e.target.value })}>
+            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
         </div>
 
+        {/* Цена */}
         <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Product price:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.price}
-              onChange={(e) =>
-                setProduct({ ...product, price: Number(e.target.value) })
-              }
-            />
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Цена (сом) *</label>
+          <input type="number" className="input input-bordered w-full" value={product.price || ""}
+            placeholder="550"
+            onChange={(e) => setProduct({ ...product, price: Number(e.target.value) })} />
         </div>
+
+        {/* Производитель/поставщик */}
         <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Manufacturer:</span>
-            </div>
-            <input
-              type="text"
-              className="input input-bordered w-full max-w-xs"
-              value={product?.manufacturer}
-              onChange={(e) =>
-                setProduct({ ...product, manufacturer: e.target.value })
-              }
-            />
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Производитель / Поставщик</label>
+          <input type="text" className="input input-bordered w-full" value={product.manufacturer}
+            placeholder="Напр.: Питомник Агрогерои"
+            onChange={(e) => setProduct({ ...product, manufacturer: e.target.value })} />
         </div>
+
+        {/* Наличие */}
         <div>
-          <label className="form-control w-full max-w-xs">
-            <div className="label">
-              <span className="label-text">Is product in stock?</span>
-            </div>
-            <select
-              className="select select-bordered"
-              value={product?.inStock}
-              onChange={(e) =>
-                setProduct({ ...product, inStock: Number(e.target.value) })
-              }
-            >
-              <option value={1}>Yes</option>
-              <option value={0}>No</option>
-            </select>
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Наличие</label>
+          <select className="select select-bordered w-full" value={product.inStock}
+            onChange={(e) => setProduct({ ...product, inStock: Number(e.target.value) })}>
+            <option value={1}>В наличии</option>
+            <option value={0}>Нет в наличии</option>
+          </select>
         </div>
+
+        {/* Фото */}
         <div>
-          <input
-            type="file"
-            className="file-input file-input-bordered file-input-lg w-full max-w-sm"
+          <label className="block text-sm font-medium text-gray-700 mb-1">Главное фото</label>
+          <input type="file" accept="image/*" className="file-input file-input-bordered w-full"
             onChange={(e: any) => {
-              uploadFile(e.target.files[0]);
-              setProduct({ ...product, mainImage: e.target.files[0].name });
-            }}
-          />
-          {product?.mainImage && (
-            <Image
-              src={`/` + product?.mainImage}
-              alt={product?.title}
-              className="w-auto h-auto"
-              width={100}
-              height={100}
-            />
+              const file = e.target.files[0];
+              if (file) { uploadFile(file); setProduct({ ...product, mainImage: file.name }); }
+            }} />
+          {product.mainImage && (
+            <p className="text-sm text-brand mt-1">Загружено: {product.mainImage}</p>
           )}
         </div>
+
+        {/* Описание */}
         <div>
-          <label className="form-control">
-            <div className="label">
-              <span className="label-text">Product description:</span>
-            </div>
-            <textarea
-              className="textarea textarea-bordered h-24"
-              value={product?.description}
-              onChange={(e) =>
-                setProduct({ ...product, description: e.target.value })
-              }
-            ></textarea>
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Описание</label>
+          <textarea className="textarea textarea-bordered w-full h-32" value={product.description}
+            placeholder="Описание растения, особенности, применение..."
+            onChange={(e) => setProduct({ ...product, description: e.target.value })} />
         </div>
-        <div className="flex gap-x-2">
-          <button
-            onClick={addProduct}
-            type="button"
-            className="uppercase bg-brand px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-brand-dark hover:text-white focus:outline-none focus:ring-2"
-          >
-            Add product
+
+        {/* Характеристики */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Характеристики</label>
+          <div className="flex flex-col gap-y-2">
+            {characteristics.map((c, i) => (
+              <div key={i} className="flex gap-x-2 items-center">
+                <input type="text" placeholder="Параметр (напр.: Высота)" value={c.key}
+                  onChange={(e) => updateChar(i, "key", e.target.value)}
+                  className="input input-bordered flex-1 text-sm" />
+                <input type="text" placeholder="Значение (напр.: 1,2 м)" value={c.value}
+                  onChange={(e) => updateChar(i, "value", e.target.value)}
+                  className="input input-bordered flex-1 text-sm" />
+                <button onClick={() => removeChar(i)} className="text-red-400 hover:text-red-600 p-2">
+                  <FaTrash />
+                </button>
+              </div>
+            ))}
+          </div>
+          <button onClick={addChar} className="mt-2 flex items-center gap-x-2 text-sm text-brand hover:text-brand-dark font-medium">
+            <FaPlus /> Добавить характеристику
           </button>
+          <div className="mt-2 text-xs text-gray-400 grid grid-cols-2 gap-1">
+            <span>Примеры: Высота → 1,2 м</span>
+            <span>Период цветения → июль–сентябрь</span>
+            <span>Зона морозостойкости → 4</span>
+            <span>Состав NPK → 2,2% N, 1,8% P</span>
+          </div>
         </div>
+
+        <button onClick={addProduct} type="button"
+          className="bg-brand text-white font-bold py-3 px-10 text-lg hover:bg-brand-dark w-full">
+          Добавить товар
+        </button>
       </div>
     </div>
   );

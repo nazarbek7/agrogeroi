@@ -29,26 +29,30 @@ const Header = () => {
     // wishlist fetch disabled temporarily
   }, [session?.user?.email, wishlist.length]);
 
+  const userImage = (session?.user as any)?.image;
+
   // Дропдаун профиля — показывается в обоих хедерах
   const ProfileDropdown = () => (
     <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="flex items-center gap-x-2 cursor-pointer">
-        <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-brand">
-          <Image
-            src="/randomuser.jpg"
-            alt="profile"
-            width={36}
-            height={36}
-            className="w-full h-full object-cover"
-          />
+        <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-brand bg-brand flex items-center justify-center">
+          {userImage ? (
+            <img src={userImage} alt="profile" className="w-full h-full object-cover" />
+          ) : (
+            <FaRegUser className="text-white text-sm" />
+          )}
         </div>
       </div>
       <div tabIndex={0} className="dropdown-content z-50 shadow-xl bg-white rounded-xl w-64 mt-2 border border-gray-100">
         {/* Шапка профиля */}
         <div className="px-4 py-3 border-b border-gray-100">
           <div className="flex items-center gap-x-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden">
-              <Image src="/randomuser.jpg" alt="profile" width={40} height={40} className="w-full h-full object-cover" />
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-brand flex items-center justify-center">
+              {userImage ? (
+                <img src={userImage} alt="profile" className="w-full h-full object-cover" />
+              ) : (
+                <FaRegUser className="text-white" />
+              )}
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-semibold text-gray-800 truncate max-w-[150px]">
