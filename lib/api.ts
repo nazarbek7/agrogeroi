@@ -1,8 +1,8 @@
 import config from './config';
 
 export const apiClient = {
-  baseUrl: config.apiBaseUrl,
-  
+  get baseUrl() { return config.apiBaseUrl; },
+
   async request(endpoint: string, options: RequestInit = {}) {
     const url = `${this.baseUrl}${endpoint}`;
     

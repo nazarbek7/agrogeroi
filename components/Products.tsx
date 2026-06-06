@@ -1,68 +1,69 @@
-// *********************
-// Role of the component: Showing products on the shop page with applied filter and sort
-// Name of the component: Products.tsx
-// Developer: Aleksandar Kuzmanovic
-// Version: 1.0
-// Component call: <Products params={params} searchParams={searchParams} />
-// Input parameters: { params, searchParams }: { params: { slug?: string[] }, searchParams: { [key: string]: string | string[] | undefined } }
-// Output: products grid
-// *********************
-
 import React from "react";
 import ProductItem from "./ProductItem";
-import apiClient from "@/lib/api";
+import prisma from "@/utils/db";
 
 const Products = async ({ params, searchParams }: { params: { slug?: string[] }, searchParams: { [key: string]: string | string[] | undefined } }) => {
-  // getting all data from URL slug and preparing everything for sending GET request
-  const inStockNum = searchParams?.inStock === "true" ? 1 : 0;
-  const outOfStockNum = searchParams?.outOfStock === "true" ? 1 : 0;
+  const inStockChecked = searchParams?.inStock === "true";
+  const outOfStockChecked = searchParams?.outOfStock === "true";
   const page = searchParams?.page ? Number(searchParams?.page) : 1;
+  const maxPrice = Number(searchParams?.price) || 0;
+  const minRating = Number(searchParams?.rating) || 0;
+  const sort = (searchParams?.sort as string) || "";
+  const categorySlug = params?.slug?.[0] || "";
 
-  let stockMode: string = "lte";
-  
-  // preparing inStock and out of stock filter for GET request
-  // If in stock checkbox is checked, stockMode is "equals"
-  if (inStockNum === 1) {
-    stockMode = "equals";
-  }
- // If out of stock checkbox is checked, stockMode is "lt"
-  if (outOfStockNum === 1) {
-    stockMode = "lt";
-  }
-   // If in stock and out of stock checkboxes are checked, stockMode is "lte"
-  if (inStockNum === 1 && outOfStockNum === 1) {
-    stockMode = "lte";
-  }
-   // If in stock and out of stock checkboxes aren't checked, stockMode is "gt"
-  if (inStockNum === 0 && outOfStockNum === 0) {
-    stockMode = "gt";
+  const sortMap: Record<string, object> = {
+    titleAsc:  { title: "asc" },
+    titleDesc: { title: "desc" },
+    lowPrice:  { price: "asc" },
+    highPrice: { price: "desc" },
+  };
+  const orderBy = sortMap[sort] || { title: "asc" };
+
+  const where: any = {};
+
+  if (inStockChecked && outOfStockChecked) {
+    // show all
+  } else if (inStockChecked) {
+    where.inStock = { gt: 0 };
+  } else if (outOfStockChecked) {
+    where.inStock = { lte: 0 };
+  } else {
+    where.inStock = { gt: 0 };
   }
 
-  let products = [];
+  if (maxPrice > 0) {
+    where.price = { lte: maxPrice };
+  }
 
-  try {
-    // sending API request with filtering, sorting and pagination for getting all products
-    const data = await apiClient.get(`/api/products?filters[price][$lte]=${
-        searchParams?.price || 3000
-      }&filters[rating][$gte]=${
-        Number(searchParams?.rating) || 0
-      }&filters[inStock][$${stockMode}]=1&${
-        params?.slug?.length! > 0
-          ? `filters[category][$equals]=${params?.slug}&`
-          : ""
-      }sort=${searchParams?.sort}&page=${page}`
-    );
+  if (minRating > 0) {
+    where.rating = { gte: minRating };
+  }
 
-    if (!data.ok) {
-      console.error('Failed to fetch products:', data.statusText);
-      products = [];
+  if (categorySlug && categorySlug !== "undefined") {
+    const category = await prisma.category.findFirst({
+      where: { name: { equals: categorySlug, mode: "insensitive" } },
+    });
+    if (category) {
+      where.categoryId = category.id;
     } else {
-      const result = await data.json();
-      products = Array.isArray(result) ? result : [];
+      return (
+        <h3 className="text-3xl mt-5 text-center w-full col-span-full max-[1000px]:text-2xl max-[500px]:text-lg">
+          Товары не найдены
+        </h3>
+      );
     }
+  }
+
+  let products: any[] = [];
+  try {
+    products = await prisma.product.findMany({
+      skip: (page - 1) * 12,
+      take: 12,
+      where,
+      orderBy,
+    });
   } catch (error) {
-    console.error('Error fetching products:', error);
-    products = [];
+    console.error("Error fetching products:", error);
   }
 
   return (

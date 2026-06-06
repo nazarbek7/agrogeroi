@@ -4,7 +4,7 @@ import {
   ProductTabs,
   SingleProductDynamicFields,
 } from "@/components";
-import apiClient from "@/lib/api";
+import prisma from "@/utils/db";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -22,21 +22,15 @@ interface SingleProductPageProps {
 const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   const { productSlug } = await params;
 
-  const data = await apiClient.get(`/api/slugs/${productSlug}`);
-  const product = await data.json();
+  const product = await prisma.product.findUnique({ where: { slug: productSlug } });
 
-  if (!product || product.error) {
+  if (!product) {
     notFound();
   }
 
-  // Fetch extra images if they exist
   let images: ImageItem[] = [];
   try {
-    const imagesData = await apiClient.get(`/api/images/${product.id}`);
-    if (imagesData.ok) {
-      const result = await imagesData.json();
-      images = Array.isArray(result) ? result : [];
-    }
+    images = await prisma.image.findMany({ where: { productID: product.id } }) as any;
   } catch {
     // no extra images — that's fine
   }

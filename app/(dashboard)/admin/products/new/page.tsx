@@ -63,12 +63,21 @@ const AddNewProduct = () => {
     }
   };
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File): Promise<string | null> => {
     const formData = new FormData();
     formData.append("uploadedFile", file);
     try {
-      await apiClient.post("/api/main-image", { method: "POST", body: formData });
-    } catch { console.error("Upload error"); }
+      const res = await fetch("/api/main-image", { method: "POST", body: formData });
+      if (res.ok) {
+        const data = await res.json();
+        return data.filename as string;
+      }
+      toast.error("Ошибка загрузки фото");
+      return null;
+    } catch {
+      toast.error("Ошибка загрузки фото");
+      return null;
+    }
   };
 
   useEffect(() => {
@@ -155,12 +164,16 @@ const AddNewProduct = () => {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Главное фото</label>
           <input type="file" accept="image/*" className="file-input file-input-bordered w-full"
-            onChange={(e: any) => {
+            onChange={async (e: any) => {
               const file = e.target.files[0];
-              if (file) { uploadFile(file); setProduct({ ...product, mainImage: file.name }); }
+              if (!file) return;
+              const filename = await uploadFile(file);
+              if (filename) setProduct({ ...product, mainImage: filename });
+              e.target.value = "";
             }} />
           {product.mainImage && (
-            <p className="text-sm text-brand mt-1">Загружено: {product.mainImage}</p>
+            <img src={`/${product.mainImage}`} alt="preview"
+              className="mt-2 w-32 h-32 object-cover rounded-lg border" />
           )}
         </div>
 

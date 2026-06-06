@@ -12,7 +12,7 @@ interface Product {
   inStock: number;
   isOnSale: boolean;
   discountPercent: number;
-  createdAt: string;
+  createdAt: string | null;
 }
 
 interface Vacancy {
