@@ -1,4 +1,5 @@
-import { CategoryMenu, Hero, Incentives, IntroducingSection, HowToOrder, NurserySection, ProductsSection } from "@/components";
+import { CategoryMenu, Hero, Incentives, IntroducingSection, HowToOrder, NurserySection } from "@/components";
+import ProductsSection from "@/components/ProductsSection";
 
 export default function Home() {
   return (

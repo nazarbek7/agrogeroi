@@ -6,7 +6,6 @@ export { default as CategoryItem } from "./CategoryItem";
 export { default as CategoryMenu } from "./CategoryMenu";
 export { default as Incentives } from "./Incentives";
 export { default as ProductItem } from "./ProductItem";
-export { default as ProductsSection } from "./ProductsSection";
 export { default as Newsletter } from "./Newsletter";
 export { default as Footer } from "./Footer";
 export { default as Filters } from "./Filters";

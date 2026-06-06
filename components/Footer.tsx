@@ -1,7 +1,7 @@
 import { navigation } from "@/lib/utils";
 import Image from "next/image";
 import { FaWhatsapp, FaTelegram, FaInstagram } from "react-icons/fa";
-import { FaRegEnvelope, FaPhone } from "react-icons/fa6";
+import { FaRegEnvelope, FaPhone, FaLocationDot } from "react-icons/fa6";
 
 const Footer = () => {
   return (
@@ -20,12 +20,21 @@ const Footer = () => {
             />
             <div className="flex flex-col gap-y-3 text-sm text-white/70">
               <a href="tel:+996708000008" className="flex items-center gap-x-2 hover:text-white transition-colors">
-                <FaPhone className="text-green-400" />
+                <FaPhone className="text-green-400 flex-shrink-0" />
                 <span>+996 708 00 00 08</span>
               </a>
               <a href="mailto:info@agrogeroi.com" className="flex items-center gap-x-2 hover:text-white transition-colors">
-                <FaRegEnvelope className="text-green-400" />
+                <FaRegEnvelope className="text-green-400 flex-shrink-0" />
                 <span>info@agrogeroi.com</span>
+              </a>
+              <a
+                href="https://2gis.kg/bishkek/search/%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%A3%D0%BC%D0%B5%D1%82%D0%B0%D0%BB%D0%B8%D0%B5%D0%B2%D0%B0%2C%C2%A026%D0%B0/geo/70030077051166240/74.654377%2C42.801148?m=74.65823%2C42.799799%2F18.55"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-x-2 hover:text-white transition-colors"
+              >
+                <FaLocationDot className="text-green-400 flex-shrink-0 mt-0.5" />
+                <span>ул. Кенжекан Уметалиева, 26а,<br />Кок-Джар с., Октябрьский р-н, Бишкек</span>
               </a>
             </div>
             <div className="flex gap-x-3 flex-wrap gap-y-2">

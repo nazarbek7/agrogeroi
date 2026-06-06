@@ -4,17 +4,28 @@ import prisma from "@/utils/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) {
-    return NextResponse.json({ error: "Не авторизован" }, { status: 401 });
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return NextResponse.json({ error: "Не авторизован" }, { status: 401 });
+    }
+
+    const merchants = await prisma.merchant.findMany({
+      include: { _count: { select: { products: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+
+    // Normalize: add .products array with length so the page's merchant.products.length still works
+    const result = merchants.map((m) => ({
+      ...m,
+      products: Array.from({ length: m._count.products }),
+    }));
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error("GET /api/merchants error:", error);
+    return NextResponse.json({ error: "Ошибка сервера" }, { status: 500 });
   }
-
-  const merchants = await prisma.merchant.findMany({
-    include: { products: true },
-    orderBy: { createdAt: "desc" },
-  });
-
-  return NextResponse.json(merchants);
 }
 
 export async function POST(req: NextRequest) {

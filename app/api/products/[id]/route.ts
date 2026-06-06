@@ -34,7 +34,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         description:    body.description    ?? existing.description,
         manufacturer:   body.manufacturer   ?? existing.manufacturer,
         categoryId:     body.categoryId     ?? existing.categoryId,
-        inStock:        body.inStock !== undefined ? Number(body.inStock) : existing.inStock,
+        inStock:         body.inStock !== undefined ? Number(body.inStock) : existing.inStock,
+        isOnSale:        body.isOnSale !== undefined ? Boolean(body.isOnSale) : existing.isOnSale,
+        discountPercent: body.discountPercent !== undefined ? Number(body.discountPercent) : existing.discountPercent,
         characteristics: body.characteristics !== undefined ? body.characteristics : existing.characteristics,
       },
     });

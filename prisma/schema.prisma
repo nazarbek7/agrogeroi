@@ -23,6 +23,9 @@ model Product {
   description     String
   manufacturer    String
   inStock         Int                      @default(1)
+  isOnSale        Boolean                  @default(false)
+  discountPercent Int                      @default(0)
+  createdAt       DateTime                 @default(now())
   characteristics Json?
   categoryId      String
   category       Category                 @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -33,6 +36,17 @@ model Product {
   merchant       Merchant @relation(fields: [merchantId], references: [id])
   // Back relation for bulk upload items
   bulkUploadItems bulk_upload_item[]      @relation("ProductBulkItems")
+}
+
+model Vacancy {
+  id           String   @id @default(uuid()) @map("_id")
+  title        String
+  type         String
+  description  String
+  requirements String[]
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Image {
@@ -51,6 +65,7 @@ model User {
   Wishlist      Wishlist[]
   notifications Notification[]
   bulkUploadBatches bulk_upload_batch[] @relation("UserBatches")
+  merchant      Merchant?
 }
 
 model Customer_order {
@@ -138,7 +153,10 @@ model Merchant {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // relasi
+  // Link to user account (optional)
+  userId      String?  @unique
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   products Product[]
 }
 

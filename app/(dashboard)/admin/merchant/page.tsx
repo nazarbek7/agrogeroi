@@ -42,9 +42,9 @@ export default function MerchantPage() {
   }, []);
 
   return (
-    <div className="flex h-screen">
+    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:min-h-full max-xl:flex-col max-xl:gap-y-5">
       <DashboardSidebar />
-      <div className="flex-1 p-10 overflow-y-auto">
+      <div className="flex-1 px-8 pt-6 pb-10">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Продавцы</h1>
           <Link

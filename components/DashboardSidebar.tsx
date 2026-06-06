@@ -9,6 +9,7 @@ import { FaStore } from "react-icons/fa6";
 import { MdCategory } from "react-icons/md";
 import { FaFileUpload } from "react-icons/fa";
 import { MdSettings } from "react-icons/md";
+import { FaBriefcase, FaTag } from "react-icons/fa6";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -20,6 +21,8 @@ const links = [
   { href: "/admin/categories",  label: "Категории",         icon: MdCategory,    exact: false },
   { href: "/admin/users",       label: "Пользователи",      icon: FaRegUser,     exact: false },
   { href: "/admin/merchant",    label: "Продавцы",          icon: FaStore,       exact: false },
+  { href: "/admin/sale",        label: "Акции",             icon: FaTag,         exact: false },
+  { href: "/admin/vacancies",   label: "Вакансии",          icon: FaBriefcase,   exact: false },
   { href: "/admin/settings",    label: "Настройки",         icon: MdSettings,    exact: false },
 ];
 

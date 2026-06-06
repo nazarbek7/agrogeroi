@@ -305,6 +305,36 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
             ))}
         </div>
         {/* Other images file upload div - end */}
+        {/* isOnSale + discountPercent - start */}
+        <div className="flex flex-col gap-y-3 p-4 rounded-lg border border-orange-200 bg-orange-50 max-w-xs">
+          <p className="font-semibold text-orange-700">Акция / Скидка</p>
+          <label className="flex items-center gap-x-3 cursor-pointer">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-warning"
+              checked={product?.isOnSale ?? false}
+              onChange={(e) => setProduct({ ...product!, isOnSale: e.target.checked })}
+            />
+            <span className="label-text font-medium">Товар на акции</span>
+          </label>
+          {product?.isOnSale && (
+            <label className="form-control">
+              <div className="label">
+                <span className="label-text">Скидка (%):</span>
+              </div>
+              <input
+                type="number"
+                min={0}
+                max={100}
+                className="input input-bordered w-full"
+                value={product?.discountPercent ?? 0}
+                onChange={(e) => setProduct({ ...product!, discountPercent: Number(e.target.value) })}
+              />
+            </label>
+          )}
+        </div>
+        {/* isOnSale + discountPercent - end */}
+
         {/* Product description div - start */}
         <div>
           <label className="form-control">

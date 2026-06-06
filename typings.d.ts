@@ -8,8 +8,22 @@ interface Product {
   mainImage: string;
   manufacturer: string;
   categoryId: string;
-  category: {name: string}?;
+  category?: { name: string };
   inStock: number;
+  isOnSale: boolean;
+  discountPercent: number;
+  createdAt: string;
+}
+
+interface Vacancy {
+  id: string;
+  title: string;
+  type: string;
+  description: string;
+  requirements: string[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface Merchant {

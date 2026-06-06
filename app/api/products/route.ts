@@ -31,6 +31,9 @@ export async function GET(req: NextRequest) {
 
     const where: any = {};
 
+    const onSale = req.nextUrl.searchParams.get("isOnSale");
+    if (onSale === "true") where.isOnSale = true;
+
     if (categorySlug && categorySlug !== "undefined") {
       // Look up category by name (case-insensitive)
       const category = await prisma.category.findFirst({

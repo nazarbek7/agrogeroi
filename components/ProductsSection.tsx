@@ -1,19 +1,16 @@
 import React from "react";
 import ProductItem from "./ProductItem";
-import apiClient from "@/lib/api";
+import prisma from "@/utils/db";
 import Link from "next/link";
 
 const ProductsSection = async () => {
-  let products = [];
+  let products: any[] = [];
 
   try {
-    const data = await apiClient.get("/api/products");
-    if (!data.ok) {
-      products = [];
-    } else {
-      const result = await data.json();
-      products = Array.isArray(result) ? result : [];
-    }
+    products = await prisma.product.findMany({
+      take: 8,
+      orderBy: { createdAt: "desc" },
+    });
   } catch {
     products = [];
   }

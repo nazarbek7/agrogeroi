@@ -35,26 +35,26 @@ export const incentives = [
 
 export const navigation = {
   sale: [
-    { name: "Скидки", href: "#" },
-    { name: "Новинки", href: "#" },
-    { name: "Акции", href: "#" },
+    { name: "Скидки", href: "/sale" },
+    { name: "Новинки", href: "/new" },
+    { name: "Все товары", href: "/shop" },
   ],
   about: [
-    { name: "О нас", href: "#" },
-    { name: "Вакансии", href: "#" },
-    { name: "Профиль компании", href: "#" },
+    { name: "О нас", href: "/about" },
+    { name: "Вакансии", href: "/vacancies" },
+    { name: "Партнёрство", href: "/partners" },
   ],
   buy: [
-    { name: "Условия использования", href: "#" },
-    { name: "Политика конфиденциальности", href: "#" },
-    { name: "Доставка и оплата", href: "#" },
-    { name: "Возврат товара", href: "#" },
-    { name: "Партнёры", href: "#" },
+    { name: "Условия использования", href: "/terms" },
+    { name: "Политика конфиденциальности", href: "/privacy" },
+    { name: "Доставка и оплата", href: "/delivery" },
+    { name: "Возврат товара", href: "/returns" },
+    { name: "Партнёры", href: "/partners" },
   ],
   help: [
     { name: "Контакты", href: "/contacts" },
-    { name: "Как сделать заказ", href: "#" },
-    { name: "Частые вопросы (FAQ)", href: "#" },
+    { name: "Как сделать заказ", href: "/how-to-order" },
+    { name: "Частые вопросы (FAQ)", href: "/faq" },
   ],
 };
 

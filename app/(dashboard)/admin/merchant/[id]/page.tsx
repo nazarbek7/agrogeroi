@@ -131,7 +131,7 @@ export default function MerchantDetailPage({ params }: MerchantDetailPageProps) 
 
   if (loading) {
     return (
-      <div className="flex h-screen">
+      <div className="bg-white flex justify-start max-w-screen-2xl mx-auto max-xl:flex-col max-xl:gap-y-5">
         <DashboardSidebar />
         <div className="flex-1 p-10 flex items-center justify-center">
           Загрузка...
@@ -142,7 +142,7 @@ export default function MerchantDetailPage({ params }: MerchantDetailPageProps) 
 
   if (!merchant) {
     return (
-      <div className="flex h-screen">
+      <div className="bg-white flex justify-start max-w-screen-2xl mx-auto max-xl:flex-col max-xl:gap-y-5">
         <DashboardSidebar />
         <div className="flex-1 p-10 flex items-center justify-center">
           Продавец не найден
@@ -152,9 +152,9 @@ export default function MerchantDetailPage({ params }: MerchantDetailPageProps) 
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto max-xl:flex-col max-xl:gap-y-5">
       <DashboardSidebar />
-      <div className="flex-1 p-10 overflow-y-auto">
+      <div className="flex-1 px-8 pt-6 pb-10">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Данные продавца</h1>
           <div className="flex gap-4">
