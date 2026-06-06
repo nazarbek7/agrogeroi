@@ -17,7 +17,7 @@ const CategoryMenu = () => {
   return (
     <div className="py-10 bg-brand">
       <Heading title="КАТЕГОРИИ" />
-      <div className="max-w-screen-2xl mx-auto py-10 gap-x-5 px-16 max-md:px-10 gap-y-5 grid grid-cols-7 max-xl:grid-cols-5 max-lg:grid-cols-3 max-md:grid-cols-2 max-[450px]:grid-cols-1">
+      <div className="max-w-screen-2xl mx-auto py-10 gap-4 px-16 max-md:px-10 grid grid-cols-7 max-xl:grid-cols-5 max-lg:grid-cols-4 max-md:grid-cols-3 max-[450px]:grid-cols-2">
         {categoryMenuList.map((item) => (
           <CategoryItem title={item.title} key={item.id} href={item.href}>
             <span className="text-4xl">{item.emoji}</span>

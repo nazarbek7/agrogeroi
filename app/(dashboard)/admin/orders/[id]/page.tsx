@@ -85,17 +85,17 @@ const AdminSingleOrder = () => {
       order?.postalCode.length > 0
     ) {
       if (!isValidNameOrLastname(order?.name)) {
-        toast.error("You entered invalid name format");
+        toast.error("Неверный формат имени");
         return;
       }
 
       if (!isValidNameOrLastname(order?.lastname)) {
-        toast.error("You entered invalid lastname format");
+        toast.error("Неверный формат фамилии");
         return;
       }
 
       if (!isValidEmailAddressFormat(order?.email)) {
-        toast.error("You entered invalid email format");
+        toast.error("Неверный формат email");
         return;
       }
 
@@ -108,16 +108,16 @@ const AdminSingleOrder = () => {
       })
         .then((response) => {
           if (response.status === 200) {
-            toast.success("Order updated successfuly");
+            toast.success("Заказ обновлён");
           } else {
-            throw Error("There was an error while updating a order");
+            throw Error("Ошибка обновления заказа");
           }
         })
         .catch((error) =>
-          toast.error("There was an error while updating a order")
+          toast.error("Ошибка обновления заказа")
         );
     } else {
-      toast.error("Please fill all fields");
+      toast.error("Заполните все поля");
     }
   };
 
@@ -134,7 +134,7 @@ const AdminSingleOrder = () => {
         `/api/orders/${order?.id}`,
         requestOptions
       ).then((response) => {
-        toast.success("Order deleted successfully");
+        toast.success("Заказ удалён");
         router.push("/admin/orders");
       });
     });
@@ -143,12 +143,12 @@ const AdminSingleOrder = () => {
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:ml-5 w-full max-xl:px-5">
-        <h1 className="text-3xl font-semibold">Order details</h1>
+      <div className="flex flex-col gap-y-7 xl:ml-5 w-full max-xl:px-5 pt-6">
+        <h1 className="text-3xl font-semibold">Детали заказа</h1>
         <div className="mt-5">
           <label className="w-full">
             <div>
-              <span className="text-xl font-bold">Order ID:</span>
+              <span className="text-xl font-bold">ID заказа:</span>
               <span className="text-base"> {order?.id}</span>
             </div>
           </label>
@@ -157,7 +157,7 @@ const AdminSingleOrder = () => {
           <div>
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">Name:</span>
+                <span className="label-text">Имя:</span>
               </div>
               <input
                 type="text"
@@ -170,7 +170,7 @@ const AdminSingleOrder = () => {
           <div>
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">Lastname:</span>
+                <span className="label-text">Фамилия:</span>
               </div>
               <input
                 type="text"
@@ -187,7 +187,7 @@ const AdminSingleOrder = () => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Phone number:</span>
+              <span className="label-text">Номер телефона:</span>
             </div>
             <input
               type="text"
@@ -201,7 +201,7 @@ const AdminSingleOrder = () => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Email adress:</span>
+              <span className="label-text">Email:</span>
             </div>
             <input
               type="email"
@@ -215,7 +215,7 @@ const AdminSingleOrder = () => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Company (optional):</span>
+              <span className="label-text">Компания (необязательно):</span>
             </div>
             <input
               type="text"
@@ -230,7 +230,7 @@ const AdminSingleOrder = () => {
           <div>
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">Address:</span>
+                <span className="label-text">Адрес:</span>
               </div>
               <input
                 type="text"
@@ -244,7 +244,7 @@ const AdminSingleOrder = () => {
           <div>
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">Apartment, suite, etc. :</span>
+                <span className="label-text">Квартира / офис:</span>
               </div>
               <input
                 type="text"
@@ -262,7 +262,7 @@ const AdminSingleOrder = () => {
           <div>
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">City:</span>
+                <span className="label-text">Город:</span>
               </div>
               <input
                 type="text"
@@ -276,7 +276,7 @@ const AdminSingleOrder = () => {
           <div>
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">Country:</span>
+                <span className="label-text">Страна:</span>
               </div>
               <input
                 type="text"
@@ -292,7 +292,7 @@ const AdminSingleOrder = () => {
           <div>
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">Postal Code:</span>
+                <span className="label-text">Почтовый индекс:</span>
               </div>
               <input
                 type="text"
@@ -309,7 +309,7 @@ const AdminSingleOrder = () => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Order status</span>
+              <span className="label-text">Статус заказа</span>
             </div>
             <select
               className="select select-bordered"
@@ -324,16 +324,19 @@ const AdminSingleOrder = () => {
                 })
               }
             >
-              <option value="processing">Processing</option>
-              <option value="delivered">Delivered</option>
-              <option value="canceled">Canceled</option>
+              <option value="pending">В ожидании</option>
+              <option value="processing">Обрабатывается</option>
+              <option value="confirmed">Подтверждён</option>
+              <option value="shipped">Отправлен</option>
+              <option value="delivered">Доставлен</option>
+              <option value="canceled">Отменён</option>
             </select>
           </label>
         </div>
         <div>
           <label className="form-control">
             <div className="label">
-              <span className="label-text">Order notice:</span>
+              <span className="label-text">Примечание к заказу:</span>
             </div>
             <textarea
               className="textarea textarea-bordered h-24"
@@ -359,17 +362,15 @@ const AdminSingleOrder = () => {
                   {product?.product?.title}
                 </Link>
                 <p>
-                  ${product?.product?.price} * {product?.quantity} items
+                  {product?.product?.price} сом × {product?.quantity} шт.
                 </p>
               </div>
             </div>
           ))}
           <div className="flex flex-col gap-y-2 mt-10">
-            <p className="text-2xl">Subtotal: ${order?.total}</p>
-            <p className="text-2xl">Tax 20%: ${order?.total / 5}</p>
-            <p className="text-2xl">Shipping: $5</p>
+            <p className="text-2xl">Сумма: {order?.total} сом</p>
             <p className="text-3xl font-semibold">
-              Total: ${order?.total + order?.total / 5 + 5}
+              Итого: {order?.total} сом
             </p>
           </div>
           <div className="flex gap-x-2 max-sm:flex-col mt-5">
@@ -378,14 +379,14 @@ const AdminSingleOrder = () => {
               className="uppercase bg-brand px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-brand-dark hover:text-white focus:outline-none focus:ring-2"
               onClick={updateOrder}
             >
-              Update order
+              Обновить заказ
             </button>
             <button
               type="button"
               className="uppercase bg-red-600 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-red-700 hover:text-white focus:outline-none focus:ring-2"
               onClick={deleteOrder}
             >
-              Delete order
+              Удалить заказ
             </button>
           </div>
         </div>

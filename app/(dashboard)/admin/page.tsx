@@ -1,20 +1,22 @@
 import { DashboardSidebar } from "@/components";
 import prisma from "@/utils/db";
-import { FaBoxOpen, FaShoppingCart, FaUsers, FaLeaf } from "react-icons/fa";
+import { FaBoxOpen, FaShoppingCart, FaUsers, FaLeaf, FaStore } from "react-icons/fa";
 
 const AdminDashboardPage = async () => {
-  const [productCount, orderCount, userCount, categoryCount] = await Promise.all([
+  const [productCount, orderCount, userCount, categoryCount, merchantCount] = await Promise.all([
     prisma.product.count(),
     prisma.customer_order.count(),
     prisma.user.count(),
     prisma.category.count(),
+    prisma.merchant.count(),
   ]);
 
   const stats = [
-    { label: "Товаров", value: productCount, icon: <FaBoxOpen className="text-3xl" />, color: "bg-brand" },
-    { label: "Заказов", value: orderCount, icon: <FaShoppingCart className="text-3xl" />, color: "bg-brand" },
-    { label: "Пользователей", value: userCount, icon: <FaUsers className="text-3xl" />, color: "bg-brand" },
-    { label: "Категорий", value: categoryCount, icon: <FaLeaf className="text-3xl" />, color: "bg-brand" },
+    { label: "Товаров", value: productCount, icon: <FaBoxOpen className="text-3xl" />, href: "/admin/products" },
+    { label: "Заказов", value: orderCount, icon: <FaShoppingCart className="text-3xl" />, href: "/admin/orders" },
+    { label: "Пользователей", value: userCount, icon: <FaUsers className="text-3xl" />, href: "/admin/users" },
+    { label: "Категорий", value: categoryCount, icon: <FaLeaf className="text-3xl" />, href: "/admin/categories" },
+    { label: "Продавцов", value: merchantCount, icon: <FaStore className="text-3xl" />, href: "/admin/merchant" },
   ];
 
   return (
@@ -23,16 +25,17 @@ const AdminDashboardPage = async () => {
       <div className="flex flex-col gap-y-6 w-full p-6 max-xl:px-2 max-xl:mt-5">
         <h1 className="text-2xl font-bold text-gray-800">Панель управления</h1>
 
-        <div className="grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
+        <div className="grid grid-cols-5 gap-4 max-xl:grid-cols-3 max-sm:grid-cols-2">
           {stats.map((stat) => (
-            <div
+            <a
               key={stat.label}
-              className="bg-brand text-white rounded-xl p-6 flex flex-col items-center gap-y-2 shadow"
+              href={stat.href}
+              className="bg-brand text-white rounded-xl p-6 flex flex-col items-center gap-y-2 shadow hover:bg-brand-dark transition"
             >
               {stat.icon}
               <p className="text-4xl font-bold">{stat.value}</p>
               <p className="text-lg text-gray-200">{stat.label}</p>
-            </div>
+            </a>
           ))}
         </div>
 

@@ -1,25 +1,26 @@
 import React from 'react';
 import { Notification, NotificationType, NotificationPriority } from '@/types/notification';
-// Simple date formatter function
+
 const formatTimeAgo = (date: string) => {
   const now = new Date();
   const past = new Date(date);
   const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
-  
-  if (diffInSeconds < 60) return 'Just now';
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
-  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
-  return past.toLocaleDateString();
+
+  if (diffInSeconds < 60) return 'Только что';
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} мин. назад`;
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} ч. назад`;
+  if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} дн. назад`;
+  return past.toLocaleDateString('ru-RU');
 };
-import { 
-  FaShoppingCart, 
-  FaCreditCard, 
-  FaTag, 
+
+import {
+  FaShoppingCart,
+  FaCreditCard,
+  FaTag,
   FaExclamationTriangle,
   FaCheck,
   FaTrash,
-  FaCircle 
+  FaCircle
 } from 'react-icons/fa';
 
 interface NotificationCardProps {
@@ -60,24 +61,34 @@ const getTypeColor = (type: NotificationType) => {
   }
 };
 
+const getTypeLabel = (type: NotificationType) => {
+  switch (type) {
+    case NotificationType.ORDER_UPDATE: return 'Заказ';
+    case NotificationType.PAYMENT_STATUS: return 'Оплата';
+    case NotificationType.PROMOTION: return 'Акция';
+    case NotificationType.SYSTEM_ALERT: return 'Система';
+    default: return type;
+  }
+};
+
 const getPriorityBadge = (priority: NotificationPriority) => {
-  const priorityStyles = {
+  const styles = {
     [NotificationPriority.LOW]: 'bg-gray-100 text-gray-600 border-gray-300',
     [NotificationPriority.NORMAL]: 'bg-blue-100 text-brand border-blue-300',
     [NotificationPriority.HIGH]: 'bg-orange-100 text-orange-600 border-orange-300',
     [NotificationPriority.URGENT]: 'bg-red-100 text-red-600 border-red-300'
   };
 
-  const priorityLabels = {
-    [NotificationPriority.LOW]: 'Low',
-    [NotificationPriority.NORMAL]: 'Normal',
-    [NotificationPriority.HIGH]: 'High',
-    [NotificationPriority.URGENT]: 'Urgent'
+  const labels = {
+    [NotificationPriority.LOW]: 'Низкий',
+    [NotificationPriority.NORMAL]: 'Обычный',
+    [NotificationPriority.HIGH]: 'Высокий',
+    [NotificationPriority.URGENT]: 'Срочно'
   };
 
   return (
-    <span className={`px-2 py-1 text-xs font-medium rounded-full border ${priorityStyles[priority]}`}>
-      {priorityLabels[priority]}
+    <span className={`px-2 py-1 text-xs font-medium rounded-full border ${styles[priority]}`}>
+      {labels[priority]}
     </span>
   );
 };
@@ -89,7 +100,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
   onMarkAsRead,
   onDelete
 }) => {
-    const timeAgo = formatTimeAgo(notification.createdAt);
+  const timeAgo = formatTimeAgo(notification.createdAt);
 
   return (
     <div className={`
@@ -98,20 +109,16 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
       ${isSelected ? 'ring-2 ring-blue-500 border-blue-500' : ''}
     `}>
       <div className="flex items-start space-x-3">
-        {/* Selection Checkbox */}
         <div className="flex items-center pt-1">
           <input
             type="checkbox"
             checked={isSelected}
             onChange={() => onToggleSelect(notification.id)}
             className="w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-            aria-label={`Select notification: ${notification.title}`}
           />
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
-          {/* Header */}
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center space-x-2 flex-1">
               <div className="flex-shrink-0">
@@ -123,55 +130,44 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
                 {notification.title}
               </h3>
               {!notification.isRead && (
-                <div className="w-2 h-2 bg-brand rounded-full flex-shrink-0" aria-label="Unread notification" />
+                <div className="w-2 h-2 bg-brand rounded-full flex-shrink-0" />
               )}
             </div>
-
-            {/* Priority Badge */}
             <div className="flex-shrink-0 ml-2">
               {getPriorityBadge(notification.priority)}
             </div>
           </div>
 
-          {/* Message */}
           <p className="text-sm text-gray-600 mb-3 line-clamp-2">
             {notification.message}
           </p>
 
-          {/* Footer */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              {/* Type Badge */}
               <span className={`px-2 py-1 text-xs font-medium rounded-full ${getTypeColor(notification.type)}`}>
-                {notification.type.replace('_', ' ')}
+                {getTypeLabel(notification.type)}
               </span>
-              
-              {/* Timestamp */}
-              <span className="text-xs text-gray-500" title={new Date(notification.createdAt).toLocaleString()}>
+              <span className="text-xs text-gray-500" title={new Date(notification.createdAt).toLocaleString('ru-RU')}>
                 {timeAgo}
               </span>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center space-x-2">
               {!notification.isRead && (
                 <button
                   onClick={() => onMarkAsRead(notification.id)}
-                  className="inline-flex items-center px-2 py-1 text-xs font-medium text-brand bg-blue-100 rounded hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors"
-                  aria-label="Mark as read"
+                  className="inline-flex items-center px-2 py-1 text-xs font-medium text-brand bg-blue-100 rounded hover:bg-blue-200 transition-colors"
                 >
                   <FaCheck className="w-3 h-3 mr-1" />
-                  Mark Read
+                  Прочитать
                 </button>
               )}
-              
               <button
                 onClick={() => onDelete(notification.id)}
-                className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-600 bg-red-100 rounded hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 transition-colors"
-                aria-label="Delete notification"
+                className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-600 bg-red-100 rounded hover:bg-red-200 transition-colors"
               >
                 <FaTrash className="w-3 h-3 mr-1" />
-                Delete
+                Удалить
               </button>
             </div>
           </div>

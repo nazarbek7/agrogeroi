@@ -1,18 +1,18 @@
 "use client";
+import { useWishlistStore } from "@/app/_zustand/wishlistStore";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import HeaderTop from "./HeaderTop";
-import SearchInput from "./SearchInput";
-import { useWishlistStore } from "@/app/_zustand/wishlistStore";
-import { signOut, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { FaPen, FaRegUser } from "react-icons/fa6";
+import { MdDashboard } from "react-icons/md";
 import CartElement from "./CartElement";
+import HeaderTop from "./HeaderTop";
 import HeartElement from "./HeartElement";
 import NotificationBell from "./NotificationBell";
-import { MdDashboard } from "react-icons/md";
-import { FaRegUser, FaPen } from "react-icons/fa6";
+import SearchInput from "./SearchInput";
 
 const Header = () => {
   const { data: session } = useSession();
@@ -34,22 +34,41 @@ const Header = () => {
   // Дропдаун профиля — показывается в обоих хедерах
   const ProfileDropdown = () => (
     <div className="dropdown dropdown-end">
-      <div tabIndex={0} role="button" className="flex items-center gap-x-2 cursor-pointer">
+      <div
+        tabIndex={0}
+        role="button"
+        className="flex items-center gap-x-2 cursor-pointer"
+      >
         <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-brand bg-brand flex items-center justify-center">
           {userImage ? (
-            <img src={userImage} alt="profile" className="w-full h-full object-cover" />
+            <Image
+              src={userImage}
+              alt="profile"
+              width={40}
+              height={40}
+              className="w-full h-full object-cover"
+            />
           ) : (
             <FaRegUser className="text-white text-sm" />
           )}
         </div>
       </div>
-      <div tabIndex={0} className="dropdown-content z-50 shadow-xl bg-white rounded-xl w-64 mt-2 border border-gray-100">
+      <div
+        tabIndex={0}
+        className="dropdown-content z-50 shadow-xl bg-white rounded-xl w-64 mt-2 border border-gray-100"
+      >
         {/* Шапка профиля */}
         <div className="px-4 py-3 border-b border-gray-100">
           <div className="flex items-center gap-x-3">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-brand flex items-center justify-center">
               {userImage ? (
-                <img src={userImage} alt="profile" className="w-full h-full object-cover" />
+                <Image
+                  src={userImage}
+                  alt="profile"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <FaRegUser className="text-white" />
               )}
@@ -58,7 +77,9 @@ const Header = () => {
               <span className="text-sm font-semibold text-gray-800 truncate max-w-[150px]">
                 {session?.user?.email}
               </span>
-              <span className={`text-xs px-2 py-0.5 rounded-full w-fit mt-0.5 ${isAdmin ? "bg-brand text-white" : "bg-gray-100 text-gray-600"}`}>
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full w-fit mt-0.5 ${isAdmin ? "bg-brand text-white" : "bg-gray-100 text-gray-600"}`}
+              >
                 {isAdmin ? "Администратор" : "Пользователь"}
               </span>
             </div>
@@ -69,14 +90,20 @@ const Header = () => {
         <ul className="py-1">
           {isAdmin && (
             <li>
-              <Link href="/admin" className="flex items-center gap-x-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700">
+              <Link
+                href="/admin"
+                className="flex items-center gap-x-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700"
+              >
                 <MdDashboard className="text-brand text-lg" />
                 Панель управления
               </Link>
             </li>
           )}
           <li>
-            <Link href="/profile" className="flex items-center gap-x-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700">
+            <Link
+              href="/profile"
+              className="flex items-center gap-x-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700"
+            >
               <FaPen className="text-brand text-sm" />
               Редактировать профиль
             </Link>
@@ -101,29 +128,63 @@ const Header = () => {
 
       {/* Обычный хедер */}
       {!pathname.startsWith("/admin") && (
-        <div className="h-32 bg-white flex items-center justify-between px-16 max-[1320px]:px-16 max-md:px-6 max-lg:flex-col max-lg:gap-y-7 max-lg:justify-center max-lg:h-60 max-w-screen-2xl mx-auto">
-          <Link href="/">
-            <Image
-              src="/agrogeroi_logo.svg"
-              width={300}
-              height={300}
-              alt="Agrogeroi logo"
-              className="relative right-5 max-[1023px]:w-56"
-            />
-          </Link>
-          <SearchInput />
-          <div className="flex gap-x-6 items-center">
-            <NotificationBell />
-            <HeartElement wishQuantity={wishQuantity} />
-            <CartElement />
-            {session && <ProfileDropdown />}
+        <>
+          <div className="bg-white flex items-center justify-between px-16 max-[1320px]:px-10 max-md:px-6 max-lg:flex-col max-lg:gap-y-4 max-lg:justify-center py-4 max-w-screen-2xl mx-auto">
+            <Link href="/" className="flex-shrink-0">
+              <Image
+                src="/agrogeroi_logo.svg"
+                width={200}
+                height={200}
+                alt="Agrogeroi logo"
+                className="h-14 w-auto max-[1023px]:h-12"
+              />
+            </Link>
+            <div className="flex-1 mx-8 max-lg:w-full max-lg:mx-0">
+              <SearchInput />
+            </div>
+            <div className="flex gap-x-6 items-center flex-shrink-0">
+              <NotificationBell />
+              <HeartElement wishQuantity={wishQuantity} />
+              <CartElement />
+              {session && <ProfileDropdown />}
+            </div>
           </div>
-        </div>
+          {/* Навигация */}
+          <nav className="border-t border-b border-gray-100 bg-white shadow-sm">
+            <div className="max-w-screen-2xl mx-auto px-16 max-[1320px]:px-10 max-md:px-6">
+              <ul className="flex items-center gap-x-1 overflow-x-auto scrollbar-hide py-0">
+                {[
+                  { href: "/shop", label: "Каталог" },
+                  { href: "/shop/Розы", label: "Розы" },
+                  { href: "/shop/Гортензии", label: "Гортензии" },
+                  { href: "/shop/Хвойные деревья и кустарники", label: "Хвойные" },
+                  { href: "/shop/Плодовые деревья и кустарники", label: "Плодовые" },
+                  { href: "/shop/Лиственные деревья", label: "Деревья" },
+                  { href: "/shop/Лианы", label: "Лианы" },
+                  { href: "/contacts", label: "Контакты" },
+                ].map(({ href, label }) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      className={`block px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 ${
+                        pathname === href
+                          ? "text-brand border-brand"
+                          : "text-gray-600 border-transparent hover:text-brand hover:border-brand"
+                      }`}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
+        </>
       )}
 
       {/* Хедер для /admin */}
       {pathname.startsWith("/admin") && (
-        <div className="flex justify-between h-20 bg-white items-center px-16 max-[1320px]:px-10 max-w-screen-2xl mx-auto max-[400px]:px-5 border-b">
+        <div className="flex justify-between h-16 bg-white items-center px-16 max-[1320px]:px-10 max-w-screen-2xl mx-auto max-[400px]:px-5 border-b-2 border-brand/20 shadow-sm">
           <Link href="/">
             <Image
               src="/agrogeroi_logo.svg"

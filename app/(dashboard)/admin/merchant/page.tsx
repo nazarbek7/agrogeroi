@@ -25,13 +25,13 @@ export default function MerchantPage() {
       setLoading(true);
       const response = await apiClient.get("/api/merchants");
       if (!response.ok) {
-        throw new Error("Failed to fetch merchants");
+        throw new Error("Ошибка загрузки");
       }
       const data = await response.json();
       setMerchants(data);
     } catch (error) {
       console.error("Error fetching merchants:", error);
-      toast.error("Failed to load merchants");
+      toast.error("Не удалось загрузить продавцов");
     } finally {
       setLoading(false);
     }
@@ -46,34 +46,34 @@ export default function MerchantPage() {
       <DashboardSidebar />
       <div className="flex-1 p-10 overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Merchants</h1>
+          <h1 className="text-3xl font-bold">Продавцы</h1>
           <Link
             href="/admin/merchant/new"
             className="bg-brand text-white px-6 py-2 rounded-md hover:bg-brand-dark transition"
           >
-            Add Merchant
+            Добавить продавца
           </Link>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6">
           {loading ? (
-            <div className="text-center py-10">Loading merchants...</div>
+            <div className="text-center py-10">Загрузка...</div>
           ) : merchants.length > 0 ? (
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="py-3 text-left">Name</th>
+                  <th className="py-3 text-left">Название</th>
                   <th className="py-3 text-left">Email</th>
-                  <th className="py-3 text-left">Status</th>
-                  <th className="py-3 text-left">Products</th>
-                  <th className="py-3 text-left">Actions</th>
+                  <th className="py-3 text-left">Статус</th>
+                  <th className="py-3 text-left">Товары</th>
+                  <th className="py-3 text-left">Действия</th>
                 </tr>
               </thead>
               <tbody>
                 {merchants.map((merchant) => (
                   <tr key={merchant.id} className="border-b hover:bg-gray-50">
                     <td className="py-4">{merchant.name}</td>
-                    <td className="py-4">{merchant.email || "N/A"}</td>
+                    <td className="py-4">{merchant.email || "—"}</td>
                     <td className="py-4">
                       <span
                         className={`px-2 py-1 rounded text-xs ${
@@ -82,7 +82,7 @@ export default function MerchantPage() {
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {merchant.status}
+                        {merchant.status === "ACTIVE" ? "Активен" : "Неактивен"}
                       </span>
                     </td>
                     <td className="py-4">{merchant.products.length}</td>
@@ -91,13 +91,13 @@ export default function MerchantPage() {
                         href={`/admin/merchant/${merchant.id}`}
                         className="text-brand hover:underline mr-3"
                       >
-                        View
+                        Просмотр
                       </Link>
                       <Link
                         href={`/admin/merchant/${merchant.id}`}
                         className="text-brand hover:underline"
                       >
-                        Edit
+                        Изменить
                       </Link>
                     </td>
                   </tr>
@@ -105,7 +105,7 @@ export default function MerchantPage() {
               </tbody>
             </table>
           ) : (
-            <div className="text-center py-10">No merchants found</div>
+            <div className="text-center py-10">Продавцы не найдены</div>
           )}
         </div>
       </div>

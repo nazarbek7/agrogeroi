@@ -18,7 +18,7 @@ const DashboardCreateNewUser = () => {
 
   const addNewUser = async () => {
     if (userInput.email === "" || userInput.password === "") {
-      toast.error("You must enter all input values to add a user");
+      toast.error("Введите все поля для создания пользователя");
       return;
     }
 
@@ -31,7 +31,7 @@ const DashboardCreateNewUser = () => {
       userInput.password.length > 0
     ) {
       if (!isValidEmailAddressFormat(userInput.email)) {
-        toast.error("You entered invalid email address format");
+        toast.error("Неверный формат email");
         return;
       }
 
@@ -46,32 +46,32 @@ const DashboardCreateNewUser = () => {
             if (response.status === 201) {
               return response.json();
             } else {
-              throw Error("Error while creating user");
+              throw Error("Ошибка создания пользователя");
             }
           })
           .then((data: any) => {
-            toast.success("User added successfully");
+            toast.success("Пользователь создан!");
             setUserInput({
               email: "",
               password: "",
               role: "user",
             });
           }).catch((error: any) => {
-            toast.error("Error while creating user");
+            toast.error("Ошибка создания пользователя");
           });
       } else {
-        toast.error("Password must be longer than 7 characters");
+        toast.error("Пароль должен быть длиннее 7 символов");
       }
     } else {
-      toast.error("You must enter all input values to add a user");
+      toast.error("Введите все поля для создания пользователя");
     }
   };
 
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:pl-5 max-xl:px-5 w-full">
-        <h1 className="text-3xl font-semibold">Add new user</h1>
+      <div className="flex flex-col gap-y-7 xl:pl-5 max-xl:px-5 w-full pt-6">
+        <h1 className="text-3xl font-semibold">Новый пользователь</h1>
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -91,7 +91,7 @@ const DashboardCreateNewUser = () => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Password:</span>
+              <span className="label-text">Пароль:</span>
             </div>
             <input
               type="password"
@@ -128,7 +128,7 @@ const DashboardCreateNewUser = () => {
             className="uppercase bg-brand px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-brand-dark hover:text-white focus:outline-none focus:ring-2"
             onClick={addNewUser}
           >
-            Create user
+            Создать пользователя
           </button>
         </div>
       </div>

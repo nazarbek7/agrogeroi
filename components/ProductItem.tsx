@@ -1,18 +1,6 @@
-// *********************
-// Role of the component: Product item component 
-// Name of the component: ProductItem.tsx
-// Developer: Aleksandar Kuzmanovic
-// Version: 1.0
-// Component call: <ProductItem product={product} color={color} />
-// Input parameters: { product: Product; color: string; }
-// Output: Product item component that contains product image, title, link to the single product page, price, button...
-// *********************
-
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
-
-import { sanitize } from "@/lib/sanitize";
 
 const ProductItem = ({
   product,
@@ -21,49 +9,61 @@ const ProductItem = ({
   product: Product;
   color: string;
 }) => {
-  return (
-    <div className="flex flex-col items-center gap-y-2">
-      <Link href={`/product/${product.slug}`}>
-        <Image
-          src={
-            product.mainImage
-              ? `/${product.mainImage}`
-              : "/product_placeholder.jpg"
-          }
-          width="0"
-          height="0"
-          sizes="100vw"
-          className="w-auto h-[300px]"
-          alt={sanitize(product?.title) || "Product image"}
-        />
-      </Link>
-      <Link
-        href={`/product/${product.slug}`}
-        className={
-          color === "black"
-            ? `text-xl text-black font-normal mt-2 uppercase`
-            : `text-xl text-white font-normal mt-2 uppercase`
-        }
-      >
-        {sanitize(product.title)}
-      </Link>
-      <p
-        className={
-          color === "black"
-            ? "text-lg text-black font-semibold"
-            : "text-lg text-white font-semibold"
-        }
-      >
-        ${product.price}
-      </p>
+  const isDark = color !== "black";
 
-  
-      <Link
-        href={`/product/${product?.slug}`}
-        className="block flex justify-center items-center w-full uppercase bg-white px-0 py-2 text-base border border-black border-gray-300 font-bold text-brand shadow-sm hover:bg-black hover:bg-gray-100 focus:outline-none focus:ring-2"
-      >
-        <p>View product</p>
+  return (
+    <div
+      className={`group flex flex-col w-full rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 ${
+        isDark ? "bg-white/15 hover:bg-white/25 border border-white/20" : "bg-white hover:scale-[1.02]"
+      }`}
+    >
+      {/* Image */}
+      <Link href={`/product/${product.slug}`} className="block overflow-hidden">
+        <div className="relative w-full h-52 bg-[#e8f5e1] flex items-center justify-center overflow-hidden">
+          <Image
+            src={
+              product.mainImage && product.mainImage !== "product_placeholder.jpg"
+                ? `/${product.mainImage}`
+                : "/product_placeholder.jpg"
+            }
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            alt={product?.title || "Фото товара"}
+          />
+        </div>
       </Link>
+
+      {/* Info */}
+      <div className="flex flex-col flex-1 p-4 gap-2">
+        <Link
+          href={`/product/${product.slug}`}
+          className={`text-base font-semibold leading-snug line-clamp-2 hover:underline ${
+            isDark ? "text-white" : "text-gray-800"
+          }`}
+        >
+          {product.title}
+        </Link>
+
+        <p
+          className={`text-xl font-bold mt-auto ${
+            isDark ? "text-white" : "text-brand"
+          }`}
+        >
+          {product.price.toLocaleString("ru-RU")} сом
+        </p>
+
+        <Link
+          href={`/product/${product.slug}`}
+          className={`mt-2 self-start px-5 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${
+            isDark
+              ? "bg-green-400 text-white hover:bg-green-300"
+              : "bg-brand text-white hover:opacity-90 shadow-sm"
+          }`}
+        >
+          Смотреть →
+        </Link>
+      </div>
     </div>
   );
 };

@@ -23,9 +23,9 @@ const DashboardCategory = () => {
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto h-full max-xl:flex-col max-xl:h-fit max-xl:gap-y-4">
       <DashboardSidebar />
-      <div className="w-full">
+      <div className="w-full pt-6 px-4">
         <h1 className="text-3xl font-semibold text-center mb-5">
-          All Categories
+          Все категории
         </h1>
         <div className="flex justify-end mb-5">
           <Link href="/admin/categories/new">
@@ -35,7 +35,7 @@ const DashboardCategory = () => {
               paddingX={10}
               paddingY={5}
               textSize="base"
-              text="Add new category"
+              text="Добавить категорию"
             />
           </Link>
         </div>
@@ -49,7 +49,7 @@ const DashboardCategory = () => {
                     <input type="checkbox" className="checkbox" />
                   </label>
                 </th>
-                <th>Name</th>
+                <th>Название</th>
                 <th></th>
               </tr>
             </thead>
@@ -74,7 +74,7 @@ const DashboardCategory = () => {
                         href={`/admin/categories/${category?.id}`}
                         className="btn btn-ghost btn-xs"
                       >
-                        details
+                        Подробнее
                       </Link>
                     </th>
                   </tr>
@@ -84,7 +84,7 @@ const DashboardCategory = () => {
             <tfoot>
               <tr>
                 <th></th>
-                <th>Name</th>
+                <th>Название</th>
                 <th></th>
               </tr>
             </tfoot>

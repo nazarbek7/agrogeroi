@@ -24,7 +24,7 @@ const Pagination = () => {
         «
       </button>
       <button className="join-item btn btn-lg bg-brand text-white hover:bg-white hover:text-brand">
-        Page {page}
+        Страница {page}
       </button>
       <button
         className="join-item btn btn-lg bg-brand text-white hover:bg-white hover:text-brand"

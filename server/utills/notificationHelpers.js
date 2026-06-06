@@ -23,40 +23,40 @@ const createOrderUpdateNotification = async (userId, orderStatus, orderId, total
   try {
     const statusMessages = {
       'pending': {
-        title: 'Order Received',
-        message: `Thank you! Your order #${orderId} has been received and is being processed.`,
+        title: 'Заказ получен',
+        message: `Спасибо! Ваш заказ #${orderId} получен и обрабатывается.`,
         priority: 'NORMAL'
       },
       'confirmed': {
-        title: 'Order Confirmed',
-        message: `Great news! Your order #${orderId} has been confirmed and will be prepared for shipping.`,
+        title: 'Заказ подтверждён',
+        message: `Ваш заказ #${orderId} подтверждён и будет подготовлен к отправке.`,
         priority: 'HIGH'
       },
       'processing': {
-        title: 'Order Processing',
-        message: `Your order #${orderId} is currently being processed and will ship soon.`,
+        title: 'Заказ обрабатывается',
+        message: `Ваш заказ #${orderId} находится в обработке и скоро будет отправлен.`,
         priority: 'NORMAL'
       },
       'shipped': {
-        title: 'Order Shipped',
-        message: `Excellent! Your order #${orderId} has been shipped and is on its way to you.`,
+        title: 'Заказ отправлен',
+        message: `Ваш заказ #${orderId} отправлен и уже в пути!`,
         priority: 'HIGH'
       },
       'delivered': {
-        title: 'Order Delivered',
-        message: `Your order #${orderId} has been successfully delivered. We hope you love your new items!`,
+        title: 'Заказ доставлен',
+        message: `Ваш заказ #${orderId} успешно доставлен. Спасибо за покупку!`,
         priority: 'HIGH'
       },
       'cancelled': {
-        title: 'Order Cancelled',
-        message: `Your order #${orderId} has been cancelled. If you have any questions, please contact our support.`,
+        title: 'Заказ отменён',
+        message: `Ваш заказ #${orderId} был отменён. По вопросам обращайтесь в поддержку.`,
         priority: 'URGENT'
       }
     };
 
     const statusInfo = statusMessages[orderStatus.toLowerCase()] || {
-      title: 'Order Update',
-      message: `Your order #${orderId} status has been updated to: ${orderStatus}`,
+      title: 'Обновление заказа',
+      message: `Статус вашего заказа #${orderId} обновлён: ${orderStatus}`,
       priority: 'NORMAL'
     };
 
@@ -94,25 +94,25 @@ const createPaymentNotification = async (userId, paymentStatus, amount, orderId)
   try {
     const statusMessages = {
       'success': {
-        title: 'Payment Successful',
-        message: `Your payment of $${amount} has been successfully processed for order #${orderId}.`,
+        title: 'Оплата прошла успешно',
+        message: `Ваш платёж на сумму ${amount} сом для заказа #${orderId} успешно обработан.`,
         priority: 'HIGH'
       },
       'failed': {
-        title: 'Payment Failed',
-        message: `Unfortunately, your payment of $${amount} for order #${orderId} could not be processed. Please try again.`,
+        title: 'Ошибка оплаты',
+        message: `Платёж на сумму ${amount} сом для заказа #${orderId} не прошёл. Пожалуйста, попробуйте снова.`,
         priority: 'URGENT'
       },
       'pending': {
-        title: 'Payment Pending',
-        message: `Your payment of $${amount} for order #${orderId} is currently being processed.`,
+        title: 'Оплата обрабатывается',
+        message: `Платёж на сумму ${amount} сом для заказа #${orderId} обрабатывается.`,
         priority: 'NORMAL'
       }
     };
 
     const statusInfo = statusMessages[paymentStatus.toLowerCase()] || {
-      title: 'Payment Update',
-      message: `Your payment status for order #${orderId} has been updated.`,
+      title: 'Обновление оплаты',
+      message: `Статус оплаты для заказа #${orderId} обновлён.`,
       priority: 'NORMAL'
     };
 

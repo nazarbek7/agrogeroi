@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
               user.password!
             );
             if (isPasswordCorrect) {
-              return { id: user.id, email: user.email, role: user.role };
+              return { id: user.id, email: user.email, role: user.role, name: user.name, image: user.image };
             }
           }
         } catch (err: any) {
@@ -55,11 +55,18 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, trigger, session }: any) {
       if (user) {
         token.role = user.role;
         token.id = user.id;
+        token.image = user.image ?? null;
+        token.name = user.name ?? null;
         token.iat = Math.floor(Date.now() / 1000);
+      }
+      if (trigger === "update" && session) {
+        if (session.image !== undefined) token.image = session.image;
+        if (session.name !== undefined) token.name = session.name;
+        if (session.email !== undefined) token.email = session.email;
       }
       const now = Math.floor(Date.now() / 1000);
       if (now - (token.iat as number) > 15 * 60) return {};
@@ -69,6 +76,12 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.role = token.role as string;
         session.user.id = token.id as string;
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { image: true, name: true },
+        });
+        session.user.image = dbUser?.image ?? null;
+        session.user.name = dbUser?.name ?? null;
       }
       return session;
     },

@@ -19,33 +19,33 @@ const DashboardNewCategoryPage = () => {
 
         if (response.status === 201) {
           await response.json();
-          toast.success("Category added successfully");
+          toast.success("Категория добавлена!");
           setCategoryInput({
             name: "",
           });
         } else {
           const errorData = await response.json();
           toast.error(
-            errorData.error || "There was an error while creating category"
+            errorData.error || "Ошибка при создании категории"
           );
         }
       } catch (error) {
         console.error("Error creating category:", error);
-        toast.error("There was an error while creating category");
+        toast.error("Ошибка при создании категории");
       }
     } else {
-      toast.error("You need to enter values to add a category");
+      toast.error("Введите название категории");
     }
   };
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:pl-5 max-xl:px-5 w-full">
-        <h1 className="text-3xl font-semibold">Add new category</h1>
+      <div className="flex flex-col gap-y-7 xl:pl-5 max-xl:px-5 w-full pt-6">
+        <h1 className="text-3xl font-semibold">Новая категория</h1>
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Category name:</span>
+              <span className="label-text">Название категории:</span>
             </div>
             <input
               type="text"
@@ -64,7 +64,7 @@ const DashboardNewCategoryPage = () => {
             className="uppercase bg-brand px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-brand-dark hover:text-white focus:outline-none focus:ring-2"
             onClick={addNewCategory}
           >
-            Create category
+            Создать категорию
           </button>
         </div>
       </div>

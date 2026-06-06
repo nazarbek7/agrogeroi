@@ -33,14 +33,14 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
       .delete(`/api/users/${id}`, requestOptions)
       .then((response) => {
         if (response.status === 204) {
-          toast.success("User deleted successfully");
+          toast.success("Пользователь удалён");
           router.push("/admin/users");
         } else {
-          throw Error("There was an error while deleting user");
+          throw Error("Ошибка удаления пользователя");
         }
       })
       .catch((error) => {
-        toast.error("There was an error while deleting user");
+        toast.error("Ошибка удаления пользователя");
       });
   };
 
@@ -51,7 +51,7 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
       userInput.newPassword.length > 0
     ) {
       if (!isValidEmailAddressFormat(userInput.email)) {
-        toast.error("You entered invalid email address format");
+        toast.error("Неверный формат email");
         return;
       }
 
@@ -65,21 +65,21 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
 
           if (response.status === 200) {
             await response.json();
-            toast.success("User successfully updated");
+            toast.success("Пользователь обновлён");
           } else {
             const errorData = await response.json();
-            toast.error(errorData.error || "Error while updating user");
+            toast.error(errorData.error || "Ошибка обновления пользователя");
           }
         } catch (error) {
           console.error("Error updating user:", error);
-          toast.error("There was an error while updating user");
+          toast.error("Ошибка обновления пользователя");
         }
       } else {
-        toast.error("Password must be longer than 7 characters");
+        toast.error("Пароль должен быть длиннее 7 символов");
         return;
       }
     } else {
-      toast.error("For updating a user you must enter all values");
+      toast.error("Введите все поля для обновления пользователя");
       return;
     }
   };
@@ -103,8 +103,8 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:pl-5 max-xl:px-5 w-full">
-        <h1 className="text-3xl font-semibold">User details</h1>
+      <div className="flex flex-col gap-y-7 xl:pl-5 max-xl:px-5 w-full pt-6">
+        <h1 className="text-3xl font-semibold">Детали пользователя</h1>
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
@@ -124,7 +124,7 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">New password:</span>
+              <span className="label-text">Новый пароль:</span>
             </div>
             <input
               type="password"
@@ -160,14 +160,14 @@ const DashboardSingleUserPage = ({ params }: DashboardUserDetailsProps) => {
             className="uppercase bg-brand px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-brand-dark hover:text-white focus:outline-none focus:ring-2"
             onClick={updateUser}
           >
-            Update user
+            Обновить пользователя
           </button>
           <button
             type="button"
             className="uppercase bg-red-600 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-red-700 hover:text-white focus:outline-none focus:ring-2"
             onClick={deleteUser}
           >
-            Delete user
+            Удалить пользователя
           </button>
         </div>
       </div>

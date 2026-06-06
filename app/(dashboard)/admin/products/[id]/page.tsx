@@ -35,18 +35,18 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         if (response.status !== 204) {
           if (response.status === 400) {
             toast.error(
-              "Cannot delete the product because of foreign key constraint"
+              "Нельзя удалить товар: сначала удалите его из заказов"
             );
           } else {
-            throw Error("There was an error while deleting product");
+            throw Error("Ошибка удаления товара");
           }
         } else {
-          toast.success("Product deleted successfully");
+          toast.success("Товар удалён");
           router.push("/admin/products");
         }
       })
       .catch((error) => {
-        toast.error("There was an error while deleting product");
+        toast.error("Ошибка удаления товара");
       });
   };
 
@@ -59,7 +59,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
       product?.manufacturer === "" ||
       product?.description === ""
     ) {
-      toast.error("You need to enter values in input fields");
+      toast.error("Заполните все поля");
       return;
     }
 
@@ -68,16 +68,16 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
 
       if (response.status === 200) {
         await response.json();
-        toast.success("Product successfully updated");
+        toast.success("Товар обновлён");
       } else {
         const errorData = await response.json();
         toast.error(
-          errorData.error || "There was an error while updating product"
+          errorData.error || "Ошибка обновления товара"
         );
       }
     } catch (error) {
       console.error("Error updating product:", error);
-      toast.error("There was an error while updating product");
+      toast.error("Ошибка обновления товара");
     }
   };
 
@@ -95,11 +95,11 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
       if (response.ok) {
         const data = await response.json();
       } else {
-        toast.error("File upload unsuccessful.");
+        toast.error("Ошибка загрузки файла");
       }
     } catch (error) {
       console.error("There was an error while during request sending:", error);
-      toast.error("There was an error during request sending");
+      toast.error("Ошибка при отправке запроса");
     }
   };
 
@@ -141,14 +141,12 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
   return (
     <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:ml-5 w-full max-xl:px-5">
-        <h1 className="text-3xl font-semibold">Product details</h1>
-        {/* Product name input div - start */}
-        
+      <div className="flex flex-col gap-y-7 xl:ml-5 w-full max-xl:px-5 pt-6">
+        <h1 className="text-3xl font-semibold">Детали товара</h1>
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Product name:</span>
+              <span className="label-text">Название товара:</span>
             </div>
             <input
               type="text"
@@ -166,7 +164,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Product price:</span>
+              <span className="label-text">Цена (сом):</span>
             </div>
             <input
               type="text"
@@ -183,7 +181,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Manufacturer:</span>
+              <span className="label-text">Производитель:</span>
             </div>
             <input
               type="text"
@@ -224,7 +222,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Is product in stock?</span>
+              <span className="label-text">Наличие:</span>
             </div>
             <select
               className="select select-bordered"
@@ -233,8 +231,8 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
                 setProduct({ ...product!, inStock: Number(e.target.value) });
               }}
             >
-              <option value={1}>Yes</option>
-              <option value={0}>No</option>
+              <option value={1}>В наличии</option>
+              <option value={0}>Нет в наличии</option>
             </select>
           </label>
         </div>
@@ -243,7 +241,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         <div>
           <label className="form-control w-full max-w-xs">
             <div className="label">
-              <span className="label-text">Category:</span>
+              <span className="label-text">Категория:</span>
             </div>
             <select
               className="select select-bordered"
@@ -311,7 +309,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
         <div>
           <label className="form-control">
             <div className="label">
-              <span className="label-text">Product description:</span>
+              <span className="label-text">Описание:</span>
             </div>
             <textarea
               className="textarea textarea-bordered h-24"
@@ -330,20 +328,18 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
             onClick={updateProduct}
             className="uppercase bg-brand px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-brand-dark hover:text-white focus:outline-none focus:ring-2"
           >
-            Update product
+            Обновить товар
           </button>
           <button
             type="button"
             className="uppercase bg-red-600 px-10 py-5 text-lg border border-black border-gray-300 font-bold text-white shadow-sm hover:bg-red-700 hover:text-white focus:outline-none focus:ring-2"
             onClick={deleteProduct}
           >
-            Delete product
+            Удалить товар
           </button>
         </div>
-        {/* Action buttons div - end */}
         <p className="text-xl max-sm:text-lg text-error">
-          To delete the product you first need to delete all its records in
-          orders (customer_order_product table).
+          Для удаления товара сначала удалите все его записи в заказах.
         </p>
       </div>
     </div>

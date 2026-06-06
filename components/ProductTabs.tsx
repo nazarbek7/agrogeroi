@@ -1,18 +1,6 @@
-// *********************
-// Role of the component: Single product tabs on the single product page containing product description, main product info and reviews
-// Name of the component: ProductTabs.tsx
-// Developer: Aleksandar Kuzmanovic
-// Version: 1.0
-// Component call: <ProductTabs product={product} />
-// Input parameters: { product: Product }
-// Output: Single product tabs containing product description, main product info and reviews
-// *********************
-
 "use client";
 
 import React, { useState } from "react";
-import { formatCategoryName } from "@/utils/categoryFormating";
-import { sanitize, sanitizeHtml } from "@/lib/sanitize";
 
 const ProductTabs = ({ product }: { product: Product }) => {
   const [currentProductTab, setCurrentProductTab] = useState<number>(0);
@@ -27,7 +15,7 @@ const ProductTabs = ({ product }: { product: Product }) => {
           }`}
           onClick={() => setCurrentProductTab(0)}
         >
-          Description
+          Описание
         </a>
         <a
           role="tab"
@@ -36,44 +24,43 @@ const ProductTabs = ({ product }: { product: Product }) => {
           }`}
           onClick={() => setCurrentProductTab(1)}
         >
-          Additional info
+          Доп. информация
         </a>
       </div>
       <div className="pt-5">
         {currentProductTab === 0 && (
-          <div 
-            className="text-lg max-sm:text-base max-sm:text-sm"
-            dangerouslySetInnerHTML={{ 
-              __html: sanitizeHtml(product?.description) 
-            }}
-          />
+          <div className="text-lg max-sm:text-base leading-relaxed whitespace-pre-wrap">
+            {product?.description || "Описание отсутствует."}
+          </div>
         )}
 
         {currentProductTab === 1 && (
-          <div className="overflow-x-auto">
-            <table className="table text-xl text-center max-[500px]:text-base">
-              <tbody>
-                {/* row 1 */}
-                <tr>
-                  <th>Manufacturer:</th>
-                  <td>{sanitize(product?.manufacturer)}</td>
-                </tr>
-                {/* row 2 */}
-                <tr>
-                  <th>Category:</th>
-                  <td>
-                    {product?.category?.name
-                      ? sanitize(formatCategoryName(product?.category?.name))
-                      : "No category"}
-                  </td>
-                </tr>
-                {/* row 3 */}
-                <tr>
-                  <th>Color:</th>
-                  <td>Silver, LightSlateGray, Blue</td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="flex flex-col gap-0 rounded-xl overflow-hidden border border-gray-100">
+            <div className="flex items-center gap-4 px-5 py-4 bg-gray-50">
+              <span className="text-sm font-bold text-gray-500 uppercase tracking-wide w-40 flex-shrink-0">Производитель</span>
+              <span className="text-base text-gray-800 font-medium">{product?.manufacturer || "—"}</span>
+            </div>
+            <div className="flex items-center gap-4 px-5 py-4 bg-white border-t border-gray-100">
+              <span className="text-sm font-bold text-gray-500 uppercase tracking-wide w-40 flex-shrink-0">В наличии</span>
+              <span className="text-base text-gray-800 font-medium">
+                {product?.inStock > 0 ? (
+                  <span className="text-green-700 font-semibold">{product.inStock} шт.</span>
+                ) : (
+                  <span className="text-red-500">Нет в наличии</span>
+                )}
+              </span>
+            </div>
+            <div className="flex items-start gap-4 px-5 py-4 bg-gray-50 border-t border-gray-100">
+              <span className="text-sm font-bold text-gray-500 uppercase tracking-wide w-40 flex-shrink-0 pt-1">Способы оплаты</span>
+              <div className="flex flex-wrap gap-2">
+                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-800">QR-код</span>
+                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">Visa</span>
+                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 text-orange-800">М-Банк</span>
+                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-purple-100 text-purple-800">О-Банк</span>
+                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-800">Оптима</span>
+                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-gray-100 text-gray-700">Наличные</span>
+              </div>
+            </div>
           </div>
         )}
       </div>

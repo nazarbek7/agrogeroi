@@ -29,14 +29,14 @@ const AddToCartSingleProductBtn = ({ product, quantityCount } : SingleProductBtn
       amount: quantityCount
     });
     calculateTotals();
-    toast.success("Product added to the cart");
+    toast.success("Товар добавлен в корзину");
   };
   return (
     <button
       onClick={handleAddToCart}
       className="btn w-[200px] text-lg border border-gray-300 border-1 font-normal bg-white text-brand hover:bg-brand hover:text-white hover:border-blue-500 hover:scale-110 transition-all uppercase ease-in max-[500px]:w-full"
     >
-      Add to cart
+      В корзину
     </button>
   );
 };

@@ -1,55 +1,54 @@
-// *********************
-// Role of the component: products section intended to be on the home page
-// Name of the component: ProductsSection.tsx
-// Developer: Aleksandar Kuzmanovic
-// Version: 1.0
-// Component call: <ProductsSection slug={slug} />
-// Input parameters: no input parameters
-// Output: products grid
-// *********************
-
 import React from "react";
 import ProductItem from "./ProductItem";
-import Heading from "./Heading";
 import apiClient from "@/lib/api";
+import Link from "next/link";
 
 const ProductsSection = async () => {
   let products = [];
-  
+
   try {
-    // sending API request for getting all products
     const data = await apiClient.get("/api/products");
-    
     if (!data.ok) {
-      console.error('Failed to fetch products:', data.statusText);
       products = [];
     } else {
       const result = await data.json();
-      // Ensure products is an array
       products = Array.isArray(result) ? result : [];
     }
-  } catch (error) {
-    console.error('Error fetching products:', error);
+  } catch {
     products = [];
   }
 
   return (
-    <div className="bg-brand border-t-4 border-white">
-      <div className="max-w-screen-2xl mx-auto pt-20">
-        <Heading title="ПОПУЛЯРНЫЕ ТОВАРЫ" />
-        <div className="grid grid-cols-4 justify-items-center max-w-screen-2xl mx-auto py-10 gap-x-2 px-10 gap-y-8 max-xl:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
-          {products.length > 0 ? (
-            products.map((product: any) => (
-              <ProductItem key={product.id} product={product} color="white" />
-            ))
-          ) : (
-            <div className="col-span-full text-center text-white py-10">
-              <p>Товары пока не добавлены.</p>
-            </div>
-          )}
+    <section className="bg-[#f4f9f0] py-16">
+      <div className="max-w-screen-2xl mx-auto px-10 max-sm:px-5">
+        <div className="flex items-end justify-between mb-10 max-sm:flex-col max-sm:items-start max-sm:gap-3">
+          <div>
+            <p className="text-brand text-sm font-bold uppercase tracking-widest mb-2">Ассортимент</p>
+            <h2 className="text-4xl font-extrabold text-gray-900 uppercase tracking-wide">
+              Популярные товары
+            </h2>
+          </div>
+          <Link
+            href="/shop"
+            className="text-brand font-semibold text-sm hover:underline flex items-center gap-1"
+          >
+            Смотреть все →
+          </Link>
         </div>
+
+        {products.length > 0 ? (
+          <div className="grid grid-cols-4 items-stretch gap-5 max-xl:grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1">
+            {products.map((product: any) => (
+              <ProductItem key={product.id} product={product} color="black" />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center text-gray-400 py-16 text-lg">
+            Товары пока не добавлены.
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 };
 
