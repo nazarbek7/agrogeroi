@@ -18,7 +18,9 @@ const Header = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
   const { wishlist, setWishlist, wishQuantity } = useWishlistStore();
-  const isAdmin = (session?.user as any)?.role === "admin";
+  const role = (session?.user as any)?.role;
+  const isAdmin = role === "admin";
+  const isMerchant = role === "merchant";
 
   const handleLogout = () => {
     setTimeout(() => signOut(), 1000);
@@ -96,6 +98,17 @@ const Header = () => {
               >
                 <MdDashboard className="text-brand text-lg" />
                 Панель управления
+              </Link>
+            </li>
+          )}
+          {isMerchant && (
+            <li>
+              <Link
+                href="/merchant"
+                className="flex items-center gap-x-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700"
+              >
+                <MdDashboard className="text-brand text-lg" />
+                Панель продавца
               </Link>
             </li>
           )}

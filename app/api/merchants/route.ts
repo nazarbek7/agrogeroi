@@ -11,11 +11,13 @@ export async function GET() {
     }
 
     const merchants = await prisma.merchant.findMany({
-      include: { _count: { select: { products: true } } },
+      include: {
+        _count: { select: { products: true } },
+        user: { select: { id: true, email: true, name: true } },
+      },
       orderBy: { createdAt: "desc" },
     });
 
-    // Normalize: add .products array with length so the page's merchant.products.length still works
     const result = merchants.map((m) => ({
       ...m,
       products: Array.from({ length: m._count.products }),
@@ -29,28 +31,39 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) {
-    return NextResponse.json({ error: "Не авторизован" }, { status: 401 });
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+      return NextResponse.json({ error: "Не авторизован" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { name, email, phone, address, description, status, userId } = body;
+
+    if (!name?.trim()) {
+      return NextResponse.json({ error: "Название обязательно" }, { status: 400 });
+    }
+
+    const merchant = await prisma.merchant.create({
+      data: {
+        name,
+        email: email || null,
+        phone: phone || null,
+        address: address || null,
+        description: description || null,
+        status: status || "ACTIVE",
+        userId: userId || null,
+      },
+    });
+
+    // If userId provided, set user role to merchant
+    if (userId) {
+      await prisma.user.update({ where: { id: userId }, data: { role: "merchant" } });
+    }
+
+    return NextResponse.json(merchant, { status: 201 });
+  } catch (error) {
+    console.error("POST /api/merchants error:", error);
+    return NextResponse.json({ error: "Ошибка создания" }, { status: 500 });
   }
-
-  const body = await req.json();
-  const { name, email, phone, address, description, status } = body;
-
-  if (!name?.trim()) {
-    return NextResponse.json({ error: "Название обязательно" }, { status: 400 });
-  }
-
-  const merchant = await prisma.merchant.create({
-    data: {
-      name,
-      email: email || null,
-      phone: phone || null,
-      address: address || null,
-      description: description || null,
-      status: status || "ACTIVE",
-    },
-  });
-
-  return NextResponse.json(merchant, { status: 201 });
 }

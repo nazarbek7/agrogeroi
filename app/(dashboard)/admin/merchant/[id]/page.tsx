@@ -34,6 +34,7 @@ export default function MerchantDetailPage({ params }: MerchantDetailPageProps) 
 
   const [merchant, setMerchant] = useState<Merchant | null>(null);
   const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState<{ id: string; email: string; name: string | null }[]>([]);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,6 +42,7 @@ export default function MerchantDetailPage({ params }: MerchantDetailPageProps) 
     address: "",
     description: "",
     status: "ACTIVE",
+    userId: "",
   });
 
   const router = useRouter();
@@ -67,6 +69,7 @@ export default function MerchantDetailPage({ params }: MerchantDetailPageProps) 
         address: data.address || "",
         description: data.description || "",
         status: data.status || "ACTIVE",
+        userId: data.user?.id || "",
       });
     } catch (error) {
       console.error("Error fetching merchant:", error);
@@ -78,6 +81,9 @@ export default function MerchantDetailPage({ params }: MerchantDetailPageProps) 
 
   useEffect(() => {
     fetchMerchant();
+    apiClient.get("/api/users").then(r => r.json()).then(data => {
+      setUsers(Array.isArray(data) ? data : []);
+    });
   }, [id]);
 
   const handleInputChange = (
@@ -237,6 +243,35 @@ export default function MerchantDetailPage({ params }: MerchantDetailPageProps) 
                 className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-300 h-32"
               ></textarea>
             </div>
+
+            {/* User linking */}
+            <div className="md:col-span-2 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+              <label className="block text-gray-700 font-semibold mb-1">
+                🔗 Аккаунт пользователя (для входа продавца)
+              </label>
+              <p className="text-sm text-gray-500 mb-3">
+                Привяжите аккаунт — продавец сможет войти и видеть только свои товары и заказы.
+              </p>
+              <select
+                name="userId"
+                value={formData.userId}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-brand"
+              >
+                <option value="">— Не привязан —</option>
+                {users.map((u) => (
+                  <option key={u.id} value={u.id}>
+                    {u.name ? `${u.name} (${u.email})` : u.email}
+                  </option>
+                ))}
+              </select>
+              {formData.userId && (
+                <p className="text-xs text-amber-700 mt-2">
+                  ⚠️ При сохранении роль этого пользователя изменится на "merchant"
+                </p>
+              )}
+            </div>
+
             <div className="md:col-span-2">
               <button
                 type="submit"
