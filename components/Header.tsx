@@ -142,24 +142,36 @@ const Header = () => {
       {/* Обычный хедер */}
       {!pathname.startsWith("/admin") && (
         <>
-          <div className="bg-white flex items-center justify-between px-16 max-[1320px]:px-10 max-md:px-6 max-lg:flex-col max-lg:gap-y-4 max-lg:justify-center py-4 max-w-screen-2xl mx-auto">
-            <Link href="/" className="flex-shrink-0">
-              <Image
-                src="/agrogeroi_logo.svg"
-                width={200}
-                height={200}
-                alt="Agrogeroi logo"
-                className="h-14 w-auto max-[1023px]:h-12"
-              />
-            </Link>
-            <div className="flex-1 mx-8 max-lg:w-full max-lg:mx-0">
-              <SearchInput />
+          <div className="bg-white max-w-screen-2xl mx-auto px-16 max-[1320px]:px-10 max-md:px-4 py-3">
+            {/* Строка 1: лого + (поиск на десктопе) + иконки */}
+            <div className="flex items-center justify-between gap-x-4">
+              <Link href="/" className="flex-shrink-0">
+                <Image
+                  src="/agrogeroi_logo.svg"
+                  width={200}
+                  height={200}
+                  alt="Agrogeroi logo"
+                  className="h-12 w-auto max-md:h-9"
+                />
+              </Link>
+
+              {/* Поиск — только на десктопе в этой строке */}
+              <div className="flex-1 mx-6 hidden lg:block">
+                <SearchInput />
+              </div>
+
+              {/* Иконки — всегда */}
+              <div className="flex gap-x-4 max-md:gap-x-3 items-center flex-shrink-0">
+                <NotificationBell />
+                <HeartElement wishQuantity={wishQuantity} />
+                <CartElement />
+                {session && <ProfileDropdown />}
+              </div>
             </div>
-            <div className="flex gap-x-6 items-center flex-shrink-0">
-              <NotificationBell />
-              <HeartElement wishQuantity={wishQuantity} />
-              <CartElement />
-              {session && <ProfileDropdown />}
+
+            {/* Строка 2: поиск — только на мобильном */}
+            <div className="mt-3 lg:hidden">
+              <SearchInput />
             </div>
           </div>
           {/* Навигация */}

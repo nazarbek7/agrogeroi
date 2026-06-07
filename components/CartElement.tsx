@@ -20,7 +20,7 @@ const CartElement = () => {
     <div className="relative">
             <Link href="/cart">
               <FaCartShopping className="text-2xl text-black" />
-              <span className="block w-6 h-6 bg-brand-dark text-white rounded-full flex justify-center items-center absolute top-[-17px] right-[-22px]">
+              <span className="block w-5 h-5 text-xs font-bold bg-brand-dark text-white rounded-full flex justify-center items-center absolute -top-2 -right-2">
                 { allQuantity }
               </span>
             </Link>

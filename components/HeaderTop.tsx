@@ -2,9 +2,9 @@
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
+import { FaRegUser, FaRightToBracket, FaUserPlus } from "react-icons/fa6";
+import { FaWhatsapp, FaTelegram, FaInstagram, FaPhoneAlt } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { FaHeadphones, FaRegEnvelope, FaRegUser } from "react-icons/fa6";
-import { FaWhatsapp, FaTelegram, FaInstagram } from "react-icons/fa";
 
 const HeaderTop = () => {
   const { data: session }: any = useSession();
@@ -15,58 +15,62 @@ const HeaderTop = () => {
   };
 
   return (
-    <div className="h-10 text-white bg-brand max-lg:px-5 max-lg:h-16 max-[573px]:px-0">
-      <div className="flex justify-between h-full max-lg:flex-col max-lg:justify-center max-lg:items-center max-w-screen-2xl mx-auto px-12 max-[573px]:px-0">
-        <ul className="flex items-center h-full gap-x-5 max-[370px]:text-sm max-[370px]:gap-x-2">
-          <li className="flex items-center gap-x-2 font-semibold">
-            <FaHeadphones className="text-white" />
-            <span>+996 708 00 00 08</span>
+    <div className="h-10 text-white bg-brand">
+      <div className="flex justify-between items-center h-full max-w-screen-2xl mx-auto px-12 max-[1320px]:px-6 max-md:px-4">
+
+        {/* Лево: телефон + соцсети */}
+        <ul className="flex items-center gap-x-4 max-md:gap-x-3">
+          <li>
+            <a href="tel:+996708000008" className="flex items-center gap-x-1.5 font-semibold hover:opacity-80">
+              <FaPhoneAlt className="text-sm" />
+              {/* Номер только на десктопе */}
+              <span className="max-md:hidden">+996 708 00 00 08</span>
+            </a>
           </li>
-          <li className="flex items-center gap-x-2 font-semibold">
+          <li>
             <a href="https://wa.me/996708000008" target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-1 hover:opacity-80">
-              <FaWhatsapp className="text-white text-lg" />
-              <span>WhatsApp</span>
+              <FaWhatsapp className="text-lg" />
+              <span className="max-md:hidden">WhatsApp</span>
             </a>
           </li>
-          <li className="flex items-center gap-x-2 font-semibold">
+          <li>
             <a href="https://t.me/agrogeroi" target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-1 hover:opacity-80">
-              <FaTelegram className="text-white text-lg" />
-              <span>Telegram</span>
+              <FaTelegram className="text-lg" />
+              <span className="max-md:hidden">Telegram</span>
             </a>
           </li>
-          <li className="flex items-center gap-x-2 font-semibold">
+          <li>
             <a href="https://www.instagram.com/agrogeroi/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-1 hover:opacity-80">
-              <FaInstagram className="text-white text-lg" />
-              <span>Instagram</span>
+              <FaInstagram className="text-lg" />
+              <span className="max-md:hidden">Instagram</span>
             </a>
           </li>
         </ul>
-        <ul className="flex items-center gap-x-5 h-full max-[370px]:text-sm max-[370px]:gap-x-2 font-semibold">
+
+        {/* Право: auth */}
+        <ul className="flex items-center gap-x-4 max-md:gap-x-3 font-semibold">
           {!session ? (
             <>
-              <li className="flex items-center">
-                <Link href="/login" className="flex items-center gap-x-2 font-semibold">
-                  <FaRegUser className="text-white" />
-                  <span>Войти</span>
+              <li>
+                <Link href="/login" className="flex items-center gap-x-1.5 hover:opacity-80" title="Войти">
+                  <FaRightToBracket />
+                  <span className="max-md:hidden">Войти</span>
                 </Link>
               </li>
-              <li className="flex items-center">
-                <Link href="/register" className="flex items-center gap-x-2 font-semibold">
-                  <FaRegUser className="text-white" />
-                  <span>Регистрация</span>
+              <li>
+                <Link href="/register" className="flex items-center gap-x-1.5 hover:opacity-80" title="Регистрация">
+                  <FaUserPlus />
+                  <span className="max-md:hidden">Регистрация</span>
                 </Link>
               </li>
             </>
           ) : (
-            <>
-              <span className="ml-10 text-base">{session.user?.email}</span>
-              <li className="flex items-center">
-                <button onClick={() => handleLogout()} className="flex items-center gap-x-2 font-semibold">
-                  <FaRegUser className="text-white" />
-                  <span>Выйти</span>
-                </button>
-              </li>
-            </>
+            <li>
+              <button onClick={handleLogout} className="flex items-center gap-x-1.5 hover:opacity-80" title="Выйти">
+                <FaRegUser />
+                <span className="max-md:hidden">Выйти</span>
+              </button>
+            </li>
           )}
         </ul>
       </div>
