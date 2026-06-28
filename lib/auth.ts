@@ -113,8 +113,16 @@ export const authOptions: NextAuthOptions = {
     },
     async jwt({ token, user, trigger, session }: any) {
       if (user) {
-        token.role = user.role;
-        token.id = user.id;
+        const email = user.email ?? token.email;
+        // Google login — user.role не задан, грузим из БД
+        if (!user.role && email) {
+          const dbUser = await prisma.user.findFirst({ where: { email } });
+          token.role = dbUser?.role ?? "user";
+          token.id = dbUser?.id ?? user.id;
+        } else {
+          token.role = user.role;
+          token.id = user.id;
+        }
         token.image = user.image ?? null;
         token.name = user.name ?? null;
         token.iat = Math.floor(Date.now() / 1000);
