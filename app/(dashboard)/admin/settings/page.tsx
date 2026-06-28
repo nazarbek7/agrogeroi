@@ -1,11 +1,35 @@
 "use client";
 import { DashboardSidebar } from "@/components";
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaWhatsapp, FaTelegram, FaInstagram, FaSave } from "react-icons/fa";
+import { FaPhone, FaEnvelope, FaLocationDot, FaClock, FaWhatsapp, FaTelegram, FaInstagram, FaFloppyDisk } from "react-icons/fa6";
+
+const Field = ({ label, value, onChange, icon: Icon, type = "text" }: {
+  label: string; value: string; onChange: (v: string) => void;
+  icon?: any; type?: string;
+}) => (
+  <div className="flex flex-col gap-1.5">
+    <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide flex items-center gap-1.5">
+      {Icon && <Icon className="text-gray-400 text-xs" />} {label}
+    </label>
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full rounded-xl border border-gray-200 px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all bg-white"
+    />
+  </div>
+);
+
+const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <h2 className="text-sm font-bold text-gray-900 mb-5 pb-3 border-b border-gray-100">{title}</h2>
+    <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">{children}</div>
+  </div>
+);
 
 const SettingsPage = () => {
-  const [settings, setSettings] = useState({
+  const [s, setS] = useState({
     storeName: "Агрогерои",
     phone: "+996 708 00 00 08",
     email: "info@agrogeroi.kg",
@@ -18,69 +42,49 @@ const SettingsPage = () => {
     deliveryFee: "500",
     minOrderAmount: "1000",
   });
-
-  const handleSave = () => {
-    toast.success("Настройки сохранены!");
-  };
-
-  const Field = ({ label, value, field, icon: Icon, type = "text" }: any) => (
-    <div>
-      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-        {Icon && <Icon className="text-brand" />} {label}
-      </label>
-      <input
-        type={type}
-        className="input input-bordered w-full max-w-md"
-        value={value}
-        onChange={(e) => setSettings({ ...settings, [field]: e.target.value })}
-      />
-    </div>
-  );
+  const set = (key: string) => (v: string) => setS((prev) => ({ ...prev, [key]: v }));
 
   return (
     <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
-      <div className="flex-1 flex flex-col gap-y-8 max-xl:px-5 w-full pt-6 pb-10 max-w-2xl">
-        <h1 className="text-3xl font-bold text-gray-800">Настройки магазина</h1>
+      <div className="flex-1 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-xl font-bold text-gray-900">Настройки магазина</h1>
+          <button
+            onClick={() => toast.success("Настройки сохранены!")}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand text-white text-sm font-semibold hover:bg-brand-dark transition-all"
+          >
+            <FaFloppyDisk className="text-xs" /> Сохранить
+          </button>
+        </div>
 
-        {/* Основная информация */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">Основная информация</h2>
-          <div className="flex flex-col gap-y-4">
-            <Field label="Название магазина" field="storeName" value={settings.storeName} icon={null} />
-            <Field label="Телефон" field="phone" value={settings.phone} icon={FaPhone} />
-            <Field label="Email" field="email" value={settings.email} icon={FaEnvelope} type="email" />
-            <Field label="Адрес" field="address" value={settings.address} icon={FaMapMarkerAlt} />
-            <Field label="Часы работы" field="workingHours" value={settings.workingHours} icon={FaClock} />
-          </div>
-        </section>
+        <div className="flex flex-col gap-5 max-w-3xl">
+          <Section title="Основная информация">
+            <div className="col-span-2 max-sm:col-span-1">
+              <Field label="Название магазина" value={s.storeName} onChange={set("storeName")} />
+            </div>
+            <Field label="Телефон" value={s.phone} onChange={set("phone")} icon={FaPhone} />
+            <Field label="Email" value={s.email} onChange={set("email")} icon={FaEnvelope} type="email" />
+            <div className="col-span-2 max-sm:col-span-1">
+              <Field label="Адрес" value={s.address} onChange={set("address")} icon={FaLocationDot} />
+            </div>
+            <div className="col-span-2 max-sm:col-span-1">
+              <Field label="Часы работы" value={s.workingHours} onChange={set("workingHours")} icon={FaClock} />
+            </div>
+          </Section>
 
-        {/* Социальные сети */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">Социальные сети</h2>
-          <div className="flex flex-col gap-y-4">
-            <Field label="WhatsApp" field="whatsapp" value={settings.whatsapp} icon={FaWhatsapp} />
-            <Field label="Telegram" field="telegram" value={settings.telegram} icon={FaTelegram} />
-            <Field label="Instagram" field="instagram" value={settings.instagram} icon={FaInstagram} />
-          </div>
-        </section>
+          <Section title="Социальные сети">
+            <Field label="WhatsApp" value={s.whatsapp} onChange={set("whatsapp")} icon={FaWhatsapp} />
+            <Field label="Telegram" value={s.telegram} onChange={set("telegram")} icon={FaTelegram} />
+            <Field label="Instagram" value={s.instagram} onChange={set("instagram")} icon={FaInstagram} />
+          </Section>
 
-        {/* Настройки заказов */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">Заказы и доставка</h2>
-          <div className="flex flex-col gap-y-4">
-            <Field label="Валюта" field="currency" value={settings.currency} icon={null} />
-            <Field label="Стоимость доставки (сом)" field="deliveryFee" value={settings.deliveryFee} icon={null} type="number" />
-            <Field label="Минимальная сумма заказа (сом)" field="minOrderAmount" value={settings.minOrderAmount} icon={null} type="number" />
-          </div>
-        </section>
-
-        <button
-          onClick={handleSave}
-          className="flex items-center gap-2 bg-brand hover:bg-brand-dark text-white font-bold py-3 px-8 rounded-lg transition-colors w-fit"
-        >
-          <FaSave /> Сохранить настройки
-        </button>
+          <Section title="Заказы и доставка">
+            <Field label="Валюта" value={s.currency} onChange={set("currency")} />
+            <Field label="Стоимость доставки" value={s.deliveryFee} onChange={set("deliveryFee")} type="number" />
+            <Field label="Мин. сумма заказа" value={s.minOrderAmount} onChange={set("minOrderAmount")} type="number" />
+          </Section>
+        </div>
       </div>
     </div>
   );
