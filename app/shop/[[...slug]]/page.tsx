@@ -5,6 +5,28 @@ import { Breadcrumb, Filters, Pagination, SortBy } from "@/components";
 import Products from "@/components/Products";
 import React from "react";
 import { sanitize } from "@/lib/sanitize";
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug?: string[] }>;
+}): Promise<Metadata> {
+  const awaitedParams = await params;
+  const raw = awaitedParams?.slug?.[0];
+  const category = raw
+    ? sanitize(raw.includes("-") ? raw.split("-").join(" ") : decodeURIComponent(raw))
+    : null;
+
+  const title = category
+    ? `${category} — Каталог Agrogeroi`
+    : "Каталог растений — Agrogeroi";
+  const description = category
+    ? `Купить ${category.toLowerCase()} в питомнике Agrogeroi. Широкий выбор, доставка по Кыргызстану.`
+    : "Розы, хвойные, плодовые деревья, кустарники и многолетние цветы. Питомник растений Agrogeroi.";
+
+  return { title, description };
+}
 
 const improveCategoryText = (text: string): string =>
   text.includes("-") ? text.split("-").join(" ") : text;

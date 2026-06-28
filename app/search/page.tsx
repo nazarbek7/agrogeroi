@@ -2,6 +2,8 @@ import { ProductItem, SectionTitle } from "@/components";
 import prisma from "@/utils/db";
 import React from "react";
 import { sanitize } from "@/lib/sanitize";
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Поиск — Agrogeroi" };
 
 interface Props {
   searchParams: Promise<{ search: string }>;

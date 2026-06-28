@@ -4,6 +4,7 @@ import prisma from "@/utils/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
+import type { Metadata } from "next";
 
 interface ImageItem {
   imageID: string;
@@ -13,6 +14,24 @@ interface ImageItem {
 
 interface SingleProductPageProps {
   params: Promise<{ productSlug: string }>;
+}
+
+export async function generateMetadata({ params }: SingleProductPageProps): Promise<Metadata> {
+  const { productSlug } = await params;
+  const product = await prisma.product.findUnique({
+    where: { slug: productSlug },
+    select: { title: true, description: true, manufacturer: true },
+  });
+  if (!product) return { title: "Товар не найден — Agrogeroi" };
+
+  const desc = product.description
+    ? product.description.replace(/<[^>]+>/g, "").slice(0, 160)
+    : `Купить ${product.title} в питомнике Agrogeroi. Доставка по Кыргызстану.`;
+
+  return {
+    title: `${product.title} — Agrogeroi`,
+    description: desc,
+  };
 }
 
 const SingleProductPage = async ({ params }: SingleProductPageProps) => {

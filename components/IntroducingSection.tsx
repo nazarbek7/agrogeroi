@@ -3,7 +3,7 @@ import React from "react";
 
 const IntroducingSection = () => {
   return (
-    <div className="py-24 bg-gradient-to-br from-brand via-brand/90 to-[#3a5c1f] relative overflow-hidden">
+    <div className="py-24 max-lg:py-12 max-sm:py-8 bg-gradient-to-br from-brand via-brand/90 to-[#3a5c1f] relative overflow-hidden border-t border-white/10">
       {/* Decorative rings */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="w-[600px] h-[600px] rounded-full border border-white/5 absolute" />
