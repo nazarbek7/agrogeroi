@@ -12,59 +12,60 @@ const ProductItem = ({
   const isDark = color !== "black";
 
   return (
-    <div
-      className={`group flex flex-col w-full rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 ${
-        isDark ? "bg-white/15 hover:bg-white/25 border border-white/20" : "bg-white hover:scale-[1.02]"
+    <Link
+      href={`/product/${product.slug}`}
+      className={`group flex flex-col w-full rounded-2xl overflow-hidden transition-all duration-300 ${
+        isDark
+          ? "bg-white/10 hover:bg-white/20 border border-white/15 hover:border-white/30 hover:-translate-y-1"
+          : "bg-white border border-gray-100 hover:border-gray-200 hover:-translate-y-1 hover:shadow-xl shadow-sm"
       }`}
     >
       {/* Image */}
-      <Link href={`/product/${product.slug}`} className="block overflow-hidden">
-        <div className="relative w-full h-52 bg-[#e8f5e1] flex items-center justify-center overflow-hidden">
-          <Image
-            src={
-              product.mainImage && product.mainImage !== "product_placeholder.jpg"
-                ? `/${product.mainImage}`
-                : "/product_placeholder.jpg"
-            }
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            alt={product?.title || "Фото товара"}
-          />
-        </div>
-      </Link>
+      <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-50">
+        <Image
+          src={
+            product.mainImage && product.mainImage !== "product_placeholder.jpg"
+              ? `/${product.mainImage}`
+              : "/product_placeholder.jpg"
+          }
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          alt={product?.title || "Фото товара"}
+        />
+      </div>
 
       {/* Info */}
-      <div className="flex flex-col flex-1 p-4 gap-2">
-        <Link
-          href={`/product/${product.slug}`}
-          className={`text-base font-semibold leading-snug line-clamp-2 hover:underline ${
-            isDark ? "text-white" : "text-gray-800"
+      <div className="flex flex-col flex-1 p-4 gap-3">
+        <p
+          className={`text-sm font-semibold leading-snug line-clamp-2 ${
+            isDark ? "text-white/90" : "text-gray-800"
           }`}
         >
           {product.title}
-        </Link>
-
-        <p
-          className={`text-xl font-bold mt-auto ${
-            isDark ? "text-white" : "text-brand"
-          }`}
-        >
-          {product.price.toLocaleString("ru-RU")} сом
         </p>
 
-        <Link
-          href={`/product/${product.slug}`}
-          className={`mt-2 self-start px-5 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2 ${
-            isDark
-              ? "bg-green-400 text-white hover:bg-green-300"
-              : "bg-brand text-white hover:opacity-90 shadow-sm"
-          }`}
-        >
-          Смотреть →
-        </Link>
+        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100/20">
+          <span
+            className={`text-lg font-bold ${
+              isDark ? "text-white" : "text-brand"
+            }`}
+          >
+            {product.price.toLocaleString("ru-RU")} сом
+          </span>
+
+          <span
+            className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
+              isDark
+                ? "bg-white/20 text-white group-hover:bg-green-400 group-hover:text-white"
+                : "bg-brand/10 text-brand group-hover:bg-brand group-hover:text-white"
+            }`}
+          >
+            Подробнее
+          </span>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

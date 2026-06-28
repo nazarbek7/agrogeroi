@@ -23,15 +23,9 @@ const SingleProductDynamicFields = ({ product }: { product: Product }) => {
         setQuantityCount={setQuantityCount}
       />
       {Boolean(product.inStock) && (
-        <div className="flex gap-x-5 max-[500px]:flex-col max-[500px]:items-center max-[500px]:gap-y-1">
-          <AddToCartSingleProductBtn
-            quantityCount={quantityCount}
-            product={product}
-          />
-          <BuyNowSingleProductBtn
-            quantityCount={quantityCount}
-            product={product}
-          />
+        <div className="flex gap-3 w-full">
+          <AddToCartSingleProductBtn quantityCount={quantityCount} product={product} />
+          <BuyNowSingleProductBtn quantityCount={quantityCount} product={product} />
         </div>
       )}
     </>

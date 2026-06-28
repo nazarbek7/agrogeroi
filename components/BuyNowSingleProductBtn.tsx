@@ -36,7 +36,7 @@ const BuyNowSingleProductBtn = ({
   return (
     <button
       onClick={handleAddToCart}
-      className="btn w-[200px] text-lg border border-blue-500 hover:border-blue-500 border-1 font-normal bg-brand text-white hover:bg-white hover:scale-110 hover:text-brand transition-all uppercase ease-in max-[500px]:w-full"
+      className="flex-1 px-6 py-3.5 rounded-2xl bg-brand text-white font-bold text-sm tracking-wide hover:bg-brand-dark transition-all duration-200 active:scale-95 shadow-md hover:shadow-lg min-w-0"
     >
       Купить сейчас
     </button>

@@ -3,13 +3,15 @@ import ProductItem from "./ProductItem";
 import prisma from "@/utils/db";
 
 const Products = async ({ params, searchParams }: { params: { slug?: string[] }, searchParams: { [key: string]: string | string[] | undefined } }) => {
-  const inStockChecked = searchParams?.inStock === "true";
-  const outOfStockChecked = searchParams?.outOfStock === "true";
+  // when no filter params present (first nav click), show everything
+  const hasParams = Object.keys(searchParams ?? {}).length > 0;
+  const inStockChecked = hasParams ? searchParams?.inStock === "true" : true;
+  const outOfStockChecked = hasParams ? searchParams?.outOfStock === "true" : true;
   const page = searchParams?.page ? Number(searchParams?.page) : 1;
   const maxPrice = Number(searchParams?.price) || 0;
   const minRating = Number(searchParams?.rating) || 0;
   const sort = (searchParams?.sort as string) || "";
-  const categorySlug = params?.slug?.[0] || "";
+  const categorySlug = params?.slug?.[0] ? decodeURIComponent(params.slug[0]) : "";
 
   const sortMap: Record<string, object> = {
     titleAsc:  { title: "asc" },
@@ -17,7 +19,7 @@ const Products = async ({ params, searchParams }: { params: { slug?: string[] },
     lowPrice:  { price: "asc" },
     highPrice: { price: "desc" },
   };
-  const orderBy = sortMap[sort] || { title: "asc" };
+  const orderBy = sortMap[sort] || { createdAt: "desc" };
 
   const where: any = {};
 

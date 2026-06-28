@@ -1,13 +1,3 @@
-// *********************
-// Role of the component: Filters on shop page
-// Name of the component: Filters.tsx
-// Developer: Aleksandar Kuzmanovic
-// Version: 1.0
-// Component call: <Filters />
-// Input parameters: no input parameters
-// Output: stock, rating and price filter
-// *********************
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -16,17 +6,15 @@ import { useSortStore } from "@/app/_zustand/sortStore";
 import { usePaginationStore } from "@/app/_zustand/paginationStore";
 
 interface InputCategory {
-  inStock: { text: string, isChecked: boolean },
-  outOfStock: { text: string, isChecked: boolean },
-  priceFilter: { text: string, value: number },
-  ratingFilter: { text: string, value: number },
+  inStock: { text: string; isChecked: boolean };
+  outOfStock: { text: string; isChecked: boolean };
+  priceFilter: { text: string; value: number };
+  ratingFilter: { text: string; value: number };
 }
 
 const Filters = () => {
   const pathname = usePathname();
   const { replace } = useRouter();
-
-  // getting current page number from Zustand store
   const { page } = usePaginationStore();
 
   const [inputCategory, setInputCategory] = useState<InputCategory>({
@@ -39,7 +27,6 @@ const Filters = () => {
 
   useEffect(() => {
     const params = new URLSearchParams();
-    // setting URL params and after that putting them all in URL
     params.set("outOfStock", inputCategory.outOfStock.isChecked.toString());
     params.set("inStock", inputCategory.inStock.isChecked.toString());
     params.set("rating", inputCategory.ratingFilter.value.toString());
@@ -50,87 +37,98 @@ const Filters = () => {
   }, [inputCategory, sortBy, page]);
 
   return (
-    <div>
-      <h3 className="text-2xl mb-2">Фильтры</h3>
-      <div className="divider"></div>
-      <div className="flex flex-col gap-y-1">
-        <h3 className="text-xl mb-2">Наличие</h3>
-        <div className="form-control">
-          <label className="cursor-pointer flex items-center">
-            <input
-              type="checkbox"
-              checked={inputCategory.inStock.isChecked}
-              onChange={() =>
-                setInputCategory({
-                  ...inputCategory,
-                  inStock: {
-                    text: "instock",
-                    isChecked: !inputCategory.inStock.isChecked,
-                  },
-                })
-              }
-              className="checkbox"
-            />
-            <span className="label-text text-lg ml-2 text-black">В наличии</span>
-          </label>
-        </div>
+    <aside className="flex flex-col gap-6">
+      <h3 className="text-base font-bold text-gray-900 uppercase tracking-wider">Фильтры</h3>
 
-        <div className="form-control">
-          <label className="cursor-pointer flex items-center">
-            <input
-              type="checkbox"
-              checked={inputCategory.outOfStock.isChecked}
-              onChange={() =>
-                setInputCategory({
-                  ...inputCategory,
-                  outOfStock: {
-                    text: "outofstock",
-                    isChecked: !inputCategory.outOfStock.isChecked,
-                  },
-                })
-              }
-              className="checkbox"
-            />
-            <span className="label-text text-lg ml-2 text-black">
-              Нет в наличии
-            </span>
-          </label>
-        </div>
-      </div>
-
-      <div className="divider"></div>
-      <div className="flex flex-col gap-y-1">
-        <h3 className="text-xl mb-2">Цена</h3>
-        <div>
-          <input
-            type="range"
-            min={0}
-            max={3000}
-            step={10}
-            value={inputCategory.priceFilter.value}
-            className="range"
-            onChange={(e) =>
+      {/* Наличие */}
+      <div className="flex flex-col gap-3">
+        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Наличие</p>
+        {[
+          {
+            label: "В наличии",
+            checked: inputCategory.inStock.isChecked,
+            onChange: () =>
               setInputCategory({
                 ...inputCategory,
-                priceFilter: {
-                  text: "price",
-                  value: Number(e.target.value),
-                },
-              })
-            }
-          />
-          <span>{`Макс. цена: ${inputCategory.priceFilter.value} сом`}</span>
-        </div>
+                inStock: { text: "instock", isChecked: !inputCategory.inStock.isChecked },
+              }),
+          },
+          {
+            label: "Нет в наличии",
+            checked: inputCategory.outOfStock.isChecked,
+            onChange: () =>
+              setInputCategory({
+                ...inputCategory,
+                outOfStock: { text: "outofstock", isChecked: !inputCategory.outOfStock.isChecked },
+              }),
+          },
+        ].map((item) => (
+          <label key={item.label} className="flex items-center gap-3 cursor-pointer group">
+            <span
+              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0 ${
+                item.checked
+                  ? "bg-brand border-brand"
+                  : "border-gray-300 bg-white group-hover:border-brand/50"
+              }`}
+              onClick={item.onChange}
+            >
+              {item.checked && (
+                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
+                  <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </span>
+            <input type="checkbox" className="sr-only" checked={item.checked} onChange={item.onChange} />
+            <span className="text-sm text-gray-700 select-none">{item.label}</span>
+          </label>
+        ))}
       </div>
 
-      <div className="divider"></div>
+      <div className="h-px bg-gray-100" />
 
-      <div>
-        <h3 className="text-xl mb-2">Минимальный рейтинг:</h3>
+      {/* Цена */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Макс. цена</p>
+          <span className="text-sm font-bold text-brand">
+            {inputCategory.priceFilter.value.toLocaleString("ru-RU")} сом
+          </span>
+        </div>
         <input
           type="range"
           min={0}
-          max="5"
+          max={3000}
+          step={10}
+          value={inputCategory.priceFilter.value}
+          onChange={(e) =>
+            setInputCategory({
+              ...inputCategory,
+              priceFilter: { text: "price", value: Number(e.target.value) },
+            })
+          }
+          className="filter-range"
+        />
+        <div className="flex justify-between text-xs text-gray-400">
+          <span>0 сом</span>
+          <span>3 000 сом</span>
+        </div>
+      </div>
+
+      <div className="h-px bg-gray-100" />
+
+      {/* Рейтинг */}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Мин. рейтинг</p>
+          <span className="text-sm font-bold text-brand">
+            {inputCategory.ratingFilter.value === 0 ? "Любой" : `${inputCategory.ratingFilter.value}★`}
+          </span>
+        </div>
+        <input
+          type="range"
+          min={0}
+          max={5}
+          step={1}
           value={inputCategory.ratingFilter.value}
           onChange={(e) =>
             setInputCategory({
@@ -138,19 +136,15 @@ const Filters = () => {
               ratingFilter: { text: "rating", value: Number(e.target.value) },
             })
           }
-          className="range range-info"
-          step="1"
+          className="filter-range"
         />
-        <div className="w-full flex justify-between text-xs px-2">
-          <span>0</span>
-          <span>1</span>
-          <span>2</span>
-          <span>3</span>
-          <span>4</span>
-          <span>5</span>
+        <div className="flex justify-between text-xs text-gray-400">
+          {[0, 1, 2, 3, 4, 5].map((n) => (
+            <span key={n}>{n}</span>
+          ))}
         </div>
       </div>
-    </div>
+    </aside>
   );
 };
 
