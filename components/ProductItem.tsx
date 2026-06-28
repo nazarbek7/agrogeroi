@@ -2,6 +2,7 @@ import Image from "next/image";
 import React from "react";
 import Link from "next/link";
 import { imgSrc } from "@/utils/imgSrc";
+import AddToCartButton from "./AddToCartButton";
 
 const ProductItem = ({
   product,
@@ -84,15 +85,13 @@ const ProductItem = ({
             )}
           </div>
 
-          <span
-            className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${
-              isDark
-                ? "bg-white/20 text-white group-hover:bg-green-400 group-hover:text-white"
-                : "bg-brand/10 text-brand group-hover:bg-brand group-hover:text-white"
-            }`}
-          >
-            Подробнее
-          </span>
+          <AddToCartButton
+            id={product.id}
+            title={product.title}
+            price={discountedPrice ?? product.price}
+            image={imgSrc(product.mainImage)}
+            isDark={isDark}
+          />
         </div>
       </div>
     </Link>

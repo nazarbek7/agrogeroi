@@ -64,7 +64,7 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-screen-2xl mx-auto px-16 max-[1320px]:px-10 max-md:px-4 py-8">
 
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">

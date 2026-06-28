@@ -43,8 +43,13 @@ const Products = async ({ params, searchParams }: { params: { slug?: string[] },
     where.rating = { gte: minRating };
   }
 
-  if (isBestsellerFilter) where.isBestseller = true;
-  if (isNewFilter) where.isNew = true;
+  if (isBestsellerFilter && isNewFilter) {
+    where.OR = [{ isBestseller: true }, { isNew: true }];
+  } else if (isBestsellerFilter) {
+    where.isBestseller = true;
+  } else if (isNewFilter) {
+    where.isNew = true;
+  }
   where.isActive = true;
 
   if (categorySlug && categorySlug !== "undefined") {
