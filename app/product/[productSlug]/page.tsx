@@ -1,11 +1,7 @@
-import {
-  StockAvailabillity,
-  UrgencyText,
-  ProductTabs,
-  SingleProductDynamicFields,
-} from "@/components";
+import { StockAvailabillity, ProductTabs, SingleProductDynamicFields } from "@/components";
+import ProductImageGallery from "@/components/ProductImageGallery";
 import prisma from "@/utils/db";
-import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -22,63 +18,110 @@ interface SingleProductPageProps {
 const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   const { productSlug } = await params;
 
-  const product = await prisma.product.findUnique({ where: { slug: productSlug } });
+  const product = await prisma.product.findUnique({
+    where: { slug: productSlug },
+    include: { category: { select: { name: true } } },
+  });
+  if (!product) notFound();
 
-  if (!product) {
-    notFound();
-  }
+  const PLANT_CATEGORIES = new Set([
+    "Розы", "Гортензии", "Хвойные деревья и кустарники",
+    "Лиственные деревья", "Лиственные кустарники",
+    "Плодовые деревья и кустарники", "Лианы", "Цветы многолетние",
+  ]);
+  const isPlant = PLANT_CATEGORIES.has((product as any).category?.name ?? "");
 
-  let images: ImageItem[] = [];
+  let extraImages: ImageItem[] = [];
   try {
-    images = await prisma.image.findMany({ where: { productID: product.id } }) as any;
+    extraImages = (await prisma.image.findMany({ where: { productID: product.id } })) as any;
   } catch {
     // no extra images — that's fine
   }
 
+  const allImages = [
+    { id: "main", src: product.mainImage ? `/${product.mainImage}` : "/product_placeholder.jpg" },
+    ...extraImages.map((img) => ({ id: img.imageID, src: `/${img.image}` })),
+  ];
+
   return (
-    <div className="bg-white">
-      <div className="max-w-screen-2xl mx-auto">
-        <div className="flex justify-center gap-x-16 pt-10 max-lg:flex-col items-center gap-y-5 px-5">
-          <div>
-            <Image
-              src={product?.mainImage ? `/${product?.mainImage}` : "/product_placeholder.jpg"}
-              width={500}
-              height={500}
-              alt={product?.title || "Фото товара"}
-              className="w-auto h-auto"
-            />
-            {images.length > 0 && (
-              <div className="flex justify-around mt-5 flex-wrap gap-y-1 max-[500px]:justify-center max-[500px]:gap-x-1">
-                {images.map((imageItem: ImageItem, key: number) => (
-                  <Image
-                    key={imageItem.imageID + key}
-                    src={`/${imageItem.image}`}
-                    width={100}
-                    height={100}
-                    alt="Дополнительное фото"
-                    className="w-auto h-auto"
-                  />
-                ))}
+    <div className="bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8">
+          <Link href="/" className="hover:text-brand transition-colors">Главная</Link>
+          <span>/</span>
+          <Link href="/shop" className="hover:text-brand transition-colors">Каталог</Link>
+          <span>/</span>
+          <span className="text-gray-600 font-medium truncate max-w-[200px]">{product.title}</span>
+        </nav>
+
+        {/* Product grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 lg:gap-12 items-start">
+
+          {/* Gallery */}
+          <ProductImageGallery images={allImages} title={product.title} />
+
+          {/* Info panel */}
+          <div className="lg:sticky lg:top-6 flex flex-col gap-5">
+
+            {/* Title + stock */}
+            <div className="flex flex-col gap-3">
+              <StockAvailabillity stock={product.inStock} inStock={product.inStock as any} />
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">
+                {product.title}
+              </h1>
+            </div>
+
+            {/* Price */}
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-extrabold text-brand">
+                {product.price.toLocaleString("ru-RU")}
+              </span>
+              <span className="text-xl font-semibold text-brand/80">сом</span>
+            </div>
+
+            <div className="h-px bg-gray-200" />
+
+            {/* Quantity + CTA */}
+            <SingleProductDynamicFields product={product as any} />
+
+            <div className="h-px bg-gray-200" />
+
+            {/* Meta */}
+            {product.manufacturer && (
+              <div className="flex items-center gap-3 text-sm">
+                <span className="text-gray-400 w-28 shrink-0">Производитель</span>
+                <span className="font-semibold text-gray-800">{product.manufacturer}</span>
               </div>
             )}
-          </div>
-          <div className="flex flex-col gap-y-7 text-black max-[500px]:text-center">
-            <h1 className="text-3xl">{product?.title}</h1>
-            <p className="text-2xl font-bold text-brand">{product?.price} сом</p>
-            <StockAvailabillity stock={product?.inStock} inStock={product?.inStock} />
-            <SingleProductDynamicFields product={product} />
-            <div className="flex flex-col gap-y-2 max-[500px]:items-center">
-              {product?.manufacturer && (
-                <p className="text-lg text-gray-600">
-                  Производитель: <span className="font-semibold text-black">{product.manufacturer}</span>
-                </p>
-              )}
+
+            {/* Trust badges */}
+            <div className="grid grid-cols-3 gap-3 mt-1">
+              {[
+                { icon: "🚚", label: "Быстрая\nдоставка" },
+                { icon: "✅", label: "Гарантия\nкачества" },
+                { icon: "💬", label: "Онлайн\nконсультация" },
+              ].map((b) => (
+                <div
+                  key={b.label}
+                  className="flex flex-col items-center gap-2 bg-white rounded-2xl py-4 px-2 border border-gray-100 shadow-sm text-center"
+                >
+                  <span className="text-2xl">{b.icon}</span>
+                  <span className="text-[11px] text-gray-500 font-medium leading-tight whitespace-pre-line">
+                    {b.label}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-        <div className="py-16">
-          <ProductTabs product={product} />
+
+        {/* Tabs section */}
+        <div className="mt-14 bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+          <ProductTabs product={product as any} isPlant={isPlant} categoryName={(product as any).category?.name ?? ""} />
         </div>
+
       </div>
     </div>
   );
