@@ -24,8 +24,8 @@ const Header = () => {
   const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const handleLogout = () => {
-    setTimeout(() => signOut(), 1000);
     toast.success("Вы вышли из системы");
+    setTimeout(() => signOut({ callbackUrl: "/" }), 800);
   };
 
   useEffect(() => {
