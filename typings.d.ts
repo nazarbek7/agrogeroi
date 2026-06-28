@@ -14,6 +14,7 @@ interface Product {
   discountPercent: number;
   isBestseller: boolean;
   isNew: boolean;
+  isActive: boolean;
   createdAt: string | null;
   updatedAt: string | null;
 }

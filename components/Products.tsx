@@ -45,6 +45,7 @@ const Products = async ({ params, searchParams }: { params: { slug?: string[] },
 
   if (isBestsellerFilter) where.isBestseller = true;
   if (isNewFilter) where.isNew = true;
+  where.isActive = true;
 
   if (categorySlug && categorySlug !== "undefined") {
     const category = await prisma.category.findFirst({

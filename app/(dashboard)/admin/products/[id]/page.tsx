@@ -300,6 +300,24 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
               </div>
             </div>
 
+            {/* Видимость */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-4">
+              <h2 className="text-sm font-bold text-gray-900 pb-3 border-b border-gray-100">Видимость</h2>
+              <label className="flex items-center justify-between cursor-pointer p-3.5 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors">
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Активный товар</p>
+                  <p className="text-xs text-gray-500 mt-0.5">Показывать товар в каталоге магазина</p>
+                </div>
+                <div className="relative">
+                  <input type="checkbox" className="sr-only peer"
+                    checked={product?.isActive ?? true}
+                    onChange={(e) => setProduct({ ...product!, isActive: e.target.checked })} />
+                  <div className="w-10 h-6 bg-gray-200 rounded-full peer-checked:bg-brand transition-colors" />
+                  <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
+                </div>
+              </label>
+            </div>
+
             {/* Бейджи и акции */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-4">
               <h2 className="text-sm font-bold text-gray-900 pb-3 border-b border-gray-100">Бейджи и акции</h2>
