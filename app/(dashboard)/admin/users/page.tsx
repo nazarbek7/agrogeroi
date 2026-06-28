@@ -45,6 +45,7 @@ const DashboardUsers = () => {
               <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin" />
             </div>
           ) : (
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50">
@@ -80,6 +81,7 @@ const DashboardUsers = () => {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

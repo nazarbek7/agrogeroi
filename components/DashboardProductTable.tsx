@@ -169,9 +169,9 @@ const DashboardProductTable = () => {
                       </td>
                       <td className="px-5 py-3.5">
                         {product?.inStock ? (
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">В наличии</span>
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 whitespace-nowrap">В наличии</span>
                         ) : (
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">Нет</span>
+                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 whitespace-nowrap">Нет</span>
                         )}
                       </td>
                       <td className="px-5 py-3.5 font-semibold text-gray-900">

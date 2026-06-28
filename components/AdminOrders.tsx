@@ -47,6 +47,7 @@ const AdminOrders = () => {
         ) : orders.length === 0 ? (
           <div className="text-center py-20 text-gray-400 text-sm">Заказов пока нет</div>
         ) : (
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 bg-gray-50">
@@ -106,6 +107,7 @@ const AdminOrders = () => {
               })}
             </tbody>
           </table>
+          </div>
         )}
       </div>
     </div>
