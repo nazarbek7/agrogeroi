@@ -1,6 +1,6 @@
 import prisma from "@/utils/db";
 
-export const metadata = { title: "Вакансии — Агрогерои" };
+export const metadata = { title: "Вакансии — Agrogeroi" };
 
 export default async function VacanciesPage() {
   let vacancies: any[] = [];

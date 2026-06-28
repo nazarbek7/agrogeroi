@@ -25,7 +25,10 @@ model Product {
   inStock         Int                      @default(1)
   isOnSale        Boolean                  @default(false)
   discountPercent Int                      @default(0)
+  isBestseller    Boolean                  @default(false)
+  isNew           Boolean                  @default(true)
   createdAt       DateTime?                @default(now())
+  updatedAt       DateTime?                @updatedAt
   characteristics Json?
   categoryId      String
   category       Category                 @relation(fields: [categoryId], references: [id], onDelete: Cascade)

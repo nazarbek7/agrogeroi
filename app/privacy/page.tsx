@@ -1,4 +1,4 @@
-export const metadata = { title: "Политика конфиденциальности — Агрогерои" };
+export const metadata = { title: "Политика конфиденциальности — Agrogeroi" };
 
 export default function PrivacyPage() {
   return (

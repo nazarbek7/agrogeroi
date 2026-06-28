@@ -22,6 +22,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
   const [uploadingMain, setUploadingMain] = useState(false);
   const [uploadingExtra, setUploadingExtra] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
+  const [activeImageId, setActiveImageId] = useState<string | null>(null);
   const savedProduct = useRef<Product | null>(null);
   const router = useRouter();
 
@@ -126,6 +127,24 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
     }
   };
 
+  const setAsMain = async (img: OtherImages) => {
+    try {
+      const res = await fetch(`/api/products/${id}/swap-main`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ extraImageId: img.imageID }),
+      });
+      if (res.ok) {
+        await fetchProductData();
+        toast.success("Главное фото обновлено");
+      } else {
+        toast.error("Ошибка смены главного фото");
+      }
+    } catch {
+      toast.error("Ошибка смены главного фото");
+    }
+  };
+
   const fetchOtherImages = async () => {
     const res = await fetch(`/api/images/${id}`, { cache: "no-store" });
     const images = await res.json();
@@ -152,219 +171,245 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
     fetchProductData();
   }, [id]);
 
+  const inputCls = "w-full rounded-xl border border-gray-200 px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 transition-all bg-white";
+  const labelCls = "text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5";
+
   return (
     <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
-      <div className="flex-1 flex flex-col gap-y-7 w-full max-xl:px-5 pt-6 pb-10 px-6">
-        <h1 className="text-3xl font-semibold">Детали товара</h1>
+      <div className="flex-1 p-6 pb-12">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">Редактирование товара</h1>
+            {product && <p className="text-sm text-gray-500 mt-0.5 truncate max-w-xs">{product.title}</p>}
+          </div>
+          <div className="flex gap-2">
+            <button type="button" onClick={updateProduct} disabled={!isDirty}
+              className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                isDirty ? "bg-brand text-white hover:bg-brand-dark shadow-sm" : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              }`}>
+              {isDirty ? "Сохранить" : "Нет изменений"}
+            </button>
+            <button type="button" onClick={deleteProduct}
+              className="px-5 py-2.5 rounded-xl text-sm font-bold bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 transition-all">
+              Удалить
+            </button>
+          </div>
+        </div>
 
-        {/* Название */}
-        <label className="form-control w-full max-w-xs">
-          <div className="label"><span className="label-text">Название товара:</span></div>
-          <input type="text" className="input input-bordered w-full max-w-xs"
-            value={product?.title || ""}
-            onChange={(e) => setProduct({ ...product!, title: e.target.value })} />
-        </label>
+        <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
+          {/* Left column */}
+          <div className="flex flex-col gap-5">
+            {/* Основная информация */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-4">
+              <h2 className="text-sm font-bold text-gray-900 pb-3 border-b border-gray-100">Основная информация</h2>
 
-        {/* Цена */}
-        <label className="form-control w-full max-w-xs">
-          <div className="label"><span className="label-text">Цена (сом):</span></div>
-          <input type="number" className="input input-bordered w-full max-w-xs"
-            value={product?.price || ""}
-            onChange={(e) => setProduct({ ...product!, price: Number(e.target.value) })} />
-        </label>
+              <div>
+                <label className={labelCls}>Название товара</label>
+                <input type="text" className={inputCls} value={product?.title || ""}
+                  onChange={(e) => setProduct({ ...product!, title: e.target.value })} />
+              </div>
 
-        {/* Производитель */}
-        <label className="form-control w-full max-w-xs">
-          <div className="label"><span className="label-text">Производитель:</span></div>
-          <input type="text" className="input input-bordered w-full max-w-xs"
-            value={product?.manufacturer || ""}
-            onChange={(e) => setProduct({ ...product!, manufacturer: e.target.value })} />
-        </label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelCls}>Цена (сом)</label>
+                  <input type="number" className={inputCls} value={product?.price || ""}
+                    onChange={(e) => setProduct({ ...product!, price: Number(e.target.value) })} />
+                </div>
+                <div>
+                  <label className={labelCls}>Производитель</label>
+                  <input type="text" className={inputCls} value={product?.manufacturer || ""}
+                    onChange={(e) => setProduct({ ...product!, manufacturer: e.target.value })} />
+                </div>
+              </div>
 
-        {/* Slug */}
-        <label className="form-control w-full max-w-xs">
-          <div className="label"><span className="label-text">Slug:</span></div>
-          <input type="text" className="input input-bordered w-full max-w-xs"
-            value={product?.slug ? convertSlugToURLFriendly(product.slug) : ""}
-            onChange={(e) => setProduct({ ...product!, slug: convertSlugToURLFriendly(e.target.value) })} />
-        </label>
+              <div>
+                <label className={labelCls}>Slug (URL)</label>
+                <input type="text" className={inputCls}
+                  value={product?.slug ? convertSlugToURLFriendly(product.slug) : ""}
+                  onChange={(e) => setProduct({ ...product!, slug: convertSlugToURLFriendly(e.target.value) })} />
+              </div>
 
-        {/* Наличие */}
-        <label className="form-control w-full max-w-xs">
-          <div className="label"><span className="label-text">Наличие:</span></div>
-          <select className="select select-bordered"
-            value={product?.inStock ?? 1}
-            onChange={(e) => setProduct({ ...product!, inStock: Number(e.target.value) })}>
-            <option value={1}>В наличии</option>
-            <option value={0}>Нет в наличии</option>
-          </select>
-        </label>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className={labelCls}>Наличие</label>
+                  <select className={inputCls} value={product?.inStock ?? 1}
+                    onChange={(e) => setProduct({ ...product!, inStock: Number(e.target.value) })}>
+                    <option value={1}>В наличии</option>
+                    <option value={0}>Нет в наличии</option>
+                  </select>
+                </div>
+                <div>
+                  <label className={labelCls}>Категория</label>
+                  <select className={inputCls} value={product?.categoryId || ""}
+                    onChange={(e) => setProduct({ ...product!, categoryId: e.target.value })}>
+                    {categories?.map((cat) => (
+                      <option key={cat.id} value={cat.id}>{formatCategoryName(cat.name)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
 
-        {/* Категория */}
-        <label className="form-control w-full max-w-xs">
-          <div className="label"><span className="label-text">Категория:</span></div>
-          <select className="select select-bordered"
-            value={product?.categoryId || ""}
-            onChange={(e) => setProduct({ ...product!, categoryId: e.target.value })}>
-            {categories?.map((cat) => (
-              <option key={cat.id} value={cat.id}>{formatCategoryName(cat.name)}</option>
-            ))}
-          </select>
-        </label>
+              <div>
+                <label className={labelCls}>Описание</label>
+                <textarea rows={7} className={inputCls + " resize-y min-h-[120px]"}
+                  value={product?.description || ""}
+                  onChange={(e) => setProduct({ ...product!, description: e.target.value })} />
+              </div>
+            </div>
 
-        {/* Все фото: главное + дополнительные в одной строке */}
-        <div className="flex flex-col gap-y-3">
-          <span className="label-text font-medium">
-            Фотографии товара: {1 + otherImages.length} / 7
-          </span>
-          <div className="flex flex-wrap gap-3">
+            {/* Бейджи и акции */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col gap-4">
+              <h2 className="text-sm font-bold text-gray-900 pb-3 border-b border-gray-100">Бейджи и акции</h2>
 
-            {/* Главное фото — первое в ряду */}
-            {product?.mainImage ? (
-              <div className="relative group w-28 h-28">
-                <img
-                  src={`/${product.mainImage}`}
-                  alt="главное фото"
-                  className="w-28 h-28 object-cover rounded-lg border-2 border-brand"
-                />
-                <span className="absolute top-1 left-1 text-[10px] bg-brand text-white px-1.5 py-0.5 rounded font-semibold leading-none pointer-events-none">
-                  Главное
-                </span>
-                {/* Удалить главное фото */}
-                <button
-                  onClick={() => setProduct((p) => ({ ...p!, mainImage: "" }))}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="Удалить"
-                >✕</button>
-                {/* Клик по картинке — заменить фото */}
-                <label className="absolute inset-0 cursor-pointer rounded-lg" title="Заменить фото">
+              {/* Новинка */}
+              <label className="flex items-center justify-between cursor-pointer p-3.5 rounded-xl border border-brand/20 bg-brand/5 hover:bg-brand/10 transition-colors">
+                <div>
+                  <p className="text-sm font-semibold text-brand">Новинка</p>
+                  <p className="text-xs text-brand/60 mt-0.5">Показывать бейдж «Новинка» на карточке</p>
+                </div>
+                <div className="relative">
+                  <input type="checkbox" className="sr-only peer"
+                    checked={product?.isNew ?? false}
+                    onChange={(e) => setProduct({ ...product!, isNew: e.target.checked })} />
+                  <div className="w-10 h-6 bg-gray-200 rounded-full peer-checked:bg-brand transition-colors" />
+                  <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
+                </div>
+              </label>
+
+              {/* Хит продаж */}
+              <label className="flex items-center justify-between cursor-pointer p-3.5 rounded-xl border border-orange-100 bg-orange-50 hover:bg-orange-100/50 transition-colors">
+                <div>
+                  <p className="text-sm font-semibold text-orange-700">Хит продаж</p>
+                  <p className="text-xs text-orange-500 mt-0.5">Показывать бейдж «Хит продаж» на карточке</p>
+                </div>
+                <div className="relative">
+                  <input type="checkbox" className="sr-only peer"
+                    checked={product?.isBestseller ?? false}
+                    onChange={(e) => setProduct({ ...product!, isBestseller: e.target.checked })} />
+                  <div className="w-10 h-6 bg-gray-200 rounded-full peer-checked:bg-orange-500 transition-colors" />
+                  <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
+                </div>
+              </label>
+
+              {/* На акции */}
+              <label className="flex items-center justify-between cursor-pointer p-3.5 rounded-xl border border-red-100 bg-red-50 hover:bg-red-100/50 transition-colors">
+                <div>
+                  <p className="text-sm font-semibold text-red-700">На акции</p>
+                  <p className="text-xs text-red-400 mt-0.5">Показывать скидку на карточке товара</p>
+                </div>
+                <div className="relative">
+                  <input type="checkbox" className="sr-only peer"
+                    checked={product?.isOnSale ?? false}
+                    onChange={(e) => setProduct({ ...product!, isOnSale: e.target.checked })} />
+                  <div className="w-10 h-6 bg-gray-200 rounded-full peer-checked:bg-red-500 transition-colors" />
+                  <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform peer-checked:translate-x-4" />
+                </div>
+              </label>
+
+              {product?.isOnSale && (
+                <div>
+                  <label className={labelCls}>Скидка (%)</label>
+                  <input type="number" min={0} max={100} className={inputCls}
+                    value={product?.discountPercent ?? 0}
+                    onChange={(e) => setProduct({ ...product!, discountPercent: Number(e.target.value) })} />
+                  <p className="text-xs text-gray-400 mt-1">
+                    Цена со скидкой: {product.price && product.discountPercent
+                      ? Math.round(product.price * (1 - product.discountPercent / 100)).toLocaleString("ru-RU")
+                      : "—"} сом
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right column — photos */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 className="text-sm font-bold text-gray-900 pb-3 border-b border-gray-100 mb-4">
+              Фотографии товара <span className="text-gray-400 font-normal">{1 + otherImages.length} / 7</span>
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {/* Главное фото */}
+              {product?.mainImage ? (
+                <div className="relative group w-28 h-28">
+                  <label className={`cursor-pointer block w-28 h-28 ${uploadingMain ? "pointer-events-none opacity-50" : ""}`}>
+                    <img src={`/${product.mainImage}`} alt="главное фото"
+                      className="w-28 h-28 object-cover rounded-xl border-2 border-brand" />
+                    <span className="absolute inset-0 rounded-xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                      <span className="text-white text-[10px] font-bold">{uploadingMain ? "Загрузка..." : "Изменить"}</span>
+                    </span>
+                    <input type="file" accept="image/*" className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const filename = await uploadMainImage(file);
+                        if (filename) { setProduct((p) => ({ ...p!, mainImage: filename })); toast.success("Главное фото заменено"); }
+                        e.target.value = "";
+                      }} />
+                  </label>
+                  <span className="absolute top-1.5 left-1.5 text-[10px] bg-brand text-white px-1.5 py-0.5 rounded-full font-bold pointer-events-none z-10">Главное</span>
+                  <button
+                    type="button"
+                    onClick={() => setProduct((p) => ({ ...p!, mainImage: "" }))}
+                    className="absolute top-1 right-1 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity">✕
+                  </button>
+                </div>
+              ) : (
+                <label className={`flex items-center justify-center w-28 h-28 rounded-xl border-2 border-dashed border-brand cursor-pointer hover:bg-brand/5 transition-colors ${uploadingMain ? "opacity-50 pointer-events-none" : ""}`}>
+                  <div className="flex flex-col items-center gap-1 text-brand text-center">
+                    {uploadingMain ? <span className="text-xs">Загрузка...</span> : <><span className="text-3xl font-light">+</span><span className="text-xs leading-tight">Главное</span></>}
+                  </div>
                   <input type="file" accept="image/*" className="hidden"
                     onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (!file) return;
                       const filename = await uploadMainImage(file);
-                      if (filename) {
-                        setProduct((p) => ({ ...p!, mainImage: filename }));
-                        toast.success("Главное фото заменено");
-                      }
+                      if (filename) setProduct((p) => ({ ...p!, mainImage: filename }));
                       e.target.value = "";
                     }} />
                 </label>
-              </div>
-            ) : (
-              /* Пустой слот для главного фото */
-              <label className={`flex items-center justify-center w-28 h-28 rounded-lg border-2 border-dashed border-brand cursor-pointer hover:bg-brand/5 transition-colors ${uploadingMain ? "opacity-50 pointer-events-none" : ""}`}>
-                <div className="flex flex-col items-center gap-1 text-brand text-center">
-                  {uploadingMain ? (
-                    <span className="text-xs">Загрузка...</span>
-                  ) : (
-                    <>
-                      <span className="text-3xl font-light">+</span>
-                      <span className="text-xs leading-tight">Главное фото</span>
-                    </>
-                  )}
-                </div>
-                <input type="file" accept="image/*" className="hidden"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    const filename = await uploadMainImage(file);
-                    if (filename) setProduct((p) => ({ ...p!, mainImage: filename }));
-                    e.target.value = "";
-                  }} />
-              </label>
-            )}
+              )}
 
-            {/* Дополнительные фото */}
-            {otherImages.map((img) => (
-              <div key={img.imageID} className="relative group w-28 h-28">
-                <img
-                  src={`/${img.image}`}
-                  alt="доп. фото"
-                  className="w-28 h-28 object-cover rounded-lg border"
-                />
-                <button
-                  onClick={() => deleteExtraImage(img.imageID as any)}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="Удалить"
-                >✕</button>
-              </div>
-            ))}
+              {/* Дополнительные фото */}
+              {otherImages.map((img) => {
+                const imgKey = String(img.imageID);
+                const isActive = activeImageId === imgKey;
+                return (
+                  <div key={imgKey}
+                    className="relative group w-28 h-28"
+                    onClick={() => setActiveImageId(isActive ? null : imgKey)}>
+                    <img src={`/${img.image}`} alt="доп. фото" className="w-28 h-28 object-cover rounded-xl border border-gray-200" />
+                    <button type="button"
+                      onClick={(e) => { e.stopPropagation(); deleteExtraImage(img.imageID as any); }}
+                      className={`absolute top-1 right-1 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs transition-opacity ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>✕</button>
+                    <button type="button"
+                      onClick={(e) => { e.stopPropagation(); setAsMain(img); }}
+                      className={`absolute bottom-1 left-1 right-1 z-10 bg-black/65 text-white text-[10px] font-bold py-1 rounded-lg transition-opacity text-center leading-none ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                      Главным
+                    </button>
+                  </div>
+                );
+              })}
 
-            {/* Слот «Добавить фото» */}
-            {otherImages.length < 6 && (
-              <label className={`flex items-center justify-center w-28 h-28 rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-brand transition-colors ${uploadingExtra ? "opacity-50 pointer-events-none" : ""}`}>
-                <div className="flex flex-col items-center gap-1 text-gray-400 text-center">
-                  {uploadingExtra ? (
-                    <span className="text-xs">Загрузка...</span>
-                  ) : (
-                    <>
-                      <span className="text-3xl font-light">+</span>
-                      <span className="text-xs leading-tight">Добавить фото</span>
-                    </>
-                  )}
-                </div>
-                <input type="file" accept="image/*" multiple className="hidden"
-                  onChange={async (e) => {
-                    const files = Array.from(e.target.files || []);
-                    const remaining = 6 - otherImages.length;
-                    for (const file of files.slice(0, remaining)) {
-                      await uploadExtraImage(file);
-                    }
-                    e.target.value = "";
-                  }} />
-              </label>
-            )}
+              {/* Добавить фото */}
+              {otherImages.length < 6 && (
+                <label className={`flex items-center justify-center w-28 h-28 rounded-xl border-2 border-dashed border-gray-300 cursor-pointer hover:border-brand transition-colors ${uploadingExtra ? "opacity-50 pointer-events-none" : ""}`}>
+                  <div className="flex flex-col items-center gap-1 text-gray-400 text-center">
+                    {uploadingExtra ? <span className="text-xs">Загрузка...</span> : <><span className="text-3xl font-light">+</span><span className="text-xs leading-tight">Добавить</span></>}
+                  </div>
+                  <input type="file" accept="image/*" multiple className="hidden"
+                    onChange={async (e) => {
+                      const files = Array.from(e.target.files || []);
+                      for (const file of files.slice(0, 6 - otherImages.length)) await uploadExtraImage(file);
+                      e.target.value = "";
+                    }} />
+                </label>
+              )}
+            </div>
+            <p className="text-xs text-gray-400 mt-4">При наведении на доп. фото — кнопка «Главным» для замены или ✕ для удаления.</p>
           </div>
-          <p className="text-xs text-gray-400">Нажмите на главное фото, чтобы заменить его. При наведении — кнопка удаления.</p>
         </div>
-
-        {/* Акция / Скидка */}
-        <div className="flex flex-col gap-y-3 p-4 rounded-lg border border-orange-200 bg-orange-50 max-w-xs">
-          <p className="font-semibold text-orange-700">Акция / Скидка</p>
-          <label className="flex items-center gap-x-3 cursor-pointer">
-            <input type="checkbox" className="checkbox checkbox-warning"
-              checked={product?.isOnSale ?? false}
-              onChange={(e) => setProduct({ ...product!, isOnSale: e.target.checked })} />
-            <span className="label-text font-medium">Товар на акции</span>
-          </label>
-          {product?.isOnSale && (
-            <label className="form-control">
-              <div className="label"><span className="label-text">Скидка (%):</span></div>
-              <input type="number" min={0} max={100} className="input input-bordered w-full"
-                value={product?.discountPercent ?? 0}
-                onChange={(e) => setProduct({ ...product!, discountPercent: Number(e.target.value) })} />
-            </label>
-          )}
-        </div>
-
-        {/* Описание */}
-        <label className="form-control">
-          <div className="label"><span className="label-text">Описание:</span></div>
-          <textarea className="textarea textarea-bordered h-24"
-            value={product?.description || ""}
-            onChange={(e) => setProduct({ ...product!, description: e.target.value })} />
-        </label>
-
-        {/* Кнопки */}
-        <div className="flex gap-x-2 max-sm:flex-col">
-          <button type="button" onClick={updateProduct} disabled={!isDirty}
-            className={`uppercase px-10 py-5 text-lg font-bold text-white shadow-sm focus:outline-none focus:ring-2 transition-colors ${
-              isDirty
-                ? "bg-brand hover:bg-brand-dark cursor-pointer"
-                : "bg-gray-300 cursor-not-allowed"
-            }`}>
-            {isDirty ? "Сохранить изменения" : "Нет изменений"}
-          </button>
-          <button type="button" onClick={deleteProduct}
-            className="uppercase bg-red-600 px-10 py-5 text-lg font-bold text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2">
-            Удалить товар
-          </button>
-        </div>
-        <p className="text-xl max-sm:text-lg text-error">
-          Для удаления товара сначала удалите все его записи в заказах.
-        </p>
       </div>
     </div>
   );

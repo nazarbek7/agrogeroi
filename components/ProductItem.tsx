@@ -11,6 +11,11 @@ const ProductItem = ({
 }) => {
   const isDark = color !== "black";
 
+  const hasSaleDiscount = product.isOnSale && product.discountPercent > 0;
+  const discountedPrice = hasSaleDiscount
+    ? Math.round(product.price * (1 - product.discountPercent / 100))
+    : null;
+
   return (
     <Link
       href={`/product/${product.slug}`}
@@ -33,6 +38,25 @@ const ProductItem = ({
           className="object-cover group-hover:scale-105 transition-transform duration-500"
           alt={product?.title || "Фото товара"}
         />
+
+        {/* Badges */}
+        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
+          {product.isBestseller && (
+            <span className="bg-orange-500 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full shadow-sm">
+              Хит продаж
+            </span>
+          )}
+          {product.isNew && (
+            <span className="bg-brand text-white text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full shadow-sm">
+              Новинка
+            </span>
+          )}
+          {hasSaleDiscount && (
+            <span className="bg-red-500 text-white text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full shadow-sm">
+              -{product.discountPercent}%
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Info */}
@@ -46,13 +70,22 @@ const ProductItem = ({
         </p>
 
         <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-100/20">
-          <span
-            className={`text-lg font-bold ${
-              isDark ? "text-white" : "text-brand"
-            }`}
-          >
-            {product.price.toLocaleString("ru-RU")} сом
-          </span>
+          <div className="flex flex-col">
+            {discountedPrice ? (
+              <>
+                <span className={`text-lg font-bold ${isDark ? "text-white" : "text-brand"}`}>
+                  {discountedPrice.toLocaleString("ru-RU")} сом
+                </span>
+                <span className="text-xs text-gray-400 line-through">
+                  {product.price.toLocaleString("ru-RU")} сом
+                </span>
+              </>
+            ) : (
+              <span className={`text-lg font-bold ${isDark ? "text-white" : "text-brand"}`}>
+                {product.price.toLocaleString("ru-RU")} сом
+              </span>
+            )}
+          </div>
 
           <span
             className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all ${

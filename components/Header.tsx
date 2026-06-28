@@ -4,7 +4,7 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FaPen, FaRegUser } from "react-icons/fa6";
 import { MdDashboard } from "react-icons/md";
@@ -21,6 +21,7 @@ const Header = () => {
   const role = (session?.user as any)?.role;
   const isAdmin = role === "admin";
   const isMerchant = role === "merchant";
+  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const handleLogout = () => {
     setTimeout(() => signOut(), 1000);
@@ -31,7 +32,15 @@ const Header = () => {
     // wishlist fetch disabled temporarily
   }, [session?.user?.email, wishlist.length]);
 
-  const userImage = (session?.user as any)?.image;
+  useEffect(() => {
+    if (!session?.user?.email) { setProfileImage(null); return; }
+    fetch("/api/profile")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => { if (data?.image) setProfileImage(data.image); })
+      .catch(() => {});
+  }, [session?.user?.email]);
+
+  const userImage = profileImage || (session?.user as any)?.image;
 
   // Дропдаун профиля — показывается в обоих хедерах
   const ProfileDropdown = () => (
@@ -43,13 +52,8 @@ const Header = () => {
       >
         <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-brand bg-brand flex items-center justify-center">
           {userImage ? (
-            <Image
-              src={userImage}
-              alt="profile"
-              width={40}
-              height={40}
-              className="w-full h-full object-cover"
-            />
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={userImage} alt="profile" className="w-full h-full object-cover" />
           ) : (
             <FaRegUser className="text-white text-sm" />
           )}
@@ -64,13 +68,8 @@ const Header = () => {
           <div className="flex items-center gap-x-3">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-brand flex items-center justify-center">
               {userImage ? (
-                <Image
-                  src={userImage}
-                  alt="profile"
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-cover"
-                />
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={userImage} alt="profile" className="w-full h-full object-cover" />
               ) : (
                 <FaRegUser className="text-white" />
               )}

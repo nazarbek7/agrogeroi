@@ -1,7 +1,7 @@
 import prisma from "@/utils/db";
 import ProductItem from "@/components/ProductItem";
 
-export const metadata = { title: "Новинки — Агрогерои" };
+export const metadata = { title: "Новинки — Agrogeroi" };
 
 export default async function NewProductsPage() {
   let products: any[] = [];

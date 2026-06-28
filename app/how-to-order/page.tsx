@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const metadata = { title: "Как сделать заказ — Агрогерои" };
+export const metadata = { title: "Как сделать заказ — Agrogeroi" };
 
 const steps = [
   {

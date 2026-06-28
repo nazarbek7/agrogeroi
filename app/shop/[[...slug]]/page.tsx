@@ -26,7 +26,7 @@ const ShopPage = async ({
 
   return (
     <div className="bg-[#f7faf4] min-h-screen text-black">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-10 py-6">
+      <div className="max-w-screen-2xl mx-auto px-16 max-[1320px]:px-10 max-md:px-5 py-6">
         <Breadcrumb />
 
         <div className="mt-6 grid grid-cols-[220px_1fr] gap-8 max-md:grid-cols-1">

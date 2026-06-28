@@ -89,7 +89,7 @@ const DashboardProductTable = () => {
                         href={`/admin/products/${product.id}`}
                         className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand hover:text-brand-dark transition-colors"
                       >
-                        Подробнее <FaArrowRight className="text-[10px]" />
+                        Изменить <FaArrowRight className="text-[10px]" />
                       </Link>
                     </td>
                   </tr>

@@ -1,4 +1,4 @@
-export const metadata = { title: "Возврат товара — Агрогерои" };
+export const metadata = { title: "Возврат товара — Agrogeroi" };
 
 export default function ReturnsPage() {
   return (

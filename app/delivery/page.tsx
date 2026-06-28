@@ -1,4 +1,4 @@
-export const metadata = { title: "Доставка и оплата — Агрогерои" };
+export const metadata = { title: "Доставка и оплата — Agrogeroi" };
 
 export default function DeliveryPage() {
   return (

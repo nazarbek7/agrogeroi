@@ -42,20 +42,29 @@ export default function ProfilePage() {
     if (session) loadProfile();
   }, [session]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
       toast.error("Файл не должен превышать 2MB");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      setPreviewUrl(base64);
-      setImageUrl(base64);
-    };
-    reader.readAsDataURL(file);
+    // Show local preview immediately
+    setPreviewUrl(URL.createObjectURL(file));
+    // Upload to server
+    const formData = new FormData();
+    formData.append("uploadedFile", file);
+    try {
+      const res = await fetch("/api/profile-image", { method: "POST", body: formData });
+      if (res.ok) {
+        const data = await res.json();
+        setImageUrl(data.path);
+      } else {
+        toast.error("Ошибка загрузки фото");
+      }
+    } catch {
+      toast.error("Ошибка загрузки фото");
+    }
   };
 
   const handleUpdate = async (e: React.FormEvent) => {

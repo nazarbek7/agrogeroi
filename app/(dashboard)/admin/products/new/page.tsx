@@ -146,7 +146,7 @@ const AddNewProduct = () => {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Производитель / Поставщик</label>
           <input type="text" className="input input-bordered w-full" value={product.manufacturer}
-            placeholder="Напр.: Питомник Агрогерои"
+            placeholder="Напр.: Питомник Agrogeroi"
             onChange={(e) => setProduct({ ...product, manufacturer: e.target.value })} />
         </div>
 

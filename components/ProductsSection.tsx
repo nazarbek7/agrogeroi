@@ -2,6 +2,7 @@ import React from "react";
 import ProductItem from "./ProductItem";
 import prisma from "@/utils/db";
 import Link from "next/link";
+import { FaArrowRight, FaFire } from "react-icons/fa6";
 
 const ProductsSection = async () => {
   let products: any[] = [];
@@ -18,18 +19,21 @@ const ProductsSection = async () => {
   return (
     <section className="bg-[#f4f9f0] py-16">
       <div className="max-w-screen-2xl mx-auto px-10 max-sm:px-5">
+        {/* Header */}
         <div className="flex items-end justify-between mb-10 max-sm:flex-col max-sm:items-start max-sm:gap-3">
           <div>
-            <p className="text-brand text-sm font-bold uppercase tracking-widest mb-2">Ассортимент</p>
-            <h2 className="text-4xl font-extrabold text-gray-900 uppercase tracking-wide">
+            <span className="inline-flex items-center gap-2 text-brand text-sm font-bold uppercase tracking-widest mb-3 bg-brand/10 px-3 py-1.5 rounded-full">
+              <FaFire className="text-xs" /> Ассортимент
+            </span>
+            <h2 className="text-3xl font-extrabold text-gray-900">
               Популярные товары
             </h2>
           </div>
           <Link
             href="/shop"
-            className="text-brand font-semibold text-sm hover:underline flex items-center gap-1"
+            className="flex items-center gap-1.5 text-brand font-semibold text-sm hover:gap-2.5 transition-all"
           >
-            Смотреть все →
+            Смотреть все <FaArrowRight className="text-[10px]" />
           </Link>
         </div>
 

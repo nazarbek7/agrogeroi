@@ -2,7 +2,7 @@ import { FaWhatsapp, FaTelegram, FaInstagram } from "react-icons/fa";
 import { FaPhone, FaRegEnvelope, FaLocationDot } from "react-icons/fa6";
 
 export const metadata = {
-  title: "Контакты — Агрогерои",
+  title: "Контакты — Agrogeroi",
 };
 
 const ContactsPage = () => {

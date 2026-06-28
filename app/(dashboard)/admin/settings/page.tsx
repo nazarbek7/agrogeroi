@@ -30,7 +30,7 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 
 const SettingsPage = () => {
   const [s, setS] = useState({
-    storeName: "Агрогерои",
+    storeName: "Agrogeroi",
     phone: "+996 708 00 00 08",
     email: "info@agrogeroi.kg",
     address: "г. Бишкек, ул. Манаса 40",

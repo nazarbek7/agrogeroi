@@ -12,7 +12,7 @@ import SessionTimeoutWrapper from "@/components/SessionTimeoutWrapper";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Агрогерои — Питомник растений",
+  title: "Agrogeroi — Питомник растений",
   description: "Розы, хвойные, плодовые деревья, кустарники и многолетние цветы для вашего сада",
 };
 

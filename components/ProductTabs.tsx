@@ -134,7 +134,7 @@ const ProductTabs = ({ product, isPlant = false, categoryName = "" }: { product:
               <div className="flex items-center gap-4 bg-brand/5 border border-brand/10 rounded-2xl px-5 py-4">
                 <span className="text-3xl">🌿</span>
                 <div>
-                  <p className="text-sm font-bold text-brand">Питомник Агрогерои</p>
+                  <p className="text-sm font-bold text-brand">Питомник Agrogeroi</p>
                   <p className="text-xs text-gray-500 mt-0.5">
                     Все растения выращены в наших питомниках в Кыргызстане — адаптированы к местному климату
                   </p>

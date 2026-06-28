@@ -1,4 +1,4 @@
-export const metadata = { title: "О компании — Агрогерои" };
+export const metadata = { title: "О компании — Agrogeroi" };
 
 export default function AboutPage() {
   return (
@@ -10,7 +10,7 @@ export default function AboutPage() {
         <section>
           <h2 className="text-2xl font-bold text-brand mb-4">Кто мы</h2>
           <p className="text-gray-700 leading-relaxed text-lg">
-            <strong>Агрогерои</strong> — кыргызский питомник растений, основанный с целью сделать
+            <strong>Agrogeroi</strong> — кыргызский питомник растений, основанный с целью сделать
             садоводство доступным и приятным для каждого жителя Кыргызстана. Мы выращиваем
             растения сами — в нашем собственном питомнике на площади более 1 гектара.
           </p>

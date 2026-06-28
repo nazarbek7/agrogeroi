@@ -10,6 +10,8 @@ interface InputCategory {
   outOfStock: { text: string; isChecked: boolean };
   priceFilter: { text: string; value: number };
   ratingFilter: { text: string; value: number };
+  isBestseller: boolean;
+  isNew: boolean;
 }
 
 const Filters = () => {
@@ -22,6 +24,8 @@ const Filters = () => {
     outOfStock: { text: "outofstock", isChecked: true },
     priceFilter: { text: "price", value: 3000 },
     ratingFilter: { text: "rating", value: 0 },
+    isBestseller: false,
+    isNew: false,
   });
   const { sortBy } = useSortStore();
 
@@ -33,6 +37,8 @@ const Filters = () => {
     params.set("price", inputCategory.priceFilter.value.toString());
     params.set("sort", sortBy);
     params.set("page", page.toString());
+    if (inputCategory.isBestseller) params.set("isBestseller", "true");
+    if (inputCategory.isNew) params.set("isNew", "true");
     replace(`${pathname}?${params}`);
   }, [inputCategory, sortBy, page]);
 
@@ -112,6 +118,44 @@ const Filters = () => {
           <span>0 сом</span>
           <span>3 000 сом</span>
         </div>
+      </div>
+
+      <div className="h-px bg-gray-100" />
+
+      {/* Бейджи */}
+      <div className="flex flex-col gap-3">
+        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Товары</p>
+        {[
+          {
+            label: "Новинка",
+            checked: inputCategory.isNew,
+            color: "bg-brand border-brand",
+            onChange: () => setInputCategory({ ...inputCategory, isNew: !inputCategory.isNew }),
+          },
+          {
+            label: "Хит продаж",
+            checked: inputCategory.isBestseller,
+            color: "bg-orange-500 border-orange-500",
+            onChange: () => setInputCategory({ ...inputCategory, isBestseller: !inputCategory.isBestseller }),
+          },
+        ].map((item) => (
+          <label key={item.label} className="flex items-center gap-3 cursor-pointer group">
+            <span
+              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0 ${
+                item.checked ? item.color : "border-gray-300 bg-white group-hover:border-brand/50"
+              }`}
+              onClick={item.onChange}
+            >
+              {item.checked && (
+                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
+                  <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </span>
+            <input type="checkbox" className="sr-only" checked={item.checked} onChange={item.onChange} />
+            <span className="text-sm text-gray-700 select-none">{item.label}</span>
+          </label>
+        ))}
       </div>
 
       <div className="h-px bg-gray-100" />

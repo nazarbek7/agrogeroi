@@ -120,16 +120,20 @@ export const authOptions: NextAuthOptions = {
           token.role = dbUser?.role ?? "user";
           token.id = dbUser?.id ?? user.id;
           token.name = dbUser?.name ?? user.name ?? null;
+          const img = dbUser?.image ?? null;
+          token.image = img?.startsWith("data:") ? null : img;
         } else {
           token.role = user.role;
           token.id = user.id;
           token.name = user.name ?? null;
+          const img = (user as any).image ?? null;
+          token.image = img?.startsWith("data:") ? null : img;
         }
-        // Never store image in JWT — base64 images cause 700KB+ cookie overflow
       }
       if (trigger === "update" && session) {
         if (session.name !== undefined) token.name = session.name;
         if (session.email !== undefined) token.email = session.email;
+        if (session.image !== undefined) token.image = session.image;
       }
       return token;
     },
@@ -138,6 +142,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string;
         session.user.id = token.id as string;
         session.user.name = token.name as string ?? null;
+        session.user.image = (token.image as string) ?? session.user.image ?? null;
       }
       return session;
     },

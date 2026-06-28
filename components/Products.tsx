@@ -11,6 +11,8 @@ const Products = async ({ params, searchParams }: { params: { slug?: string[] },
   const maxPrice = Number(searchParams?.price) || 0;
   const minRating = Number(searchParams?.rating) || 0;
   const sort = (searchParams?.sort as string) || "";
+  const isBestsellerFilter = searchParams?.isBestseller === "true";
+  const isNewFilter = searchParams?.isNew === "true";
   const categorySlug = params?.slug?.[0] ? decodeURIComponent(params.slug[0]) : "";
 
   const sortMap: Record<string, object> = {
@@ -40,6 +42,9 @@ const Products = async ({ params, searchParams }: { params: { slug?: string[] },
   if (minRating > 0) {
     where.rating = { gte: minRating };
   }
+
+  if (isBestsellerFilter) where.isBestseller = true;
+  if (isNewFilter) where.isNew = true;
 
   if (categorySlug && categorySlug !== "undefined") {
     const category = await prisma.category.findFirst({

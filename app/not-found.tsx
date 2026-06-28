@@ -1,26 +1,45 @@
-import Link from 'next/link'
- 
+import Link from "next/link";
+import { FaLeaf } from "react-icons/fa6";
+
 export default function NotFound() {
   return (
-    <>
-      <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
-        <div className="text-center">
-          <p className="text-lg font-semibold bg-brand  text-white border border-1 border-black py-2 rounded-full w-16 mx-auto">404</p>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-black sm:text-5xl">Страница не найдена</h1>
-          <p className="mt-6 text-base leading-7 text-black">Извините, запрашиваемая страница не существует.</p>
-          <div className="mt-10 flex items-center justify-center gap-x-6 max-[350px]:flex-col max-[350px]:gap-y-5">
-            <Link
-              href="/"
-              className="rounded-md bg-brand border border-1 border-black px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:text-brand hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-            >
-              На главную
-            </Link>
-            <Link href="/contacts" className="text-sm font-semibold text-black hover:underline hover:underline-offset-4">
-              Поддержка <span aria-hidden="true">&rarr;</span>
-            </Link>
+    <main className="min-h-[70vh] flex items-center justify-center bg-[#f4f9f0] px-6 py-20">
+      <div className="text-center max-w-md">
+        {/* Icon */}
+        <div className="flex items-center justify-center mb-6">
+          <div className="w-20 h-20 rounded-2xl bg-brand/10 flex items-center justify-center">
+            <FaLeaf className="text-brand text-4xl" />
           </div>
         </div>
-      </main>
-    </>
-  )
+
+        {/* Badge */}
+        <span className="inline-block bg-brand/10 text-brand text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full mb-5">
+          Ошибка 404
+        </span>
+
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-3">
+          Страница не найдена
+        </h1>
+        <p className="text-gray-500 text-base leading-relaxed mb-8">
+          Извините, запрашиваемая страница не существует.<br />
+          Возможно, она была удалена или вы перешли по неверной ссылке.
+        </p>
+
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <Link
+            href="/"
+            className="bg-brand text-white font-bold px-7 py-3 rounded-xl hover:bg-brand-dark transition-colors shadow-sm"
+          >
+            На главную
+          </Link>
+          <Link
+            href="/contacts"
+            className="border border-gray-200 text-gray-700 font-semibold px-7 py-3 rounded-xl hover:bg-gray-50 transition-colors"
+          >
+            Поддержка →
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
 }

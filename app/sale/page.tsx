@@ -2,7 +2,7 @@ import prisma from "@/utils/db";
 import ProductItem from "@/components/ProductItem";
 import Link from "next/link";
 
-export const metadata = { title: "Акции и скидки — Агрогерои" };
+export const metadata = { title: "Акции и скидки — Agrogeroi" };
 
 export default async function SalePage() {
   let products: any[] = [];

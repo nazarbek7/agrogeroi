@@ -1,4 +1,4 @@
-export const metadata = { title: "Партнёры — Агрогерои" };
+export const metadata = { title: "Партнёры — Agrogeroi" };
 
 export default function PartnersPage() {
   return (

@@ -1,4 +1,4 @@
-export const metadata = { title: "Частые вопросы — Агрогерои" };
+export const metadata = { title: "Частые вопросы — Agrogeroi" };
 
 const faqs = [
   {
