@@ -102,7 +102,7 @@ const BulkUploadPage = () => {
   return (
     <div className="flex xl:flex-row flex-col justify-start items-start xl:h-[calc(100vh-64px)] overflow-hidden">
       <DashboardSidebar />
-      <div className="w-full xl:px-10 xl:py-8 p-4 overflow-y-auto h-full">
+      <div className="flex-1 w-full xl:px-10 xl:py-8 p-4 overflow-y-auto h-full">
         <h1 className="text-4xl font-bold mb-8">Массовая загрузка товаров</h1>
 
         {/* Инструкции */}

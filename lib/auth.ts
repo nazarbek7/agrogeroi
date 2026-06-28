@@ -31,8 +31,9 @@ export const authOptions: NextAuthOptions = {
         try {
           const user = await prisma.user.findFirst({ where: { email: credentials.email } });
           if (user) {
-            const ok = await bcrypt.compare(credentials.password, user.password!);
-            if (ok) return { id: user.id, email: user.email, role: user.role, name: user.name, image: user.image };
+            if (!user.password) throw new Error("google_account");
+            const ok = await bcrypt.compare(credentials.password, user.password);
+            if (ok) return { id: user.id, email: user.email, role: user.role, name: user.name };
           }
         } catch (err: any) {
           throw new Error(err);
@@ -114,46 +115,37 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, trigger, session }: any) {
       if (user) {
         const email = user.email ?? token.email;
-        // Google login — user.role не задан, грузим из БД
         if (!user.role && email) {
           const dbUser = await prisma.user.findFirst({ where: { email } });
           token.role = dbUser?.role ?? "user";
           token.id = dbUser?.id ?? user.id;
+          token.name = dbUser?.name ?? user.name ?? null;
         } else {
           token.role = user.role;
           token.id = user.id;
+          token.name = user.name ?? null;
         }
-        token.image = user.image ?? null;
-        token.name = user.name ?? null;
-        token.iat = Math.floor(Date.now() / 1000);
+        // Never store image in JWT — base64 images cause 700KB+ cookie overflow
       }
       if (trigger === "update" && session) {
-        if (session.image !== undefined) token.image = session.image;
         if (session.name !== undefined) token.name = session.name;
         if (session.email !== undefined) token.email = session.email;
       }
-      const now = Math.floor(Date.now() / 1000);
-      if (now - (token.iat as number) > 15 * 60) return {};
       return token;
     },
     async session({ session, token }: any) {
       if (token) {
         session.user.role = token.role as string;
         session.user.id = token.id as string;
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { image: true, name: true },
-        });
-        session.user.image = dbUser?.image ?? null;
-        session.user.name = dbUser?.name ?? null;
+        session.user.name = token.name as string ?? null;
       }
       return session;
     },
   },
 
   pages: { signIn: "/login", error: "/login" },
-  session: { strategy: "jwt", maxAge: 15 * 60, updateAge: 5 * 60 },
-  jwt: { maxAge: 15 * 60 },
+  session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 }, // 30 days
+  jwt: { maxAge: 30 * 24 * 60 * 60 },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === "development",
 };

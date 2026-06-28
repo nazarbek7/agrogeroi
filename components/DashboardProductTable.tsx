@@ -31,7 +31,7 @@ const DashboardProductTable = () => {
   }, []);
 
   return (
-    <div className="w-full pt-6 px-4">
+    <div className="flex-1 w-full pt-6 px-4">
       <h1 className="text-3xl font-semibold text-center mb-5">Все товары</h1>
       <div className="flex justify-end mb-5">
         <Link href="/admin/products/new">

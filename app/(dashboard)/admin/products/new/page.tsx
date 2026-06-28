@@ -92,9 +92,9 @@ const AddNewProduct = () => {
   }, []);
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col">
+    <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-6 xl:ml-5 max-xl:px-5 w-full pt-6 pb-10 max-w-2xl">
+      <div className="flex-1 flex flex-col gap-y-6 max-xl:px-5 w-full pt-6 pb-10 max-w-2xl">
         <h1 className="text-2xl font-bold text-gray-800">Добавить новый товар</h1>
 
         {/* Продавец */}

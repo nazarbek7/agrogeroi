@@ -197,6 +197,14 @@ model bulk_upload_item {
   error         String?
 }
 
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @map("_id")
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
 enum BulkUploadStatus {
   PENDING
   COMPLETED

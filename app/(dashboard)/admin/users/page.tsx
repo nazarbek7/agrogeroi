@@ -20,9 +20,9 @@ const DashboardUsers = () => {
   }, []);
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto h-full max-xl:flex-col max-xl:h-fit max-xl:gap-y-4">
+    <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
-      <div className="w-full pt-6 px-4">
+      <div className="flex-1 w-full pt-6 px-4">
         <h1 className="text-3xl font-semibold text-center mb-5">Все пользователи</h1>
         <div className="flex justify-end mb-5">
           <Link href="/admin/users/new">

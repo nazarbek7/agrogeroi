@@ -4,7 +4,7 @@ import React from "react";
 
 const DashboardOrdersPage = () => {
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto h-full max-xl:flex-col max-xl:h-fit">
+    <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
       <AdminOrders />
     </div>

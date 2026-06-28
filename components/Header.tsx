@@ -209,7 +209,7 @@ const Header = () => {
 
       {/* Хедер для /admin */}
       {pathname.startsWith("/admin") && (
-        <div className="flex justify-between h-16 bg-white items-center px-16 max-[1320px]:px-10 max-w-screen-2xl mx-auto max-[400px]:px-5 border-b-2 border-brand/20 shadow-sm">
+        <div className="flex justify-between h-16 bg-white items-center px-16 max-[1320px]:px-10 max-w-screen-2xl mx-auto max-[400px]:px-5 shadow-sm">
           <Link href="/">
             <Image
               src="/agrogeroi_logo.svg"

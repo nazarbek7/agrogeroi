@@ -41,8 +41,11 @@ const LoginPage = () => {
 
     const res = await signIn("credentials", { redirect: false, email, password });
     if (res?.error) {
-      setError("Неверный email или пароль");
-      toast.error("Неверный email или пароль");
+      const msg = res.error.includes("google_account")
+        ? "Этот аккаунт создан через Google. Войдите через кнопку «Войти через Google»."
+        : "Неверный email или пароль";
+      setError(msg);
+      toast.error(msg);
     } else {
       setError("");
       toast.success("Вы успешно вошли");
@@ -95,7 +98,7 @@ const LoginPage = () => {
                 <label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Пароль
                 </label>
-                <a href="#" className="text-xs text-brand hover:underline font-medium">
+                <a href="/forgot-password" className="text-xs text-brand hover:underline font-medium">
                   Забыли пароль?
                 </a>
               </div>

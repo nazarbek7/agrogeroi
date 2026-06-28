@@ -48,9 +48,9 @@ export default function EditVacancyPage({ params }: { params: Promise<{ id: stri
   if (!vacancy) return <div className="p-10 text-gray-400">Загрузка...</div>;
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
+    <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-6 xl:ml-5 w-full max-xl:px-5 pt-6 pr-6 max-w-2xl">
+      <div className="flex-1 flex flex-col gap-y-6 w-full max-xl:px-5 pt-6 pr-6 max-w-2xl">
         <h1 className="text-3xl font-semibold">Редактировать вакансию</h1>
 
         <label className="form-control w-full">

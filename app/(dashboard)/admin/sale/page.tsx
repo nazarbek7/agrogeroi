@@ -52,9 +52,9 @@ export default function AdminSalePage() {
   const regularProducts = products.filter(p => !p.isOnSale);
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
+    <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-6 xl:ml-5 w-full max-xl:px-5 pt-6 pr-6">
+      <div className="flex-1 flex flex-col gap-y-6 w-full max-xl:px-5 pt-6 pr-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Акции и скидки</h1>
           <span className="text-sm text-gray-500 bg-orange-50 border border-orange-200 px-3 py-1.5 rounded-lg">

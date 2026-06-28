@@ -68,9 +68,9 @@ const DashboardCreateNewUser = () => {
   };
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
+    <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:pl-5 max-xl:px-5 w-full pt-6">
+      <div className="flex-1 flex flex-col gap-y-7 max-xl:px-5 w-full pt-6">
         <h1 className="text-3xl font-semibold">Новый пользователь</h1>
         <div>
           <label className="form-control w-full max-w-xs">

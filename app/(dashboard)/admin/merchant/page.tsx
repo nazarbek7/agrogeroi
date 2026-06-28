@@ -42,7 +42,7 @@ export default function MerchantPage() {
   }, []);
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:min-h-full max-xl:flex-col max-xl:gap-y-5">
+    <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
       <div className="flex-1 px-8 pt-6 pb-10">
         <div className="flex justify-between items-center mb-6">

@@ -153,9 +153,9 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
   }, [id]);
 
   return (
-    <div className="bg-white flex justify-start max-w-screen-2xl mx-auto xl:h-full max-xl:flex-col max-xl:gap-y-5">
+    <div className="flex min-h-screen bg-gray-100 max-xl:flex-col">
       <DashboardSidebar />
-      <div className="flex flex-col gap-y-7 xl:ml-5 w-full max-xl:px-5 pt-6 pb-10 px-6">
+      <div className="flex-1 flex flex-col gap-y-7 w-full max-xl:px-5 pt-6 pb-10 px-6">
         <h1 className="text-3xl font-semibold">Детали товара</h1>
 
         {/* Название */}
