@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path from "path";
-import { nanoid } from "nanoid";
+import { uploadImage } from "@/lib/cloudinary";
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,14 +10,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Файл не выбран" }, { status: 400 });
     }
 
-    const ext = file.name.split(".").pop() || "jpg";
-    const filename = `${nanoid()}.${ext}`;
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const url = await uploadImage(buffer, "agrogeroi/products");
 
-    await writeFile(path.join(process.cwd(), "public", filename), buffer);
-
-    return NextResponse.json({ filename });
+    // Return both `filename` (used by existing code) and `url` pointing to Cloudinary
+    return NextResponse.json({ filename: url, url });
   } catch (error) {
     console.error("POST /api/main-image error:", error);
     return NextResponse.json({ error: "Ошибка загрузки файла" }, { status: 500 });

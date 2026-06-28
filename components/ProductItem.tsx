@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import Link from "next/link";
+import { imgSrc } from "@/utils/imgSrc";
 
 const ProductItem = ({
   product,
@@ -28,11 +29,7 @@ const ProductItem = ({
       {/* Image */}
       <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-50">
         <Image
-          src={
-            product.mainImage && product.mainImage !== "product_placeholder.jpg"
-              ? `/${product.mainImage}`
-              : "/product_placeholder.jpg"
-          }
+          src={imgSrc(product.mainImage)}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           className="object-cover group-hover:scale-105 transition-transform duration-500"

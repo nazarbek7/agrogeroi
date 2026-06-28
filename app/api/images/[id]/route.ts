@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/db";
-import { writeFile } from "fs/promises";
-import path from "path";
-import { nanoid } from "nanoid";
+import { uploadImage, deleteImage } from "@/lib/cloudinary";
 
 // GET /api/images/:productId — get all extra images for a product
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   try {
-    const images = await prisma.image.findMany({ where: { productID: id } });
+    const images = await prisma.image.findMany({
+      where: { productID: id },
+      orderBy: { order: "asc" },
+    });
     return NextResponse.json(images);
   } catch {
     return NextResponse.json({ error: "Ошибка сервера" }, { status: 500 });
@@ -26,15 +27,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "Файл не выбран" }, { status: 400 });
     }
 
-    const ext = file.name.split(".").pop() || "jpg";
-    const filename = `${nanoid()}.${ext}`;
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const url = await uploadImage(buffer, "agrogeroi/products/extra");
 
-    await writeFile(path.join(process.cwd(), "public", filename), buffer);
+    // Determine the next order index
+    const count = await prisma.image.count({ where: { productID } });
 
     const image = await prisma.image.create({
-      data: { productID, image: filename },
+      data: { productID, image: url, order: count },
     });
 
     return NextResponse.json(image, { status: 201 });
@@ -44,7 +44,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
 }
 
-// DELETE /api/images/:imageId — delete a specific image record (and file)
+// DELETE /api/images/:imageId — delete a specific image record
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id: imageID } = await params;
   try {
@@ -54,12 +54,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     }
 
     await prisma.image.delete({ where: { imageID } });
-
-    // Best-effort file deletion
-    try {
-      const { unlink } = await import("fs/promises");
-      await unlink(path.join(process.cwd(), "public", image.image));
-    } catch {}
+    await deleteImage(image.image);
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {

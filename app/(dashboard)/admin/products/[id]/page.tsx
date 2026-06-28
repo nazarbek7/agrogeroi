@@ -7,6 +7,7 @@ import {
   convertCategoryNameToURLFriendly as convertSlugToURLFriendly,
   formatCategoryName,
 } from "../../../../../utils/categoryFormating";
+import { imgSrc } from "../../../../../utils/imgSrc";
 
 interface DashboardProductDetailsProps {
   params: Promise<{ id: string }>;
@@ -23,6 +24,8 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
   const [uploadingExtra, setUploadingExtra] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [activeImageId, setActiveImageId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const dragIdRef = useRef<string | null>(null);
   const savedProduct = useRef<Product | null>(null);
   const router = useRouter();
 
@@ -127,6 +130,36 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
     }
   };
 
+  const handleDragStart = (imageID: string) => {
+    dragIdRef.current = imageID;
+  };
+
+  const handleDrop = async (targetId: string) => {
+    const sourceId = dragIdRef.current;
+    dragIdRef.current = null;
+    setDragOverId(null);
+    if (!sourceId || sourceId === targetId) return;
+
+    const sourceIdx = otherImages.findIndex((i) => String(i.imageID) === sourceId);
+    const targetIdx = otherImages.findIndex((i) => String(i.imageID) === targetId);
+    if (sourceIdx === -1 || targetIdx === -1) return;
+
+    const reordered = [...otherImages];
+    const [moved] = reordered.splice(sourceIdx, 1);
+    reordered.splice(targetIdx, 0, moved);
+    setOtherImages(reordered);
+
+    try {
+      await fetch("/api/images/reorder", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageIds: reordered.map((i) => i.imageID) }),
+      });
+    } catch {
+      toast.error("Ошибка сохранения порядка");
+    }
+  };
+
   const setAsMain = async (img: OtherImages) => {
     try {
       const res = await fetch(`/api/products/${id}/swap-main`, {
@@ -180,9 +213,17 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
       <div className="flex-1 p-6 pb-12">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">Редактирование товара</h1>
-            {product && <p className="text-sm text-gray-500 mt-0.5 truncate max-w-xs">{product.title}</p>}
+          <div className="flex items-center gap-3">
+            <button type="button" onClick={() => router.back()}
+              className="flex items-center justify-center w-9 h-9 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-gray-500 hover:text-gray-800 flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Редактирование товара</h1>
+              {product && <p className="text-sm text-gray-500 mt-0.5 truncate max-w-xs">{product.title}</p>}
+            </div>
           </div>
           <div className="flex gap-2">
             <button type="button" onClick={updateProduct} disabled={!isDirty}
@@ -334,7 +375,7 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
               {product?.mainImage ? (
                 <div className="relative group w-28 h-28">
                   <label className={`cursor-pointer block w-28 h-28 ${uploadingMain ? "pointer-events-none opacity-50" : ""}`}>
-                    <img src={`/${product.mainImage}`} alt="главное фото"
+                    <img src={imgSrc(product.mainImage)} alt="главное фото"
                       className="w-28 h-28 object-cover rounded-xl border-2 border-brand" />
                     <span className="absolute inset-0 rounded-xl bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                       <span className="text-white text-[10px] font-bold">{uploadingMain ? "Загрузка..." : "Изменить"}</span>
@@ -371,15 +412,30 @@ const DashboardProductDetails = ({ params }: DashboardProductDetailsProps) => {
                 </label>
               )}
 
-              {/* Дополнительные фото */}
+              {/* Дополнительные фото — с drag-and-drop для сортировки */}
               {otherImages.map((img) => {
                 const imgKey = String(img.imageID);
                 const isActive = activeImageId === imgKey;
+                const isDragOver = dragOverId === imgKey;
                 return (
                   <div key={imgKey}
-                    className="relative group w-28 h-28"
+                    draggable
+                    onDragStart={() => handleDragStart(imgKey)}
+                    onDragOver={(e) => { e.preventDefault(); setDragOverId(imgKey); }}
+                    onDragLeave={() => setDragOverId(null)}
+                    onDrop={() => handleDrop(imgKey)}
+                    onDragEnd={() => { dragIdRef.current = null; setDragOverId(null); }}
+                    className={`relative group w-28 h-28 cursor-grab active:cursor-grabbing transition-all ${isDragOver ? "scale-105 ring-2 ring-brand ring-offset-1 rounded-xl" : ""}`}
                     onClick={() => setActiveImageId(isActive ? null : imgKey)}>
-                    <img src={`/${img.image}`} alt="доп. фото" className="w-28 h-28 object-cover rounded-xl border border-gray-200" />
+                    <img src={imgSrc(img.image)} alt="доп. фото" className="w-28 h-28 object-cover rounded-xl border border-gray-200 pointer-events-none" />
+                    {/* Drag handle hint */}
+                    <div className="absolute top-1.5 left-1.5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      <div className="flex flex-col gap-0.5">
+                        <div className="flex gap-0.5">{[0,1].map(i=><div key={i} className="w-1 h-1 rounded-full bg-white/80 shadow"/>)}</div>
+                        <div className="flex gap-0.5">{[0,1].map(i=><div key={i} className="w-1 h-1 rounded-full bg-white/80 shadow"/>)}</div>
+                        <div className="flex gap-0.5">{[0,1].map(i=><div key={i} className="w-1 h-1 rounded-full bg-white/80 shadow"/>)}</div>
+                      </div>
+                    </div>
                     <button type="button"
                       onClick={(e) => { e.stopPropagation(); deleteExtraImage(img.imageID as any); }}
                       className={`absolute top-1 right-1 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs transition-opacity ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>✕</button>

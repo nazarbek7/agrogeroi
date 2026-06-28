@@ -39,8 +39,8 @@ const SingleProductPage = async ({ params }: SingleProductPageProps) => {
   }
 
   const allImages = [
-    { id: "main", src: product.mainImage ? `/${product.mainImage}` : "/product_placeholder.jpg" },
-    ...extraImages.map((img) => ({ id: img.imageID, src: `/${img.image}` })),
+    { id: "main", src: product.mainImage?.startsWith("http") ? product.mainImage : (product.mainImage ? `/${product.mainImage}` : "/product_placeholder.jpg") },
+    ...extraImages.map((img) => ({ id: img.imageID, src: img.image?.startsWith("http") ? img.image : `/${img.image}` })),
   ];
 
   return (

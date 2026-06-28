@@ -1,7 +1,7 @@
 "use client";
 import apiClient from "@/lib/api";
 import { sanitize } from "@/lib/sanitize";
-import Image from "next/image";
+import { imgSrc } from "@/utils/imgSrc";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaArrowRight, FaPlus } from "react-icons/fa6";
@@ -60,11 +60,10 @@ const DashboardProductTable = () => {
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
-                          <Image
-                            src={product?.mainImage ? `/${product.mainImage}` : "/product_placeholder.jpg"}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={imgSrc(product?.mainImage)}
                             alt={sanitize(product?.title) || ""}
-                            width={40}
-                            height={40}
                             className="w-full h-full object-cover"
                           />
                         </div>
