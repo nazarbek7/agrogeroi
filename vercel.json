@@ -2,7 +2,6 @@
   "experimentalServices": {
     "web": {
       "root": ".",
-      "mountPath": "/",
       "framework": "nextjs",
       "buildCommand": "npx prisma generate && next build",
       "installCommand": "npm install"
