@@ -57,8 +57,9 @@ const HowToOrder = () => {
                 className="relative flex flex-col items-center text-center"
               >
                 {/* Icon circle */}
-                <div className={`relative z-10 w-20 h-20 rounded-2xl ${step.bg} ring-4 ${step.ring} flex items-center justify-center mb-5 shadow-sm`}>
-                  <Icon className={`${step.color} text-2xl`} />
+                <div className={`relative z-10 w-20 h-20 rounded-2xl bg-white ring-4 ${step.ring} flex items-center justify-center mb-5 shadow-sm`}>
+                  <div className={`absolute inset-0 rounded-2xl ${step.bg}`} />
+                  <Icon className={`${step.color} text-2xl relative z-10`} />
                 </div>
 
                 {/* Step number badge */}
