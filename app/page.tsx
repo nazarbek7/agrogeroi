@@ -1,4 +1,4 @@
-import { CategoryMenu, Hero, Incentives, IntroducingSection, HowToOrder, NurserySection } from "@/components";
+import { FeaturedCategories, Hero, Incentives, HowToOrder, NurserySection } from "@/components";
 import ProductsSection from "@/components/ProductsSection";
 import type { Metadata } from "next";
 
@@ -11,9 +11,8 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <IntroducingSection />
+      <FeaturedCategories />
       <Incentives />
-      <CategoryMenu />
       <NurserySection />
       <HowToOrder />
       <ProductsSection />

@@ -8,6 +8,8 @@ const nextConfig = {
       ignoreDuringBuilds: true,
     },
     images: {
+        // Hero uses quality 90; Next 16 requires every used quality to be listed here.
+        qualities: [75, 90],
         remotePatterns: [
           {
             protocol: 'https',

@@ -179,9 +179,9 @@ const Header = () => {
               <ul className="flex items-center gap-x-1 overflow-x-auto scrollbar-hide py-0">
                 {[
                   { href: "/shop", label: "Каталог" },
-                  { href: "/shop/Розы", label: "Розы" },
                   { href: "/shop/Гортензии", label: "Гортензии" },
                   { href: "/shop/Хвойные деревья и кустарники", label: "Хвойные" },
+                  { href: "/shop/Розы", label: "Розы" },
                   { href: "/shop/Плодовые деревья и кустарники", label: "Плодовые" },
                   { href: "/shop/Лиственные деревья", label: "Деревья" },
                   { href: "/shop/Лианы", label: "Лианы" },

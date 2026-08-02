@@ -37,31 +37,44 @@ const Footer = () => {
                 <span>ул. Кенжекан Уметалиева, 26а,<br />Кок-Джар с., Октябрьский р-н, Бишкек</span>
               </a>
             </div>
-            <div className="flex gap-x-3 flex-wrap gap-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              {/* WhatsApp — основной канал заказа, поэтому единственная заливная кнопка */}
               <a
                 href="https://wa.me/996708000008"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-x-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-400 text-sm font-semibold transition-colors"
+                aria-label="Написать в WhatsApp"
+                className="flex items-center gap-x-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-[#0b2a12] transition-colors hover:bg-[#3ee27a] max-sm:px-3"
               >
-                <FaWhatsapp className="text-xl" /> WhatsApp
+                <FaWhatsapp className="text-xl" />
+                <span className="max-sm:hidden">WhatsApp</span>
               </a>
-              <a
-                href="https://t.me/agrogeroi"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-x-2 bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-400 text-sm font-semibold transition-colors"
-              >
-                <FaTelegram className="text-xl" /> Telegram
-              </a>
-              <a
-                href="https://www.instagram.com/agrogeroi/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-x-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg hover:opacity-90 text-sm font-semibold transition-colors"
-              >
-                <FaInstagram className="text-xl" /> Instagram
-              </a>
+              {[
+                {
+                  href: "https://t.me/agrogeroi",
+                  label: "Telegram",
+                  Icon: FaTelegram,
+                  iconColor: "text-[#3aa9e8]",
+                },
+                {
+                  href: "https://www.instagram.com/agrogeroi/",
+                  label: "Instagram",
+                  Icon: FaInstagram,
+                  iconColor: "text-[#f2799f]",
+                },
+              ].map(({ href, label, Icon, iconColor }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex items-center gap-x-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white/85 transition-colors hover:border-white/35 hover:bg-white/10 hover:text-white max-sm:px-3"
+                >
+                  <Icon className={`text-xl ${iconColor}`} />
+                  <span className="max-sm:hidden">{label}</span>
+                </a>
+              ))}
             </div>
           </div>
 
