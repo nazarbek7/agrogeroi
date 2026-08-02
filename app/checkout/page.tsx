@@ -3,13 +3,12 @@ import { SectionTitle } from "@/components";
 import { useProductStore } from "../_zustand/store";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import apiClient from "@/lib/api";
+import { imgSrc } from "@/utils/imgSrc";
 
 const CheckoutPage = () => {
-  const { data: session } = useSession();
   const [form, setForm] = useState({
     name: "",
     lastname: "",
@@ -54,15 +53,10 @@ const CheckoutPage = () => {
     if (!validate()) return;
     if (products.length === 0) { toast.error("Корзина пуста"); return; }
     setIsSubmitting(true);
+    // once the order row exists, a later failure must not tell the user to retry —
+    // retrying hits the duplicate guard and looks like the order never went through
+    let orderCreated = false;
     try {
-      let userId = null;
-      if (session?.user?.email) {
-        try {
-          const r = await apiClient.get(`/api/users/email/${session.user.email}`);
-          if (r.ok) userId = (await r.json()).id;
-        } catch {}
-      }
-
       const response = await apiClient.post("/api/orders", {
         name: form.name.trim(),
         lastname: form.lastname.trim(),
@@ -77,37 +71,61 @@ const CheckoutPage = () => {
         city: form.city.trim(),
         country: form.country.trim(),
         orderNotice: form.orderNotice.trim(),
-        userId,
+        // userId is resolved server-side from the email — no client lookup needed
+        userId: null,
       });
 
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
         if (response.status === 409) {
-          toast.error("Такой заказ уже существует. Подождите немного.");
+          toast.error("Этот заказ уже отправлен — мы свяжемся с вами.");
           return;
         }
-        toast.error(err.error || "Ошибка создания заказа");
+        console.error("POST /api/orders failed", response.status, err);
+        toast.error(err.error || `Ошибка создания заказа (${response.status})`);
         return;
       }
 
       const data = await response.json();
       const orderId: string = data.id;
       if (!orderId) throw new Error("Не получен ID заказа");
+      orderCreated = true;
 
+      // attach the items; a silent failure here would leave an empty order in admin
+      const failed: string[] = [];
       for (const p of products) {
-        await apiClient.post("/api/order-product", {
-          customerOrderId: orderId,
-          productId: p.id,
-          quantity: p.amount,
-        });
+        const itemResponse = await apiClient
+          .post("/api/order-product", {
+            customerOrderId: orderId,
+            productId: p.id,
+            quantity: p.amount,
+          })
+          .catch(() => null);
+        if (!itemResponse?.ok) failed.push(p.title);
       }
 
       clearCart();
       try { window.dispatchEvent(new CustomEvent("orderCompleted")); } catch {}
-      toast.success("Заказ оформлен! Мы свяжемся с вами для подтверждения.");
-      setTimeout(() => router.push("/"), 1000);
-    } catch {
-      toast.error("Ошибка при оформлении заказа. Попробуйте ещё раз.");
+
+      if (failed.length > 0) {
+        console.error("Не удалось привязать товары к заказу", orderId, failed);
+        toast.error(
+          `Заказ оформлен, но часть товаров не сохранилась (${failed.join(", ")}). Мы свяжемся с вами.`
+        );
+      } else {
+        toast.success("Заказ оформлен! Мы свяжемся с вами для подтверждения.");
+      }
+      setTimeout(() => router.push("/"), 1500);
+    } catch (error) {
+      console.error("Checkout failed", error);
+      if (orderCreated) {
+        // the order is already in the DB — telling them to retry would just 409
+        clearCart();
+        toast.success("Заказ принят. Мы свяжемся с вами для подтверждения.");
+        setTimeout(() => router.push("/"), 1500);
+      } else {
+        toast.error("Ошибка при оформлении заказа. Попробуйте ещё раз.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -130,7 +148,7 @@ const CheckoutPage = () => {
               {products.map((product) => (
                 <li key={product.id} className="flex items-start gap-4 py-5">
                   <Image
-                    src={product.image ? `/${product.image}` : "/product_placeholder.jpg"}
+                    src={imgSrc(product.image)}
                     alt={product.title}
                     width={72}
                     height={72}
