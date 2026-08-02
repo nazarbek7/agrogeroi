@@ -35,7 +35,9 @@ export { default as SectionTitle } from "./SectionTitle";
 export { default as HeartElement } from "./HeartElement";
 // export { default as AddToWishlistBtn } from "./AddToWishlistBtn";
 export { default as Hero } from "./Hero";
-export { default as FeaturedCategories } from "./FeaturedCategories";
+// NOTE: components that import prisma (FeaturedCategories, Products,
+// ProductsSection) must NOT be re-exported here — this barrel is imported by
+// client components, and that would drag the DB client into the browser bundle.
 export { default as Heading } from "./Heading";
 export { default as DashboardSidebar } from "./DashboardSidebar";
 export { default as StatsElement } from "./StatsElement";

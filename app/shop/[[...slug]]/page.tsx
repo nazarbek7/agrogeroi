@@ -5,6 +5,7 @@ import { Breadcrumb, Filters, Pagination, SortBy } from "@/components";
 import Products from "@/components/Products";
 import React from "react";
 import { sanitize } from "@/lib/sanitize";
+import { getPriceCeiling } from "@/lib/productFilters";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -46,23 +47,19 @@ const ShopPage = async ({
       ? sanitize(improveCategoryText(decodeURIComponent(awaitedParams.slug[0])))
       : "Все товары";
 
+  const priceCeiling = await getPriceCeiling();
+
   return (
     <div className="bg-[#f7faf4] min-h-screen text-black">
       <div className="max-w-screen-2xl mx-auto px-16 max-[1320px]:px-10 max-md:px-5 py-6">
         <Breadcrumb />
 
-        <div className="mt-6 grid grid-cols-[220px_1fr] gap-8 max-md:grid-cols-1">
-          {/* Sidebar */}
-          <div className="max-md:hidden">
-            <div className="sticky top-6 bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-              <Filters />
-            </div>
-          </div>
-
-          {/* Mobile filters row */}
-          <div className="hidden max-md:block">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
-              <Filters />
+        <div className="mt-6 grid grid-cols-[240px_1fr] gap-8 max-md:grid-cols-1 max-md:gap-4">
+          {/* Sidebar — a single instance: two mounted copies both wrote the URL
+              from their own state, so changing the sorting reset the filters */}
+          <div>
+            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm md:sticky md:top-6 max-md:p-4">
+              <Filters maxPrice={priceCeiling} />
             </div>
           </div>
 

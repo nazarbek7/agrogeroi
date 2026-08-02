@@ -1,192 +1,275 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { FaChevronDown, FaSliders } from "react-icons/fa6";
 import { useSortStore } from "@/app/_zustand/sortStore";
 import { usePaginationStore } from "@/app/_zustand/paginationStore";
+import { categoryMenuList } from "@/lib/utils";
 
-interface InputCategory {
-  inStock: { text: string; isChecked: boolean };
-  outOfStock: { text: string; isChecked: boolean };
-  priceFilter: { text: string; value: number };
-  ratingFilter: { text: string; value: number };
+type StockMode = "all" | "inStock";
+
+interface FiltersState {
+  stock: StockMode;
+  price: number;
   isBestseller: boolean;
   isNew: boolean;
 }
 
-const Filters = () => {
+const stockOptions: { value: StockMode; label: string }[] = [
+  { value: "all", label: "Все" },
+  { value: "inStock", label: "В наличии" },
+];
+
+const allCategories = [{ title: "Все товары", href: "/shop" }, ...categoryMenuList];
+const CATEGORY_PREVIEW = 7;
+
+const Filters = ({ maxPrice }: { maxPrice: number }) => {
   const pathname = usePathname();
   const { replace } = useRouter();
   const { page } = usePaginationStore();
+  const { sortBy } = useSortStore();
 
-  const [inputCategory, setInputCategory] = useState<InputCategory>({
-    inStock: { text: "instock", isChecked: true },
-    outOfStock: { text: "outofstock", isChecked: true },
-    priceFilter: { text: "price", value: 3000 },
-    ratingFilter: { text: "rating", value: 0 },
+  const [filters, setFilters] = useState<FiltersState>({
+    stock: "all",
+    price: maxPrice,
     isBestseller: false,
     isNew: false,
   });
-  const { sortBy } = useSortStore();
+  const [appliedPrice, setAppliedPrice] = useState(maxPrice);
+  const [openOnMobile, setOpenOnMobile] = useState(false);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+
+  // Only the slider is debounced — dragging it fires a change per step, and
+  // every URL write re-renders the (force-dynamic) product list on the server.
+  useEffect(() => {
+    const timer = setTimeout(() => setAppliedPrice(filters.price), 300);
+    return () => clearTimeout(timer);
+  }, [filters.price]);
 
   useEffect(() => {
     const params = new URLSearchParams();
-    params.set("outOfStock", inputCategory.outOfStock.isChecked.toString());
-    params.set("inStock", inputCategory.inStock.isChecked.toString());
-    params.set("rating", inputCategory.ratingFilter.value.toString());
-    params.set("price", inputCategory.priceFilter.value.toString());
+    params.set("inStock", "true");
+    params.set("outOfStock", (filters.stock === "all").toString());
+    params.set("price", appliedPrice.toString());
     params.set("sort", sortBy);
     params.set("page", page.toString());
-    if (inputCategory.isBestseller) params.set("isBestseller", "true");
-    if (inputCategory.isNew) params.set("isNew", "true");
+    if (filters.isBestseller) params.set("isBestseller", "true");
+    if (filters.isNew) params.set("isNew", "true");
     replace(`${pathname}?${params}`);
-  }, [inputCategory, sortBy, page]);
+  }, [
+    filters.stock,
+    filters.isBestseller,
+    filters.isNew,
+    appliedPrice,
+    sortBy,
+    page,
+    pathname,
+    replace,
+  ]);
+
+  const activeCount =
+    (filters.stock !== "all" ? 1 : 0) +
+    (filters.price < maxPrice ? 1 : 0) +
+    (filters.isNew ? 1 : 0) +
+    (filters.isBestseller ? 1 : 0);
+
+  const reset = () => {
+    setFilters({ stock: "all", price: maxPrice, isBestseller: false, isNew: false });
+    setAppliedPrice(maxPrice);
+  };
+
+  const currentPath = decodeURIComponent(pathname);
+
+  // the active category always stays visible, even when the list is collapsed
+  const visibleCategories = showAllCategories
+    ? allCategories
+    : allCategories.filter(
+        (item, index) => index < CATEGORY_PREVIEW || item.href === currentPath
+      );
+
+  const badges = [
+    {
+      label: "Новинка",
+      checked: filters.isNew,
+      activeClass: "bg-brand border-brand",
+      toggle: () => setFilters((prev) => ({ ...prev, isNew: !prev.isNew })),
+    },
+    {
+      label: "Хит продаж",
+      checked: filters.isBestseller,
+      activeClass: "bg-orange-500 border-orange-500",
+      toggle: () => setFilters((prev) => ({ ...prev, isBestseller: !prev.isBestseller })),
+    },
+  ];
 
   return (
-    <aside className="flex flex-col gap-6">
-      <h3 className="text-base font-bold text-gray-900 uppercase tracking-wider">Фильтры</h3>
-
-      {/* Наличие */}
-      <div className="flex flex-col gap-3">
-        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Наличие</p>
-        {[
-          {
-            label: "В наличии",
-            checked: inputCategory.inStock.isChecked,
-            onChange: () =>
-              setInputCategory({
-                ...inputCategory,
-                inStock: { text: "instock", isChecked: !inputCategory.inStock.isChecked },
-              }),
-          },
-          {
-            label: "Нет в наличии",
-            checked: inputCategory.outOfStock.isChecked,
-            onChange: () =>
-              setInputCategory({
-                ...inputCategory,
-                outOfStock: { text: "outofstock", isChecked: !inputCategory.outOfStock.isChecked },
-              }),
-          },
-        ].map((item) => (
-          <label key={item.label} className="flex items-center gap-3 cursor-pointer group">
-            <span
-              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0 ${
-                item.checked
-                  ? "bg-brand border-brand"
-                  : "border-gray-300 bg-white group-hover:border-brand/50"
-              }`}
-              onClick={item.onChange}
-            >
-              {item.checked && (
-                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
-                  <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
+    <aside>
+      {/* Mobile: collapsed by default so the grid isn't pushed below the fold */}
+      <button
+        type="button"
+        onClick={() => setOpenOnMobile((open) => !open)}
+        aria-expanded={openOnMobile}
+        className="hidden w-full items-center justify-between gap-2 max-md:flex"
+      >
+        <span className="flex items-center gap-2 text-base font-bold uppercase tracking-wider text-gray-900">
+          <FaSliders className="text-brand text-sm" />
+          Фильтры
+          {activeCount > 0 && (
+            <span className="rounded-full bg-brand px-2 py-0.5 text-xs font-bold text-white">
+              {activeCount}
             </span>
-            <input type="checkbox" className="sr-only" checked={item.checked} onChange={item.onChange} />
-            <span className="text-sm text-gray-700 select-none">{item.label}</span>
-          </label>
-        ))}
-      </div>
-
-      <div className="h-px bg-gray-100" />
-
-      {/* Цена */}
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Макс. цена</p>
-          <span className="text-sm font-bold text-brand">
-            {inputCategory.priceFilter.value.toLocaleString("ru-RU")} сом
-          </span>
-        </div>
-        <input
-          type="range"
-          min={0}
-          max={3000}
-          step={10}
-          value={inputCategory.priceFilter.value}
-          onChange={(e) =>
-            setInputCategory({
-              ...inputCategory,
-              priceFilter: { text: "price", value: Number(e.target.value) },
-            })
-          }
-          className="filter-range"
+          )}
+        </span>
+        <FaChevronDown
+          className={`text-sm text-gray-400 transition-transform ${openOnMobile ? "rotate-180" : ""}`}
         />
-        <div className="flex justify-between text-xs text-gray-400">
-          <span>0 сом</span>
-          <span>3 000 сом</span>
-        </div>
-      </div>
+      </button>
 
-      <div className="h-px bg-gray-100" />
-
-      {/* Бейджи */}
-      <div className="flex flex-col gap-3">
-        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Товары</p>
-        {[
-          {
-            label: "Новинка",
-            checked: inputCategory.isNew,
-            color: "bg-brand border-brand",
-            onChange: () => setInputCategory({ ...inputCategory, isNew: !inputCategory.isNew }),
-          },
-          {
-            label: "Хит продаж",
-            checked: inputCategory.isBestseller,
-            color: "bg-orange-500 border-orange-500",
-            onChange: () => setInputCategory({ ...inputCategory, isBestseller: !inputCategory.isBestseller }),
-          },
-        ].map((item) => (
-          <label key={item.label} className="flex items-center gap-3 cursor-pointer group">
-            <span
-              className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all flex-shrink-0 ${
-                item.checked ? item.color : "border-gray-300 bg-white group-hover:border-brand/50"
-              }`}
-              onClick={item.onChange}
+      <div className={`flex flex-col gap-6 ${openOnMobile ? "max-md:mt-5" : "max-md:hidden"}`}>
+        <div className="flex items-center justify-between gap-2 max-md:hidden">
+          <h3 className="text-base font-bold uppercase tracking-wider text-gray-900">Фильтры</h3>
+          {activeCount > 0 && (
+            <button
+              type="button"
+              onClick={reset}
+              className="text-xs font-semibold text-brand hover:underline"
             >
-              {item.checked && (
-                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
-                  <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-            </span>
-            <input type="checkbox" className="sr-only" checked={item.checked} onChange={item.onChange} />
-            <span className="text-sm text-gray-700 select-none">{item.label}</span>
-          </label>
-        ))}
-      </div>
-
-      <div className="h-px bg-gray-100" />
-
-      {/* Рейтинг */}
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Мин. рейтинг</p>
-          <span className="text-sm font-bold text-brand">
-            {inputCategory.ratingFilter.value === 0 ? "Любой" : `${inputCategory.ratingFilter.value}★`}
-          </span>
+              Сбросить
+            </button>
+          )}
         </div>
-        <input
-          type="range"
-          min={0}
-          max={5}
-          step={1}
-          value={inputCategory.ratingFilter.value}
-          onChange={(e) =>
-            setInputCategory({
-              ...inputCategory,
-              ratingFilter: { text: "rating", value: Number(e.target.value) },
-            })
-          }
-          className="filter-range"
-        />
-        <div className="flex justify-between text-xs text-gray-400">
-          {[0, 1, 2, 3, 4, 5].map((n) => (
-            <span key={n}>{n}</span>
+
+        {/* Категории */}
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Категории</p>
+          <ul className="flex flex-col gap-0.5">
+            {visibleCategories.map((item) => {
+              const isActive = currentPath === item.href;
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`block rounded-lg px-2.5 py-1.5 text-sm transition-colors ${
+                      isActive
+                        ? "bg-brand/10 font-semibold text-brand"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-brand"
+                    }`}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          {allCategories.length > CATEGORY_PREVIEW && (
+            <button
+              type="button"
+              onClick={() => setShowAllCategories((shown) => !shown)}
+              className="self-start px-2.5 text-xs font-semibold text-brand hover:underline"
+            >
+              {showAllCategories
+                ? "Свернуть"
+                : `Ещё ${allCategories.length - CATEGORY_PREVIEW}`}
+            </button>
+          )}
+        </div>
+
+        <div className="h-px bg-gray-100" />
+
+        {/* Наличие */}
+        <div className="flex flex-col gap-3">
+          <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Наличие</p>
+          <div className="flex rounded-xl bg-gray-100 p-1">
+            {stockOptions.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setFilters((prev) => ({ ...prev, stock: option.value }))}
+                className={`flex-1 whitespace-nowrap rounded-lg px-2 py-2 text-sm font-semibold transition-colors ${
+                  filters.stock === option.value
+                    ? "bg-white text-brand shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="h-px bg-gray-100" />
+
+        {/* Цена */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Макс. цена</p>
+            <span className="text-sm font-bold text-brand">
+              {filters.price.toLocaleString("ru-RU")} сом
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={maxPrice}
+            step={10}
+            value={filters.price}
+            aria-label="Максимальная цена"
+            onChange={(e) => setFilters((prev) => ({ ...prev, price: Number(e.target.value) }))}
+            className="filter-range"
+          />
+          <div className="flex justify-between text-xs text-gray-400">
+            <span>0 сом</span>
+            <span>{maxPrice.toLocaleString("ru-RU")} сом</span>
+          </div>
+        </div>
+
+        <div className="h-px bg-gray-100" />
+
+        {/* Бейджи */}
+        <div className="flex flex-col gap-3">
+          <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Товары</p>
+          {badges.map((item) => (
+            <label key={item.label} className="group flex cursor-pointer items-center gap-3">
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={item.checked}
+                onChange={item.toggle}
+              />
+              <span
+                className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md border-2 transition-all ${
+                  item.checked
+                    ? item.activeClass
+                    : "border-gray-300 bg-white group-hover:border-brand/50"
+                }`}
+              >
+                {item.checked && (
+                  <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 12 12">
+                    <path
+                      d="M2 6l3 3 5-5"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                )}
+              </span>
+              <span className="select-none text-sm text-gray-700">{item.label}</span>
+            </label>
           ))}
         </div>
+
+        {activeCount > 0 && (
+          <button
+            type="button"
+            onClick={reset}
+            className="hidden rounded-xl border border-gray-200 py-2.5 text-sm font-semibold text-gray-600 transition-colors hover:border-brand hover:text-brand max-md:block"
+          >
+            Сбросить фильтры
+          </button>
+        )}
       </div>
     </aside>
   );

@@ -1,4 +1,5 @@
-import { FeaturedCategories, Hero, Incentives, HowToOrder, NurserySection } from "@/components";
+import { Hero, Incentives, HowToOrder, NurserySection } from "@/components";
+import FeaturedCategories from "@/components/FeaturedCategories";
 import ProductsSection from "@/components/ProductsSection";
 import type { Metadata } from "next";
 

@@ -58,6 +58,16 @@ export const navigation = {
   ],
 };
 
+/** Russian plural for "товар": 1 товар, 2 товара, 5 товаров. */
+export const productWord = (count: number) => {
+  const mod100 = count % 100;
+  const mod10 = count % 10;
+  if (mod100 >= 11 && mod100 <= 14) return "товаров";
+  if (mod10 === 1) return "товар";
+  if (mod10 >= 2 && mod10 <= 4) return "товара";
+  return "товаров";
+};
+
 export const isValidNameOrLastname = (input: string) => {
   // Simple name or lastname regex format check
   const regex = /^[a-zA-Z\s]+$/;
