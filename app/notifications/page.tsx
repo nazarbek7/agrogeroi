@@ -152,7 +152,8 @@ const NotificationsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* same container as the header and the shop page so the edges line up */}
+      <div className="max-w-screen-2xl mx-auto px-16 max-[1320px]:px-10 max-md:px-5 py-8">
         {/* Заголовок */}
         <div className="mb-8">
           <div className="flex items-center space-x-3 mb-2">

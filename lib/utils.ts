@@ -58,15 +58,21 @@ export const navigation = {
   ],
 };
 
-/** Russian plural for "товар": 1 товар, 2 товара, 5 товаров. */
-export const productWord = (count: number) => {
+/**
+ * Russian plural picker: plural(1, ["товар", "товара", "товаров"]) → "товар".
+ * Forms are [one, few, many] — 1 товар, 2 товара, 5 товаров.
+ */
+export const plural = (count: number, forms: [string, string, string]) => {
   const mod100 = count % 100;
   const mod10 = count % 10;
-  if (mod100 >= 11 && mod100 <= 14) return "товаров";
-  if (mod10 === 1) return "товар";
-  if (mod10 >= 2 && mod10 <= 4) return "товара";
-  return "товаров";
+  if (mod100 >= 11 && mod100 <= 14) return forms[2];
+  if (mod10 === 1) return forms[0];
+  if (mod10 >= 2 && mod10 <= 4) return forms[1];
+  return forms[2];
 };
+
+export const productWord = (count: number) =>
+  plural(count, ["товар", "товара", "товаров"]);
 
 export const isValidNameOrLastname = (input: string) => {
   // Simple name or lastname regex format check

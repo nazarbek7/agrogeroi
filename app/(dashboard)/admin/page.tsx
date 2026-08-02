@@ -1,4 +1,6 @@
 import { DashboardSidebar } from "@/components";
+// imported directly, not via the barrel — it pulls in prisma
+import AdminAnalytics from "@/components/AdminAnalytics";
 import prisma from "@/utils/db";
 import Link from "next/link";
 import { FaBoxOpen, FaCartShopping, FaUsers, FaLeaf, FaStore, FaPlus, FaArrowRight, FaUpload } from "react-icons/fa6";
@@ -57,6 +59,8 @@ const AdminDashboardPage = async () => {
             </Link>
           ))}
         </div>
+
+        <AdminAnalytics />
 
         {/* Quick Actions */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
