@@ -116,13 +116,13 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
     >
       {isUnread && <span className="absolute inset-y-0 left-0 w-1 bg-brand" />}
 
-      <div className="flex items-start gap-3 p-4 pl-5">
+      <div className="flex items-start gap-4 p-5 pl-6">
         <input
           type="checkbox"
           checked={isSelected}
           onChange={() => onToggleSelect(notification.id)}
           aria-label={`Выбрать «${notification.title}»`}
-          className="mt-1 h-4 w-4 flex-shrink-0 cursor-pointer rounded border-gray-300 text-brand focus:ring-2 focus:ring-brand/40"
+          className="mt-1.5 h-[18px] w-[18px] flex-shrink-0 cursor-pointer rounded border-gray-300 text-brand focus:ring-2 focus:ring-brand/40"
         />
 
         <div className="min-w-0 flex-1">
@@ -133,9 +133,9 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
             aria-expanded={expanded}
             className="block w-full text-left"
           >
-            <div className="flex items-start gap-2.5">
+            <div className="flex items-start gap-3.5">
               <span
-                className={`mt-0.5 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-sm ${meta.chip}`}
+                className={`mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl text-base ${meta.chip}`}
               >
                 {meta.icon}
               </span>
@@ -143,8 +143,8 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <h3
-                    className={`truncate text-sm ${
-                      isUnread ? 'font-bold text-gray-900' : 'font-medium text-gray-700'
+                    className={`truncate text-base ${
+                      isUnread ? 'font-bold text-gray-900' : 'font-semibold text-gray-700'
                     }`}
                   >
                     {notification.title}
@@ -160,7 +160,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
                 </div>
 
                 <p
-                  className={`mt-1 text-sm leading-relaxed text-gray-600 ${
+                  className={`mt-1.5 text-[15px] leading-relaxed text-gray-600 ${
                     expanded ? '' : 'line-clamp-2'
                   }`}
                 >
@@ -169,7 +169,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
               </div>
 
               <FaChevronDown
-                className={`mt-1.5 flex-shrink-0 text-xs text-gray-400 transition-transform ${
+                className={`mt-2.5 flex-shrink-0 text-sm text-gray-400 transition-transform ${
                   expanded ? 'rotate-180' : ''
                 }`}
               />
@@ -177,7 +177,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
           </button>
 
           {expanded && (
-            <div className="mt-3 space-y-1.5 rounded-xl bg-gray-50 px-3.5 py-3 text-xs text-gray-500">
+            <div className="mt-4 space-y-2 rounded-xl bg-gray-50 px-4 py-3.5 text-sm text-gray-500">
               <p>
                 <span className="font-semibold text-gray-600">Получено:</span>{' '}
                 {formatExactDate(notification.createdAt)}
@@ -191,15 +191,15 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
             </div>
           )}
 
-          <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
               <span
-                className={`rounded-full px-2 py-0.5 text-xs font-semibold ${meta.chip}`}
+                className={`rounded-full px-3 py-1 text-[13px] font-semibold ${meta.chip}`}
               >
                 {meta.label}
               </span>
               <span
-                className="text-xs text-gray-400"
+                className="text-[13px] text-gray-400"
                 title={formatExactDate(notification.createdAt)}
               >
                 {formatTimeAgo(notification.createdAt)}
@@ -211,19 +211,19 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
                 <Link
                   href={targetHref}
                   onClick={() => isUnread && onMarkAsRead(notification.id)}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-brand-dark"
+                  className="inline-flex items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
                 >
                   Открыть заказ
-                  <FaArrowRight className="text-[10px]" />
+                  <FaArrowRight className="text-xs" />
                 </Link>
               )}
               {isUnread && (
                 <button
                   type="button"
                   onClick={() => onMarkAsRead(notification.id)}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 transition-colors hover:border-brand hover:text-brand"
+                  className="inline-flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-600 transition-colors hover:border-brand hover:text-brand"
                 >
-                  <FaCheck className="text-[10px]" />
+                  <FaCheck className="text-xs" />
                   Прочитано
                 </button>
               )}
@@ -232,9 +232,9 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
                 onClick={() => onDelete(notification.id)}
                 aria-label="Удалить уведомление"
                 title="Удалить"
-                className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                className="rounded-xl p-2.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
               >
-                <FaTrash className="text-xs" />
+                <FaTrash className="text-sm" />
               </button>
             </div>
           </div>

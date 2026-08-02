@@ -13,8 +13,23 @@ import {
   FaCheckCircle,
   FaTrash,
   FaSpinner,
-  FaBell
+  FaBell,
+  FaTimes
 } from 'react-icons/fa';
+
+const typeOptions = [
+  { value: 'all', label: 'Все' },
+  { value: NotificationType.ORDER_UPDATE, label: 'Заказы' },
+  { value: NotificationType.PAYMENT_STATUS, label: 'Оплата' },
+  { value: NotificationType.PROMOTION, label: 'Акции' },
+  { value: NotificationType.SYSTEM_ALERT, label: 'Система' },
+];
+
+const statusOptions = [
+  { value: 'all', label: 'Все' },
+  { value: 'unread', label: 'Непрочитанные' },
+  { value: 'read', label: 'Прочитанные' },
+];
 
 const NotificationsPage = () => {
   const { data: session, status } = useSession();
@@ -87,6 +102,31 @@ const NotificationsPage = () => {
     }
   };
 
+  // clearing the box must also drop the applied query, otherwise the list stays
+  // filtered by a search term that is no longer visible anywhere
+  const clearSearch = () => {
+    setSearchTerm('');
+    updateFilters({ ...filters, search: undefined, page: 1 });
+  };
+
+  const hasActiveFilters =
+    selectedType !== 'all' || selectedStatus !== 'all' || Boolean(searchTerm);
+
+  const resetFilters = () => {
+    setSearchTerm('');
+    setSelectedType('all');
+    setSelectedStatus('all');
+    updateFilters({
+      type: undefined,
+      isRead: undefined,
+      search: undefined,
+      page: 1,
+      limit: 10,
+      sortBy: 'createdAt',
+      sortOrder: 'desc',
+    });
+  };
+
   const handleSelectAll = () => {
     if (selectedIds.length === notifications.length) clearSelection();
     else selectAll();
@@ -123,65 +163,96 @@ const NotificationsPage = () => {
         </div>
 
         {/* Фильтры и поиск */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-          <form onSubmit={handleSearch} className="mb-4">
-            <div className="relative">
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+          <form onSubmit={handleSearch} className="mb-5">
+            {/* flex row instead of absolute positioning — the clear button appears
+                and disappears, so a hand-tuned `pr-` on the input would drift */}
+            <div className="flex items-center gap-2 rounded-xl border border-gray-300 pl-4 pr-2 transition-colors focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/30">
+              <FaSearch className="flex-shrink-0 text-gray-400" />
               <input
                 type="text"
                 placeholder="Поиск уведомлений..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand/40 focus:border-brand outline-none"
+                onKeyDown={(e) => {
+                  if (e.key === 'Escape' && searchTerm) clearSearch();
+                }}
+                className="min-w-0 flex-1 border-0 bg-transparent px-0 py-3 text-base outline-none focus:ring-0"
               />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={clearSearch}
+                  aria-label="Очистить поиск"
+                  title="Очистить"
+                  className="flex-shrink-0 rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700"
+                >
+                  <FaTimes className="text-sm" />
+                </button>
+              )}
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1 bg-brand text-white text-sm rounded-md hover:bg-brand-dark"
+                className="flex-shrink-0 rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
               >
                 Найти
               </button>
             </div>
           </form>
 
-          <div className="flex flex-wrap gap-4 items-center">
-            <div className="flex items-center space-x-2">
-              <FaFilter className="text-gray-400" />
-              <span className="text-sm font-medium text-gray-700">Фильтры:</span>
+          {/* Native selects looked out of place here — pills for type, a segment for status */}
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="mr-1 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gray-400">
+                <FaFilter className="text-[11px]" />
+                Тип
+              </span>
+              {typeOptions.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => handleTypeFilter(option.value)}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                    selectedType === option.value
+                      ? 'bg-brand text-white'
+                      : 'border border-gray-200 text-gray-600 hover:border-brand hover:text-brand'
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
             </div>
 
-            <select
-              value={selectedType}
-              onChange={(e) => handleTypeFilter(e.target.value)}
-              className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-brand/40 outline-none"
-            >
-              <option value="all">Все типы</option>
-              <option value={NotificationType.ORDER_UPDATE}>Заказы</option>
-              <option value={NotificationType.PAYMENT_STATUS}>Оплата</option>
-              <option value={NotificationType.PROMOTION}>Акции</option>
-              <option value={NotificationType.SYSTEM_ALERT}>Система</option>
-            </select>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                Статус
+              </span>
+              <div className="flex rounded-xl bg-gray-100 p-1">
+                {statusOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleStatusFilter(option.value)}
+                    className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+                      selectedStatus === option.value
+                        ? 'bg-white text-brand shadow-sm'
+                        : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
 
-            <select
-              value={selectedStatus}
-              onChange={(e) => handleStatusFilter(e.target.value)}
-              className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-brand/40 outline-none"
-            >
-              <option value="all">Все</option>
-              <option value="unread">Непрочитанные</option>
-              <option value="read">Прочитанные</option>
-            </select>
-
-            <button
-              onClick={() => {
-                setSearchTerm('');
-                setSelectedType('all');
-                setSelectedStatus('all');
-                updateFilters({ type: undefined, isRead: undefined, search: undefined, page: 1, limit: 10, sortBy: 'createdAt', sortOrder: 'desc' });
-              }}
-              className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800 underline"
-            >
-              Сбросить
-            </button>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="text-sm font-semibold text-brand hover:underline"
+                >
+                  Сбросить
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -215,12 +286,12 @@ const NotificationsPage = () => {
         {/* Выбрать все */}
         {notifications.length > 0 && (
           <div className="mb-4">
-            <label className="flex items-center space-x-2 text-sm text-gray-600 cursor-pointer">
+            <label className="flex cursor-pointer items-center gap-3 text-sm font-medium text-gray-600">
               <input
                 type="checkbox"
                 checked={selectedIds.length === notifications.length && notifications.length > 0}
                 onChange={handleSelectAll}
-                className="w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand/40 focus:ring-2"
+                className="h-[18px] w-[18px] cursor-pointer rounded border-gray-300 text-brand focus:ring-2 focus:ring-brand/40"
               />
               <span>Выбрать все</span>
             </label>
