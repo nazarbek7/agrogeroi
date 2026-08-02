@@ -92,6 +92,14 @@ const NotificationsPage = () => {
     else selectAll();
   };
 
+  // Only admins have a page that can render an order. Regular customers get no
+  // link rather than one that 404s — there is no customer-facing order view yet.
+  const isAdmin = (session?.user as any)?.role === 'admin';
+  const orderHref = (notification: { metadata?: any }) => {
+    const orderId = notification.metadata?.orderId;
+    return isAdmin && orderId ? `/admin/orders/${orderId}` : undefined;
+  };
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -124,11 +132,11 @@ const NotificationsPage = () => {
                 placeholder="Поиск уведомлений..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-brand/40 focus:border-brand outline-none"
               />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1 bg-brand-dark text-white text-sm rounded hover:bg-blue-700"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1 bg-brand text-white text-sm rounded-md hover:bg-brand-dark"
               >
                 Найти
               </button>
@@ -144,7 +152,7 @@ const NotificationsPage = () => {
             <select
               value={selectedType}
               onChange={(e) => handleTypeFilter(e.target.value)}
-              className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-brand/40 outline-none"
             >
               <option value="all">Все типы</option>
               <option value={NotificationType.ORDER_UPDATE}>Заказы</option>
@@ -156,7 +164,7 @@ const NotificationsPage = () => {
             <select
               value={selectedStatus}
               onChange={(e) => handleStatusFilter(e.target.value)}
-              className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-brand/40 outline-none"
             >
               <option value="all">Все</option>
               <option value="unread">Непрочитанные</option>
@@ -179,22 +187,22 @@ const NotificationsPage = () => {
 
         {/* Групповые действия */}
         {selectedIds.length > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+          <div className="bg-brand/5 border border-brand/20 rounded-xl p-4 mb-6">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-blue-700">
+              <span className="text-sm font-semibold text-brand">
                 Выбрано: {selectedIds.length}
               </span>
               <div className="flex space-x-3">
                 <button
                   onClick={handleBulkMarkAsRead}
-                  className="inline-flex items-center px-3 py-1 text-sm font-medium text-brand bg-white border border-blue-300 rounded-md hover:bg-blue-50"
+                  className="inline-flex items-center px-3 py-1 text-sm font-medium text-brand bg-white border border-brand/40 rounded-lg hover:bg-brand/5"
                 >
                   <FaCheckCircle className="w-4 h-4 mr-1" />
                   Прочитать все
                 </button>
                 <button
                   onClick={handleBulkDelete}
-                  className="inline-flex items-center px-3 py-1 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-md hover:bg-red-50"
+                  className="inline-flex items-center px-3 py-1 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-lg hover:bg-red-50"
                 >
                   <FaTrash className="w-4 h-4 mr-1" />
                   Удалить
@@ -212,7 +220,7 @@ const NotificationsPage = () => {
                 type="checkbox"
                 checked={selectedIds.length === notifications.length && notifications.length > 0}
                 onChange={handleSelectAll}
-                className="w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                className="w-4 h-4 text-brand bg-gray-100 border-gray-300 rounded focus:ring-brand/40 focus:ring-2"
               />
               <span>Выбрать все</span>
             </label>
@@ -232,7 +240,7 @@ const NotificationsPage = () => {
               <p className="text-gray-500 mb-4">{error}</p>
               <button
                 onClick={() => fetchNotifications()}
-                className="px-4 py-2 bg-brand-dark text-white rounded-md hover:bg-blue-700"
+                className="px-4 py-2 bg-brand text-white rounded-md hover:bg-brand-dark"
               >
                 Повторить
               </button>
@@ -256,6 +264,7 @@ const NotificationsPage = () => {
                   isSelected={selectedIds.includes(notification.id)}
                   onToggleSelect={toggleSelection}
                   onMarkAsRead={markNotificationAsRead}
+                  targetHref={orderHref(notification)}
                   onDelete={async (id) => {
                     if (confirm('Удалить это уведомление?')) {
                       await deleteNotificationById(id);
@@ -269,7 +278,7 @@ const NotificationsPage = () => {
                   <button
                     onClick={loadMore}
                     disabled={loading}
-                    className="px-6 py-2 bg-brand-dark text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-6 py-2 bg-brand text-white rounded-md hover:bg-brand-dark disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? (
                       <>

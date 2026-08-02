@@ -2,6 +2,7 @@
 import { DashboardSidebar } from "@/components";
 import apiClient from "@/lib/api";
 import { isValidEmailAddressFormat, isValidNameOrLastname } from "@/lib/utils";
+import { imgSrc } from "@/utils/imgSrc";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -241,7 +242,7 @@ const AdminSingleOrder = () => {
                     <div key={item.id} className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                         <Image
-                          src={item.product?.mainImage ? `/${item.product.mainImage}` : "/product_placeholder.jpg"}
+                          src={imgSrc(item.product?.mainImage)}
                           alt={item.product?.title}
                           width={48}
                           height={48}
