@@ -181,10 +181,10 @@ const Header = () => {
                   { href: "/shop", label: "Каталог" },
                   { href: "/shop/Гортензии", label: "Гортензии" },
                   { href: "/shop/Хвойные деревья и кустарники", label: "Хвойные" },
+                  { href: "/shop/Контейнеры и горшки", label: "Горшки" },
+                  { href: "/shop/Торфяная продукция", label: "Торф" },
                   { href: "/shop/Розы", label: "Розы" },
-                  { href: "/shop/Плодовые деревья и кустарники", label: "Плодовые" },
                   { href: "/shop/Лиственные деревья", label: "Деревья" },
-                  { href: "/shop/Лианы", label: "Лианы" },
                   { href: "/contacts", label: "Контакты" },
                 ].map(({ href, label }) => (
                   <li key={href}>
