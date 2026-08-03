@@ -24,7 +24,7 @@ export async function generateMetadata({
     : "Каталог растений — Agrogeroi";
   const description = category
     ? `Купить ${category.toLowerCase()} в питомнике Agrogeroi. Широкий выбор, доставка по Кыргызстану.`
-    : "Розы, хвойные, плодовые деревья, кустарники и многолетние цветы. Питомник растений Agrogeroi.";
+    : "Гортензии, хвойные, розы, плодовые деревья, кустарники и многолетние цветы. Питомник растений Agrogeroi.";
 
   return { title, description };
 }

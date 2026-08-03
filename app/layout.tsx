@@ -12,7 +12,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Agrogeroi — Питомник растений",
-  description: "Розы, хвойные, плодовые деревья, кустарники и многолетние цветы для вашего сада",
+  description: "Гортензии, хвойные, розы, плодовые деревья, кустарники и многолетние цветы для вашего сада",
 };
 
 export default async function RootLayout({

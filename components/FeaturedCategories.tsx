@@ -6,17 +6,18 @@ import { imgSrc } from "@/utils/imgSrc";
 
 // `span` is written out literally so Tailwind picks the classes up at build time.
 // 9 tiles: the large one covers 2×2, so the 4×3 grid fills exactly.
+// Order follows the header navigation for the plant categories it lists.
 const featured = [
   {
-    title: "Розы",
-    category: "Розы",
-    emoji: "🌹",
+    title: "Гортензии",
+    category: "Гортензии",
+    emoji: "💐",
     span: "col-span-2 row-span-2 max-lg:row-span-1 max-sm:col-span-1",
   },
-  { title: "Гортензии", category: "Гортензии", emoji: "💐", span: "" },
   { title: "Хвойные", category: "Хвойные деревья и кустарники", emoji: "🌲", span: "" },
-  { title: "Плодовые", category: "Плодовые деревья и кустарники", emoji: "🍎", span: "" },
+  { title: "Розы", category: "Розы", emoji: "🌹", span: "" },
   { title: "Лиственные деревья", category: "Лиственные деревья", emoji: "🌳", span: "" },
+  { title: "Плодовые", category: "Плодовые деревья и кустарники", emoji: "🍎", span: "" },
   { title: "Лиственные кустарники", category: "Лиственные кустарники", emoji: "🌿", span: "" },
   { title: "Лианы", category: "Лианы", emoji: "🪴", span: "" },
   { title: "Многолетние цветы", category: "Цветы многолетние", emoji: "🌸", span: "" },
@@ -24,9 +25,9 @@ const featured = [
 ];
 
 const moreCategories = [
-  { title: "Семена", category: "Семена" },
   { title: "Горшки и контейнеры", category: "Контейнеры и горшки" },
   { title: "Торфяная продукция", category: "Торфяная продукция" },
+  { title: "Семена", category: "Семена" },
   { title: "Сетки и агротекстиль", category: "Сетки и агротекстиль" },
   { title: "Инструменты", category: "Инструменты" },
 ];

@@ -1,16 +1,19 @@
+// Order mirrors the header navigation (Гортензии → Хвойные → Горшки → Торф →
+// Розы → Деревья), then the rest. The header is the single source of priority —
+// keep this list in step with it.
 export const categoryMenuList = [
-  { id: 1,  title: "Розы",                       emoji: "🌹", href: "/shop/Розы" },
-  { id: 2,  title: "Гортензии",                  emoji: "💐", href: "/shop/Гортензии" },
-  { id: 3,  title: "Хвойные деревья",            emoji: "🌲", href: "/shop/Хвойные деревья и кустарники" },
-  { id: 4,  title: "Лиственные деревья",         emoji: "🌳", href: "/shop/Лиственные деревья" },
-  { id: 5,  title: "Лиственные кустарники",      emoji: "🌿", href: "/shop/Лиственные кустарники" },
-  { id: 6,  title: "Плодовые деревья",           emoji: "🍎", href: "/shop/Плодовые деревья и кустарники" },
-  { id: 7,  title: "Лианы",                      emoji: "🪴", href: "/shop/Лианы" },
-  { id: 8,  title: "Цветы многолетние",          emoji: "🌸", href: "/shop/Цветы многолетние" },
-  { id: 9,  title: "Семена",                     emoji: "🌱", href: "/shop/Семена" },
-  { id: 10, title: "Газоны",                     emoji: "🌾", href: "/shop/Газоны и травосмеси" },
-  { id: 11, title: "Горшки и контейнеры",        emoji: "🪣", href: "/shop/Контейнеры и горшки" },
-  { id: 12, title: "Торфяная продукция",         emoji: "🏔️", href: "/shop/Торфяная продукция" },
+  { id: 1,  title: "Гортензии",                  emoji: "💐", href: "/shop/Гортензии" },
+  { id: 2,  title: "Хвойные деревья",            emoji: "🌲", href: "/shop/Хвойные деревья и кустарники" },
+  { id: 3,  title: "Горшки и контейнеры",        emoji: "🪣", href: "/shop/Контейнеры и горшки" },
+  { id: 4,  title: "Торфяная продукция",         emoji: "🏔️", href: "/shop/Торфяная продукция" },
+  { id: 5,  title: "Розы",                       emoji: "🌹", href: "/shop/Розы" },
+  { id: 6,  title: "Лиственные деревья",         emoji: "🌳", href: "/shop/Лиственные деревья" },
+  { id: 7,  title: "Лиственные кустарники",      emoji: "🌿", href: "/shop/Лиственные кустарники" },
+  { id: 8,  title: "Плодовые деревья",           emoji: "🍎", href: "/shop/Плодовые деревья и кустарники" },
+  { id: 9,  title: "Лианы",                      emoji: "🪴", href: "/shop/Лианы" },
+  { id: 10, title: "Цветы многолетние",          emoji: "🌸", href: "/shop/Цветы многолетние" },
+  { id: 11, title: "Семена",                     emoji: "🌱", href: "/shop/Семена" },
+  { id: 12, title: "Газоны",                     emoji: "🌾", href: "/shop/Газоны и травосмеси" },
   { id: 13, title: "Сетки и агротекстиль",       emoji: "🕸️", href: "/shop/Сетки и агротекстиль" },
   { id: 14, title: "Инструменты",                emoji: "🛠️", href: "/shop/Инструменты" },
 ];
