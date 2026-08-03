@@ -18,24 +18,6 @@ export const categoryMenuList = [
   { id: 14, title: "Инструменты",                emoji: "🛠️", href: "/shop/Инструменты" },
 ];
 
-export const incentives = [
-  {
-    name: "Бесплатная доставка",
-    description: "Доставляем растения бережно и в кратчайшие сроки по всему Кыргызстану.",
-    imageSrc: "/shipping icon.png",
-  },
-  {
-    name: "Поддержка 24/7",
-    description: "Наши консультанты помогут подобрать растения и ответят на любые вопросы.",
-    imageSrc: "/support icon.png",
-  },
-  {
-    name: "Удобный заказ",
-    description: "Быстрое оформление заказа и удобные способы оплаты.",
-    imageSrc: "/fast shopping icon.png",
-  },
-];
-
 export const navigation = {
   sale: [
     { name: "Скидки", href: "/sale" },
